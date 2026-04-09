@@ -47,13 +47,16 @@ a{color:var(--accent);text-decoration:none}
 .btn-sm{padding:5px 10px;font-size:.62rem}
 
 /* TABS */
-.tabs{display:flex;gap:0;background:var(--s1);padding:0 24px;border-bottom:1px solid var(--s3);overflow-x:auto}
+.tabs{display:flex;gap:0;background:var(--s1);padding:0 24px;border-bottom:1px solid var(--s3);overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
 .tab{padding:12px 20px;font-size:.75rem;font-weight:600;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;transition:.2s;white-space:nowrap}
 .tab:hover{color:var(--white)}.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
 
 /* STATS */
 .stats-row{display:flex;gap:12px;padding:20px 24px;flex-wrap:wrap}
-.stat-card{background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:16px 20px;min-width:120px;flex:1}
+.stat-card{background:var(--s1);border:2px solid var(--s3);border-radius:10px;padding:16px 20px;min-width:120px;flex:1;cursor:pointer;transition:.2s;user-select:none}
+.stat-card:hover{border-color:var(--accent);background:rgba(88,166,255,.03)}
+.stat-card.active{border-color:var(--accent)!important;box-shadow:0 0 12px rgba(88,166,255,.15)}
 .stat-val{font-size:1.6rem;font-weight:800;line-height:1}
 .stat-lbl{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-top:4px}
 .stat-val.blue{color:var(--accent)}.stat-val.green{color:var(--green)}.stat-val.yellow{color:var(--yellow)}.stat-val.red{color:var(--red)}.stat-val.purple{color:var(--purple)}.stat-val.orange{color:var(--orange)}
@@ -103,13 +106,14 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 .pipe-col-head{padding:12px 14px;border-bottom:1px solid var(--s3);display:flex;align-items:center;justify-content:space-between}
 .pipe-col-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
 .pipe-col-count{font-size:.6rem;background:var(--s2);padding:2px 8px;border-radius:10px;color:var(--gray)}
-.pipe-col-body{padding:8px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:8px}
+.pipe-col-body{padding:8px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:8px;scrollbar-width:thin}
 .pipe-card{background:var(--s2);border:1px solid var(--s3);border-radius:8px;padding:12px;cursor:grab;transition:.2s}
 .pipe-card:hover{border-color:var(--accent)}
 .pipe-card-name{font-size:.78rem;font-weight:600;margin-bottom:4px;cursor:pointer}
 .pipe-card-name:hover{color:var(--accent)}
 .pipe-card-phone{font-size:.7rem;color:var(--accent);margin-bottom:4px}
 .pipe-card-region{font-size:.58rem;color:var(--yellow)}
+.pipe-card-badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:.52rem;font-weight:600;margin-left:4px}
 .pipe-card-notes{font-size:.62rem;color:var(--gray);margin-top:4px;font-style:italic}
 .pipe-card-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 
@@ -139,11 +143,11 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 .proj-bar-bg{width:100%;height:6px;background:var(--s3);border-radius:3px;overflow:hidden;margin-top:6px}
 .proj-bar{height:100%;border-radius:3px;transition:width .4s}
 .proj-bar.green{background:var(--green)}.proj-bar.yellow{background:var(--yellow)}.proj-bar.red{background:var(--red)}
-.proj-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.proj-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
 .proj-stat{text-align:center;padding:8px 4px;background:var(--s2);border-radius:6px}
 .proj-stat-val{font-size:1rem;font-weight:800;line-height:1}
 .proj-stat-lbl{font-size:.5rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);margin-top:2px}
-.proj-actions{display:flex;gap:8px;margin-top:16px}
+.proj-actions{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
 
 /* CREATE PROJECT MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:center;justify-content:center}
@@ -178,7 +182,7 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 .lb-rank.r3{color:var(--orange)}
 .lb-name{font-size:1rem;font-weight:700;flex:1}
 .lb-crown{font-size:1.2rem;margin-left:6px}
-.lb-stats{display:flex;gap:24px}
+.lb-stats{display:flex;gap:24px;flex-wrap:wrap}
 .lb-stat{text-align:center}
 .lb-stat-val{font-size:1.2rem;font-weight:800}
 .lb-stat-lbl{font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);margin-top:2px}
@@ -191,9 +195,10 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 @media(max-width:1024px){.badge-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.badge-grid{grid-template-columns:repeat(2,1fr)}}
 .badge-card{background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:20px 16px;text-align:center;transition:.3s;position:relative}
-.badge-card.unlocked{border-color:rgba(88,166,255,.3);box-shadow:0 0 20px rgba(88,166,255,.15)}
-.badge-card.locked{opacity:.4;filter:grayscale(1)}
+.badge-card.unlocked{border-color:rgba(88,166,255,.3);box-shadow:0 0 15px rgba(88,166,255,.15)}
+.badge-card.locked{opacity:.4}
 .badge-card.locked .badge-emoji{filter:grayscale(1)}
+.badge-card.locked::after{content:'\1F512';position:absolute;top:8px;right:8px;font-size:.6rem}
 .badge-emoji{font-size:3rem;line-height:1;margin-bottom:10px;display:block}
 .badge-name{font-size:.72rem;font-weight:700;margin-bottom:4px}
 .badge-desc{font-size:.58rem;color:var(--gray);line-height:1.4}
@@ -214,18 +219,23 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 .confetti-dot{position:absolute;width:8px;height:8px;border-radius:50%;animation:confettiFall 2.5s ease-in forwards}
 @keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg) scale(1);opacity:1}100%{transform:translateY(100vh) rotate(720deg) scale(0);opacity:0}}
 
-/* REWARD NOTIFICATION */
-.reward-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:.5rem;font-weight:700;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center}
-
 /* CALL TIMER FLOATING BAR */
-.call-timer-bar{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:2px solid var(--accent);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;z-index:100;gap:12px;flex-wrap:wrap;animation:slideUp .3s ease}
+.call-timer-bar{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:2px solid var(--accent);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;z-index:200;gap:12px;flex-wrap:wrap;animation:slideUp .3s ease}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .call-timer-name{font-size:.82rem;font-weight:700}
 .call-timer-display{font-size:1.4rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
 .call-timer-pulse{width:10px;height:10px;border-radius:50%;background:var(--red);animation:pulse 1s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 
-/* SIDE PANEL */
+/* DETAIL PANEL (right side) */
+#detailPanel{position:fixed;top:0;right:0;width:420px;max-width:100vw;height:100vh;background:var(--s1);border-left:1px solid var(--s3);z-index:300;overflow-y:auto;padding:24px;transform:translateX(100%);transition:transform .3s ease}
+#detailPanel.open{transform:translateX(0)}
+#detailPanelBackdrop{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:299;display:none}
+#detailPanelBackdrop.open{display:block}
+.detail-close{position:absolute;top:16px;right:16px;background:none;border:none;color:var(--gray);cursor:pointer;font-size:1.4rem;z-index:2}
+.detail-close:hover{color:var(--white)}
+
+/* SIDE PANEL (legacy for call history) */
 .side-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;justify-content:flex-end}
 .side-panel{width:480px;max-width:95vw;background:var(--s1);border-left:1px solid var(--s3);height:100%;overflow-y:auto;padding:24px;animation:slideInPanel .3s ease}
 @keyframes slideInPanel{from{transform:translateX(100%)}to{transform:translateX(0)}}
@@ -245,29 +255,36 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 .call-entry-notes{font-size:.68rem;color:var(--white);margin-top:6px;font-style:italic}
 
 /* SCRIPTS / POST-IT */
-.scripts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;padding:20px 24px}
-.postit{border-radius:10px;padding:16px;position:relative;min-height:140px;cursor:default;transition:.2s}
+.scripts-wrap{padding:20px 24px}
+.scripts-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.scripts-masonry{columns:3;column-gap:16px}
+@media(max-width:900px){.scripts-masonry{columns:2}}
+@media(max-width:600px){.scripts-masonry{columns:1}}
+.postit{break-inside:avoid;border-radius:10px;padding:16px;position:relative;min-height:120px;cursor:default;transition:.2s;margin-bottom:16px}
 .postit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
-.postit-title{font-size:.82rem;font-weight:700;margin-bottom:8px;padding-right:40px;color:#111}
-.postit-content{font-size:.72rem;line-height:1.6;color:#222;white-space:pre-wrap}
+.postit-title{font-size:.82rem;font-weight:700;margin-bottom:8px;padding-right:50px}
+.postit-content{font-size:.72rem;line-height:1.6;white-space:pre-wrap}
 .postit-actions{position:absolute;top:10px;right:10px;display:flex;gap:6px}
-.postit-actions button{background:rgba(0,0,0,.15);border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:.7rem;color:#333;display:flex;align-items:center;justify-content:center}
+.postit-actions button{background:rgba(0,0,0,.15);border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:.7rem;display:flex;align-items:center;justify-content:center}
 .postit-actions button:hover{background:rgba(0,0,0,.3)}
 
 /* CLIENTS */
-.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:20px 24px}
+.clients-wrap{padding:20px 24px}
+.clients-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
 .client-card{background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:20px;transition:.2s}
 .client-card:hover{border-color:var(--accent)}
-.client-card.delivered{border-color:var(--green);background:rgba(63,185,80,.04)}
+.client-card.status-delivered{border-color:var(--green);background:rgba(63,185,80,.04)}
+.client-card.status-maintenance{border-color:var(--purple);background:rgba(188,140,255,.04)}
 .client-card-name{font-size:.9rem;font-weight:700;margin-bottom:4px}
 .client-card-phone{font-size:.78rem;color:var(--accent);margin-bottom:8px}
 .client-card-meta{font-size:.68rem;color:var(--gray);margin-bottom:8px}
 .site-status-badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
-.site-status-badge.not_started{background:rgba(139,148,158,.15);color:var(--gray)}
-.site-status-badge.in_progress{background:rgba(88,166,255,.15);color:var(--accent)}
-.site-status-badge.preview_sent{background:rgba(210,153,34,.15);color:var(--yellow)}
-.site-status-badge.delivered{background:rgba(63,185,80,.15);color:var(--green)}
-.site-status-badge.maintenance{background:rgba(188,140,255,.15);color:var(--purple)}
+.ss-not_started{background:rgba(139,148,158,.15);color:var(--gray)}
+.ss-in_progress{background:rgba(210,153,34,.15);color:var(--yellow)}
+.ss-preview_sent{background:rgba(88,166,255,.15);color:var(--accent)}
+.ss-delivered{background:rgba(63,185,80,.15);color:var(--green)}
+.ss-maintenance{background:rgba(188,140,255,.15);color:var(--purple)}
 
 /* ACTIVITY LOG */
 .log-table{width:100%;border-collapse:collapse}
@@ -275,9 +292,10 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 .log-table td{padding:8px 10px;font-size:.72rem;border-bottom:1px solid var(--dim)}
 
 /* REMINDERS */
-.reminder-item{background:var(--s2);border:1px solid var(--s3);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.2s}
+.reminders-wrap{padding:20px 24px}
+.reminder-item{background:var(--s2);border:1px solid var(--s3);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px;transition:.2s}
 .reminder-item:hover{border-color:var(--accent)}
-.reminder-item.overdue{border-color:var(--red);background:rgba(248,81,73,.06)}
+.reminder-item.overdue{border-left:4px solid var(--red);background:rgba(248,81,73,.06)}
 .reminder-item.done{opacity:.4}
 
 /* CALL SCRIPT PANEL */
@@ -306,6 +324,11 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 /* DUPLICATE WARNING */
 .dup-item{background:rgba(210,153,34,.08);border:1px solid var(--yellow);border-radius:8px;padding:12px;margin-bottom:8px;font-size:.75rem}
 
+/* COLOR PICKER */
+.color-circle{width:32px;height:32px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.2s;display:inline-block}
+.color-circle:hover{transform:scale(1.1)}
+.color-circle.selected{border-color:var(--white)!important;box-shadow:0 0 8px rgba(255,255,255,.3)}
+
 .hidden{display:none!important}
 @media(max-width:768px){
   .stats-row{flex-direction:column}.stat-card{min-width:auto}
@@ -313,12 +336,13 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
   .search{width:100%}.pipeline{flex-direction:column}
   .pipe-col{min-width:auto;max-height:40vh}
   .proj-grid{grid-template-columns:1fr}
+  .proj-stats{grid-template-columns:repeat(3,1fr)}
   .lb-card{flex-direction:column;text-align:center}
   .lb-stats{flex-wrap:wrap;justify-content:center}
-  .scripts-grid{grid-template-columns:1fr}
+  .scripts-masonry{columns:1}
   .clients-grid{grid-template-columns:1fr}
   .fin-grid{grid-template-columns:repeat(2,1fr)}
-  .side-panel{width:100%}
+  #detailPanel{width:100%}
 }
 </style>
 </head>
@@ -408,11 +432,11 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 
   <div class="pipeline hidden" id="pipelineView"></div>
   <div class="projects-wrap hidden" id="projectsView"></div>
-  <div class="clients-grid hidden" id="clientsView"></div>
+  <div class="clients-wrap hidden" id="clientsView"></div>
   <div class="leaderboard-wrap hidden" id="leaderboardView"></div>
   <div class="badges-wrap hidden" id="badgesView"></div>
-  <div class="scripts-grid hidden" id="scriptsView"></div>
-  <div class="hidden" id="remindersView" style="padding:20px 24px"></div>
+  <div class="scripts-wrap hidden" id="scriptsView"></div>
+  <div class="reminders-wrap hidden" id="remindersView"></div>
   <div class="vendor-grid hidden" id="vendorsView"></div>
   <div class="hidden" id="logsView" style="padding:20px 24px"></div>
   <div class="hidden" id="blacklistView" style="padding:20px 24px"></div>
@@ -424,8 +448,9 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
     <h3><span>Nouveau</span> Projet</h3>
     <div class="modal-field"><label>Nom du projet</label><input id="projName" placeholder="Ex: Mission Crete"></div>
     <div class="modal-field"><label>Region</label><select id="projRegion"></select></div>
-    <div class="modal-field"><label>Vendeur assigne</label><select id="projVendeur"><option>Vendeur 1</option><option>Vendeur 2</option><option>Vendeur 3</option></select></div>
-    <div class="modal-field"><label>Statut</label><select id="projStatus"><option value="active">Actif</option><option value="paused">En pause</option><option value="completed">Termine</option></select></div>
+    <div class="modal-field"><label>Vendeur assigne</label><select id="projVendeur"><option>Vendeur 1</option><option>Vendeur 2</option><option>Vendeur 3</option><option value="Tous">Tous</option></select></div>
+    <div class="modal-field"><label>Date de debut</label><input type="date" id="projStartDate"></div>
+    <div class="modal-field"><label>Description (optionnel)</label><textarea id="projDesc" placeholder="Description du projet..."></textarea></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
       <button class="btn btn-accent" onclick="createProject()">Creer le projet</button>
@@ -438,7 +463,14 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
   <div class="modal" id="modal2Content"></div>
 </div>
 
-<!-- SIDE PANEL -->
+<!-- DETAIL PANEL (right slide) -->
+<div id="detailPanelBackdrop" onclick="closeDetailPanel()"></div>
+<div id="detailPanel">
+  <button class="detail-close" onclick="closeDetailPanel()">&times;</button>
+  <div id="detailPanelContent"></div>
+</div>
+
+<!-- SIDE PANEL (legacy) -->
 <div class="side-panel-overlay hidden" id="sidePanelOverlay" onclick="if(event.target===this)closeSidePanel()">
   <div class="side-panel" id="sidePanel"></div>
 </div>
@@ -452,14 +484,28 @@ const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJ
 const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
 let DATA=[],PROJECTS=[],CLIENTS=[],CALL_HISTORY=[],REMINDERS=[],ACTIVITY_LOG=[],BLACKLIST=[],VENDOR_SCRIPTS=[];
+let ALL_DATA=[]; // unfiltered by blacklist
 let currentUser=null,isAdmin=false,sortCol='',sortDir=1,currentTab='table';
+let statusFilter=''; // for stat card clicking
+
 const STATUSES=['nouveau','appelle','negociation','rappeler','valide','perdu'];
 const VENDORS=['','Vendeur 1','Vendeur 2','Vendeur 3'];
 const VENDOR_NAMES=['Vendeur 1','Vendeur 2','Vendeur 3'];
 const ADMIN_PASSWORD='Dido971$';
 const SITE_STATUSES=['not_started','in_progress','preview_sent','delivered','maintenance'];
 const SITE_STATUS_LABELS={not_started:'Not started',in_progress:'In progress',preview_sent:'Preview sent',delivered:'Delivered',maintenance:'Maintenance'};
-const POSTIT_COLORS=['#fef08a','#93c5fd','#86efac','#f9a8d4','#fdba74','#c4b5fd','#fca5a5','#f5f5f5'];
+const SITE_STATUS_COLORS={not_started:'var(--gray)',in_progress:'var(--yellow)',preview_sent:'var(--accent)',delivered:'var(--green)',maintenance:'var(--purple)'};
+
+const POSTIT_COLORS_DARK=[
+  {bg:'#2a2000',fg:'#d29922',name:'yellow'},
+  {bg:'#0d1f3a',fg:'#58a6ff',name:'blue'},
+  {bg:'#0d2a1a',fg:'#3fb950',name:'green'},
+  {bg:'#2a0d1a',fg:'#f47098',name:'pink'},
+  {bg:'#2a1500',fg:'#f0883e',name:'orange'},
+  {bg:'#1a0d2a',fg:'#bc8cff',name:'purple'},
+  {bg:'#2a0d0d',fg:'#f85149',name:'red'},
+  {bg:'#21262d',fg:'#e6edf3',name:'white'}
+];
 
 // ========================================
 // CALL TIMER STATE
@@ -470,7 +516,6 @@ let callTimerInterval=null,callTimerStart=null,callTimerProspectId=null,callTime
 // BADGE DEFINITIONS
 // ========================================
 const BADGE_DEFS=[
-  // BEGINNER
   {id:'first_step',cat:'Debutant',emoji:'\uD83D\uDCDE',name:'First Step',desc:'1 appel effectue'},
   {id:'ice_breaker',cat:'Debutant',emoji:'\uD83E\uDDCA',name:'Ice Breaker',desc:'5 appels en 1 jour'},
   {id:'getting_started',cat:'Debutant',emoji:'\uD83D\uDE80',name:'Getting Started',desc:'10 appels effectues'},
@@ -481,8 +526,6 @@ const BADGE_DEFS=[
   {id:'speed_dialer',cat:'Debutant',emoji:'\u26A1',name:'Speed Dialer',desc:'5 appels en 1 heure'},
   {id:'note_taker',cat:'Debutant',emoji:'\u270F\uFE0F',name:'Note Taker',desc:'10 notes ajoutees'},
   {id:'explorer',cat:'Debutant',emoji:'\uD83D\uDDFA\uFE0F',name:'Explorer',desc:'3 regions differentes'},
-
-  // INTERMEDIATE
   {id:'call_machine',cat:'Intermediaire',emoji:'\uD83D\uDCF1',name:'Call Machine',desc:'10 appels en 1 jour'},
   {id:'hot_streak',cat:'Intermediaire',emoji:'\uD83D\uDD25',name:'Hot Streak',desc:'3 jours avec 10+ appels'},
   {id:'silver_tongue',cat:'Intermediaire',emoji:'\uD83D\uDDE3\uFE0F',name:'Silver Tongue',desc:'3 ventes en 1 semaine'},
@@ -493,8 +536,6 @@ const BADGE_DEFS=[
   {id:'pipeline_king',cat:'Intermediaire',emoji:'\uD83D\uDC51',name:'Pipeline King',desc:'10 en negociation'},
   {id:'follow_up_king',cat:'Intermediaire',emoji:'\uD83D\uDD04',name:'Follow Up King',desc:'3 rappels convertis'},
   {id:'weekly_champion',cat:'Intermediaire',emoji:'\uD83C\uDFC6',name:'Weekly Champion',desc:'#1 de la semaine'},
-
-  // ADVANCED
   {id:'legend',cat:'Avance',emoji:'\uD83D\uDC8E',name:'Legend',desc:'10 ventes'},
   {id:'closer',cat:'Avance',emoji:'\u270A',name:'Closer',desc:'5 ventes en 1 semaine'},
   {id:'elite',cat:'Avance',emoji:'\uD83D\uDEE1\uFE0F',name:'Elite',desc:'500 points'},
@@ -505,8 +546,6 @@ const BADGE_DEFS=[
   {id:'master_negotiator',cat:'Avance',emoji:'\u265E',name:'Master Negotiator',desc:'10 nego gagnees'},
   {id:'island_conqueror',cat:'Avance',emoji:'\uD83C\uDFDD\uFE0F',name:'Island Conqueror',desc:'3 regions terminees'},
   {id:'vantage_legend',cat:'Avance',emoji:'\uD83D\uDC51',name:'Vantage Legend',desc:'1000 points'},
-
-  // SPECIAL
   {id:'perfect_day',cat:'Special',emoji:'\uD83C\uDF1F',name:'Perfect Day',desc:'15 appels + 1 vente/jour'},
   {id:'comeback_kid',cat:'Special',emoji:'\uD83E\uDD85',name:'Comeback Kid',desc:'Vente apres 3 rappels'},
   {id:'greek_god',cat:'Special',emoji:'\uD83C\uDFDB\uFE0F',name:'Greek God',desc:'5 ventes insulaires'},
@@ -535,21 +574,9 @@ const CALL_SCRIPT_GR='\u0393\u03B5\u03B9\u03B1 \u03C3\u03B1\u03C2! \u039C\u03B5 
 const CALL_SCRIPT_EN='Hi! I\'m [name]. I noticed your business doesn\'t have a website \u2014 I can build you a professional one in 5 days. Interested?';
 
 const OBJECTIONS={
-  expensive:{
-    label:'Too expensive',
-    en:'One new client/month covers it. One-time 500\u20AC investment.',
-    gr:'\u0388\u03BD\u03B1\u03C2 \u03BD\u03AD\u03BF\u03C2 \u03C0\u03B5\u03BB\u03AC\u03C4\u03B7\u03C2/\u03BC\u03AE\u03BD\u03B1 \u03C4\u03BF \u03BA\u03B1\u03BB\u03CD\u03C0\u03C4\u03B5\u03B9. \u0395\u03C6\u03AC\u03C0\u03B1\u03BE \u03B5\u03C0\u03AD\u03BD\u03B4\u03C5\u03C3\u03B7 500\u20AC.'
-  },
-  have_site:{
-    label:'Already have site',
-    en:'I can check it \u2014 most sites lose clients. I rebuild better for 300\u20AC.',
-    gr:'\u039C\u03C0\u03BF\u03C1\u03CE \u03BD\u03B1 \u03C4\u03BF \u03B5\u03BB\u03AD\u03B3\u03BE\u03C9 \u2014 \u03BF\u03B9 \u03C0\u03B5\u03C1\u03B9\u03C3\u03C3\u03CC\u03C4\u03B5\u03C1\u03B5\u03C2 \u03B9\u03C3\u03C4\u03BF\u03C3\u03B5\u03BB\u03AF\u03B4\u03B5\u03C2 \u03C7\u03AC\u03BD\u03BF\u03C5\u03BD \u03C0\u03B5\u03BB\u03AC\u03C4\u03B5\u03C2. \u03A4\u03BF \u03BE\u03B1\u03BD\u03B1\u03C6\u03C4\u03B9\u03AC\u03C7\u03BD\u03C9 \u03BA\u03B1\u03BB\u03CD\u03C4\u03B5\u03C1\u03B1 \u03B3\u03B9\u03B1 300\u20AC.'
-  },
-  no_time:{
-    label:'No time',
-    en:'You don\'t do anything \u2014 send info+photos, I handle everything.',
-    gr:'\u0394\u03B5\u03BD \u03C7\u03C1\u03B5\u03B9\u03AC\u03B6\u03B5\u03C4\u03B1\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03B5\u03C4\u03B5 \u03C4\u03AF\u03C0\u03BF\u03C4\u03B1 \u2014 \u03C3\u03C4\u03B5\u03AF\u03BB\u03C4\u03B5 \u03C0\u03BB\u03B7\u03C1\u03BF\u03C6\u03BF\u03C1\u03AF\u03B5\u03C2+\u03C6\u03C9\u03C4\u03BF\u03B3\u03C1\u03B1\u03C6\u03AF\u03B5\u03C2, \u03C4\u03B1 \u03B1\u03BD\u03B1\u03BB\u03B1\u03BC\u03B2\u03AC\u03BD\u03C9 \u03CC\u03BB\u03B1.'
-  }
+  expensive:{label:'Too expensive',en:'One new client/month covers it. One-time 500\u20AC investment.',gr:'\u0388\u03BD\u03B1\u03C2 \u03BD\u03AD\u03BF\u03C2 \u03C0\u03B5\u03BB\u03AC\u03C4\u03B7\u03C2/\u03BC\u03AE\u03BD\u03B1 \u03C4\u03BF \u03BA\u03B1\u03BB\u03CD\u03C0\u03C4\u03B5\u03B9. \u0395\u03C6\u03AC\u03C0\u03B1\u03BE \u03B5\u03C0\u03AD\u03BD\u03B4\u03C5\u03C3\u03B7 500\u20AC.'},
+  have_site:{label:'Already have site',en:'I can check it \u2014 most sites lose clients. I rebuild better for 300\u20AC.',gr:'\u039C\u03C0\u03BF\u03C1\u03CE \u03BD\u03B1 \u03C4\u03BF \u03B5\u03BB\u03AD\u03B3\u03BE\u03C9 \u2014 \u03BF\u03B9 \u03C0\u03B5\u03C1\u03B9\u03C3\u03C3\u03CC\u03C4\u03B5\u03C1\u03B5\u03C2 \u03B9\u03C3\u03C4\u03BF\u03C3\u03B5\u03BB\u03AF\u03B4\u03B5\u03C2 \u03C7\u03AC\u03BD\u03BF\u03C5\u03BD \u03C0\u03B5\u03BB\u03AC\u03C4\u03B5\u03C2. \u03A4\u03BF \u03BE\u03B1\u03BD\u03B1\u03C6\u03C4\u03B9\u03AC\u03C7\u03BD\u03C9 \u03BA\u03B1\u03BB\u03CD\u03C4\u03B5\u03C1\u03B1 \u03B3\u03B9\u03B1 300\u20AC.'},
+  no_time:{label:'No time',en:'You don\'t do anything \u2014 send info+photos, I handle everything.',gr:'\u0394\u03B5\u03BD \u03C7\u03C1\u03B5\u03B9\u03AC\u03B6\u03B5\u03C4\u03B1\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03B5\u03C4\u03B5 \u03C4\u03AF\u03C0\u03BF\u03C4\u03B1 \u2014 \u03C3\u03C4\u03B5\u03AF\u03BB\u03C4\u03B5 \u03C0\u03BB\u03B7\u03C1\u03BF\u03C6\u03BF\u03C1\u03AF\u03B5\u03C2+\u03C6\u03C9\u03C4\u03BF\u03B3\u03C1\u03B1\u03C6\u03AF\u03B5\u03C2, \u03C4\u03B1 \u03B1\u03BD\u03B1\u03BB\u03B1\u03BC\u03B2\u03AC\u03BD\u03C9 \u03CC\u03BB\u03B1.'}
 };
 
 // ========================================
@@ -570,11 +597,13 @@ function getVendorStats(vendor){
   const calls=vd.filter(d=>['appelle','negociation','rappeler','valide','perdu'].includes(d.status)).length;
   const wins=vd.filter(d=>d.status==='valide').length;
   const nego=vd.filter(d=>d.status==='negociation').length;
-  const rev=vd.reduce((s,d)=>s+(parseFloat(d.revenue)||0),0);
+  const lost=vd.filter(d=>d.status==='perdu').length;
+  const rev=wins*500;
   const regions=[...new Set(vd.map(d=>d.region))].filter(Boolean);
   const notes=vd.filter(d=>d.notes&&d.notes.trim()).length;
   const rappeler=vd.filter(d=>d.status==='rappeler').length;
-  return{calls,wins,nego,rev,regions,notes,rappeler,total:vd.length};
+  const conv=wins+lost>0?((wins/(wins+lost))*100).toFixed(1):'0';
+  return{calls,wins,nego,lost,rev,regions,notes,rappeler,total:vd.length,conv};
 }
 
 function getTodayCalls(vendor){
@@ -594,7 +623,6 @@ function getWeekSales(vendor){
 let adminAttempts=0;
 function showAdminLogin(){
   const wrap=document.getElementById('adminPwWrap');
-  // Check lock
   const lockUntil=localStorage.getItem('admin_lock_until');
   if(lockUntil&&Date.now()<parseInt(lockUntil)){
     const remaining=Math.ceil((parseInt(lockUntil)-Date.now())/1000);
@@ -663,12 +691,8 @@ function login(name){
 function logout(){localStorage.removeItem('crm_user');location.reload()}
 const saved=localStorage.getItem('crm_user');
 if(saved){
-  if(saved==='Admin'){
-    // Auto-login admin if previously logged in
-    login('Admin');
-  } else {
-    login(saved);
-  }
+  if(saved==='Admin') login('Admin');
+  else login(saved);
 }
 
 // ========================================
@@ -682,15 +706,15 @@ async function loadData(){
     sb.from('reminders').select('*').order('remind_at'),
     sb.from('blacklist').select('*').order('id')
   ]);
-  DATA=prospRes.data||[];
+  ALL_DATA=prospRes.data||[];
   PROJECTS=projRes.data||[];
   CLIENTS=clientRes.data||[];
   REMINDERS=remRes.data||[];
   BLACKLIST=blRes.data||[];
 
-  // Filter out blacklisted prospects
+  // Filter out blacklisted
   const blIds=new Set(BLACKLIST.map(b=>b.prospect_id));
-  DATA=DATA.filter(d=>!blIds.has(d.id));
+  DATA=ALL_DATA.filter(d=>!d.blacklisted&&!blIds.has(d.id));
 
   populateFilters();
   render();
@@ -732,10 +756,27 @@ function getFiltered(){
   let fd=DATA.filter(d=>{
     if(q&&!((d.nom||'').toLowerCase().includes(q)||(d.categorie||'').toLowerCase().includes(q)||(d.region||'').toLowerCase().includes(q)||(d.numero||'').includes(q)))return false;
     if(ff&&d.famille!==ff)return false;if(fr&&d.region!==fr)return false;
-    if(fs&&d.status!==fs)return false;if(ft&&d.type_tel!==ft)return false;if(fv&&d.vendeur!==fv)return false;return true;
+    if(fs&&d.status!==fs)return false;if(ft&&d.type_tel!==ft)return false;if(fv&&d.vendeur!==fv)return false;
+    // statusFilter from stat cards
+    if(statusFilter&&d.status!==statusFilter)return false;
+    return true;
   });
-  if(sortCol)fd.sort((a,b)=>{const av=(a[sortCol]||'').toLowerCase(),bv=(b[sortCol]||'').toLowerCase();return av<bv?-sortDir:av>bv?sortDir:0});
+  if(sortCol)fd.sort((a,b)=>{const av=(a[sortCol]||'').toString().toLowerCase(),bv=(b[sortCol]||'').toString().toLowerCase();return av<bv?-sortDir:av>bv?sortDir:0});
   return fd;
+}
+
+// ========================================
+// STAT CARD FILTER
+// ========================================
+function filterByStatus(status){
+  if(statusFilter===status){
+    statusFilter='';
+  } else {
+    statusFilter=status;
+  }
+  // Sync fSta dropdown
+  document.getElementById('fSta').value=statusFilter;
+  render();
 }
 
 // ========================================
@@ -767,22 +808,30 @@ function renderPointsDisplay(){
 function renderStats(){
   const d=DATA,t=d.length;
   const n=d.filter(x=>x.status==='nouveau').length,a=d.filter(x=>x.status==='appelle').length;
-  const ne=d.filter(x=>x.status==='negociation').length,v=d.filter(x=>x.status==='valide').length;
-  const p=d.filter(x=>x.status==='perdu').length;
-  const rev=d.reduce((s,x)=>s+(parseFloat(x.revenue)||0),0);
+  const ne=d.filter(x=>x.status==='negociation').length,ra=d.filter(x=>x.status==='rappeler').length;
+  const v=d.filter(x=>x.status==='valide').length,p=d.filter(x=>x.status==='perdu').length;
   const conv=v+p>0?((v/(v+p))*100).toFixed(1):'0';
-  let html=`
-    <div class="stat-card"><div class="stat-val blue">${t.toLocaleString()}</div><div class="stat-lbl">Total</div></div>
-    <div class="stat-card"><div class="stat-val">${n.toLocaleString()}</div><div class="stat-lbl">Nouveau</div></div>
-    <div class="stat-card"><div class="stat-val yellow">${a.toLocaleString()}</div><div class="stat-lbl">Appelle</div></div>
-    <div class="stat-card"><div class="stat-val orange">${ne}</div><div class="stat-lbl">Negociation</div></div>
-    <div class="stat-card"><div class="stat-val green">${v}</div><div class="stat-lbl">Gagne</div></div>
-    <div class="stat-card"><div class="stat-val red">${p}</div><div class="stat-lbl">Perdu</div></div>`;
+
+  const cards=[
+    {val:t,label:'Total',color:'blue',status:''},
+    {val:n,label:'Nouveau',color:'',status:'nouveau'},
+    {val:a,label:'Appelle',color:'yellow',status:'appelle'},
+    {val:ne,label:'Negociation',color:'orange',status:'negociation'},
+    {val:ra,label:'Rappeler',color:'purple',status:'rappeler'},
+    {val:v,label:'Gagne',color:'green',status:'valide'},
+    {val:p,label:'Perdu',color:'red',status:'perdu'}
+  ];
+
+  let html=cards.map(c=>{
+    const isActive=statusFilter===c.status&&c.status!=='';
+    return `<div class="stat-card${isActive?' active':''}" onclick="${c.status?`filterByStatus('${c.status}')`:`statusFilter='';document.getElementById('fSta').value='';render()`}">
+      <div class="stat-val${c.color?' '+c.color:''}">${c.val.toLocaleString()}</div>
+      <div class="stat-lbl">${c.label}</div>
+    </div>`;
+  }).join('');
+
   if(isAdmin){
     const revenue=v*500;
-    const maintenanceCount=CLIENTS.filter(c=>c.site_status==='maintenance').length;
-    const revMaintenance=(v-maintenanceCount)*500+maintenanceCount*700;
-    const forecast=Math.round(ne*500*0.3);
     html+=`<div class="stat-card"><div class="stat-val green">${revenue.toLocaleString()}\u20AC</div><div class="stat-lbl">Revenue</div></div>
     <div class="stat-card"><div class="stat-val purple">${conv}%</div><div class="stat-lbl">Conversion</div></div>`;
   }
@@ -796,108 +845,148 @@ function renderTable(){
     const fc='b-'+(d.famille||'Autre').replace(/[& ]/g,'');
     const vo=VENDORS.map(v=>`<option ${d.vendeur===v?'selected':''}>${v}</option>`).join('');
     const so=STATUSES.map(s=>`<option ${d.status===s?'selected':''}>${s}</option>`).join('');
-    const callBtn=(!isAdmin&&d.vendeur===currentUser)?`<button class="btn btn-accent btn-sm" onclick="startCall(${d.id},'${esc(d.nom)}')">Call</button>`:'';
-    const histBtn=`<span style="cursor:pointer;font-size:.75rem;color:var(--accent)" onclick="openCallHistory(${d.id},'${esc(d.nom)}')">${esc(d.nom)}</span>`;
-    const blBtn=`<span class="bl-icon" title="Blacklist" onclick="blacklistProspect(${d.id},'${esc(d.nom)}')">&#128683;</span>`;
-    return `<tr class="${rc}"><td>${histBtn}</td><td><a href="tel:${d.numero}" class="phone-link">${d.numero||''}</a></td><td><span class="${tc}">${d.type_tel||''}</span></td><td><span class="badge ${fc}">${d.famille||''}</span></td><td>${d.categorie||''}</td><td><span class="region-tag">${d.region||''}</span></td><td><select class="tsel" onchange="updateField(${d.id},'vendeur',this.value)">${vo}</select></td><td><select class="tsel" onchange="updateField(${d.id},'status',this.value)">${so}</select></td><td><input class="ninp" value="${(d.notes||'').replace(/"/g,'&quot;')}" onblur="updateField(${d.id},'notes',this.value)" placeholder="Notes..."></td><td style="white-space:nowrap">${callBtn} ${blBtn}</td></tr>`;
+    const canCall=!isAdmin&&(d.vendeur===currentUser||!d.vendeur);
+    return `<tr class="${rc}">
+      <td><span style="cursor:pointer;font-size:.75rem;color:var(--accent);font-weight:600" onclick="openProspectDetail(${d.id})">${esc(d.nom)}</span></td>
+      <td><a href="tel:${d.numero}" class="phone-link">${d.numero||''}</a></td>
+      <td><span class="${tc}">${d.type_tel||''}</span></td>
+      <td><span class="badge ${fc}">${d.famille||''}</span></td>
+      <td>${d.categorie||''}</td>
+      <td><span class="region-tag">${d.region||''}</span></td>
+      <td><select class="tsel" onchange="updateField(${d.id},'vendeur',this.value)">${vo}</select></td>
+      <td><select class="tsel" onchange="updateField(${d.id},'status',this.value)">${so}</select></td>
+      <td><input class="ninp" value="${(d.notes||'').replace(/"/g,'&quot;')}" onblur="updateField(${d.id},'notes',this.value)" placeholder="Notes..."></td>
+      <td style="white-space:nowrap">
+        ${canCall?`<button class="btn btn-accent btn-sm" onclick="startCall(${d.id},'${esc(d.nom)}')" title="Appeler">\uD83D\uDCDE</button> `:''}
+        <span class="bl-icon" title="Blacklist" onclick="blacklistProspect(${d.id},'${esc(d.nom)}')">\uD83D\uDEAB</span>
+      </td>
+    </tr>`;
   }).join('');
   document.getElementById('visCount').textContent=fd.length;
   document.getElementById('totCount').textContent=DATA.length;
   if(fd.length>500)document.getElementById('tbody').innerHTML+=`<tr><td colspan="10" style="text-align:center;color:var(--yellow);padding:16px;font-size:.75rem">Limite 500 lignes. Filtrez. Total: ${fd.length}</td></tr>`;
 }
 
-function esc(s){return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}
+function esc(s){return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/</g,'&lt;')}
 
 function renderPipeline(){
   const pv=document.getElementById('pipelineView');
   const cols=[{key:'nouveau',label:'Nouveau',color:'var(--gray)'},{key:'appelle',label:'Appelle',color:'var(--yellow)'},{key:'negociation',label:'Negociation',color:'var(--orange)'},{key:'rappeler',label:'A Rappeler',color:'var(--purple)'},{key:'valide',label:'Gagne',color:'var(--green)'},{key:'perdu',label:'Perdu',color:'var(--red)'}];
   const my=!isAdmin?DATA.filter(d=>d.vendeur===currentUser):DATA.filter(d=>d.vendeur);
   pv.innerHTML=cols.map(col=>{
-    const items=my.filter(d=>d.status===col.key).slice(0,50);
-    return `<div class="pipe-col"><div class="pipe-col-head"><span class="pipe-col-title" style="color:${col.color}">${col.label}</span><span class="pipe-col-count">${my.filter(d=>d.status===col.key).length}</span></div><div class="pipe-col-body" ondragover="event.preventDefault()" ondrop="dropCard(event,'${col.key}')">${items.map(d=>`<div class="pipe-card" draggable="true" ondragstart="dragCard(event,${d.id})">
+    const allItems=my.filter(d=>d.status===col.key);
+    const items=allItems.slice(0,30);
+    const fc=item=>'b-'+(item.famille||'Autre').replace(/[& ]/g,'');
+    return `<div class="pipe-col"><div class="pipe-col-head"><span class="pipe-col-title" style="color:${col.color}">${col.label}</span><span class="pipe-col-count">${allItems.length}</span></div><div class="pipe-col-body" ondragover="event.preventDefault()" ondrop="dropCard(event,'${col.key}')">${items.map(d=>`<div class="pipe-card" draggable="true" ondragstart="dragCard(event,${d.id})">
       <div class="pipe-card-name" onclick="openProspectDetail(${d.id})">${d.nom||''}</div>
       <div class="pipe-card-phone"><a href="tel:${d.numero}" style="color:var(--accent)">${d.numero||''}</a></div>
-      <div class="pipe-card-region">${d.region||''} \u00B7 ${d.famille||''}</div>
+      <div class="pipe-card-region">${d.region||''} <span class="badge ${fc(d)}" style="margin-left:4px">${d.famille||''}</span></div>
       ${d.notes?`<div class="pipe-card-notes">${d.notes}</div>`:''}
       <div class="pipe-card-actions">
-        ${!isAdmin?`<button class="btn btn-accent btn-sm" onclick="event.stopPropagation();startCall(${d.id},'${esc(d.nom)}')">Call</button>`:''}
-        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openCallHistory(${d.id},'${esc(d.nom)}')">History</button>
-        <span class="bl-icon" onclick="event.stopPropagation();blacklistProspect(${d.id},'${esc(d.nom)}')">&#128683;</span>
+        ${!isAdmin?`<button class="btn btn-accent btn-sm" onclick="event.stopPropagation();startCall(${d.id},'${esc(d.nom)}')">\uD83D\uDCDE Call</button>`:''}
+        <span class="bl-icon" onclick="event.stopPropagation();blacklistProspect(${d.id},'${esc(d.nom)}')">\uD83D\uDEAB</span>
       </div>
-    </div>`).join('')}</div></div>`;
+    </div>`).join('')}${allItems.length>30?`<div style="text-align:center;padding:8px;font-size:.65rem;color:var(--gray)">+${allItems.length-30} de plus</div>`:''}</div></div>`;
   }).join('');
 }
 
 // ========================================
-// PROSPECT DETAIL SIDE PANEL
+// PROSPECT DETAIL PANEL
 // ========================================
 function openProspectDetail(id){
   const d=DATA.find(x=>x.id===id);
   if(!d)return;
-  const panel=document.getElementById('sidePanel');
   const vendorName=currentUser;
+  const panel=document.getElementById('detailPanelContent');
 
-  let html=`<h3><span>${d.nom||'Prospect'}</span><button onclick="closeSidePanel()">\u2715</button></h3>`;
-  html+=`<div style="margin-bottom:16px">
-    <div style="font-size:.78rem;margin-bottom:4px"><strong>Tel:</strong> <a href="tel:${d.numero}" style="color:var(--accent)">${d.numero||''}</a></div>
-    <div style="font-size:.72rem;color:var(--gray);margin-bottom:4px">${d.famille||''} \u00B7 ${d.categorie||''} \u00B7 ${d.region||''}</div>
-    <div style="font-size:.72rem;color:var(--gray)">Statut: <strong style="color:var(--accent)">${d.status||'nouveau'}</strong></div>
-    ${d.notes?`<div style="font-size:.72rem;color:var(--gray);margin-top:4px;font-style:italic">Notes: ${d.notes}</div>`:''}
+  let html=`<h3 style="font-size:1.1rem;font-weight:800;margin-bottom:16px;padding-right:30px">${d.nom||'Prospect'}</h3>`;
+
+  // Info block
+  html+=`<div style="background:var(--s2);border-radius:8px;padding:14px;margin-bottom:16px">
+    <div style="font-size:.78rem;margin-bottom:6px"><strong>Tel:</strong> <a href="tel:${d.numero}" style="color:var(--accent)">${d.numero||''}</a></div>
+    <div style="font-size:.72rem;color:var(--gray);margin-bottom:4px"><strong>Adresse:</strong> ${d.adresse||'N/A'}</div>
+    <div style="font-size:.72rem;color:var(--gray);margin-bottom:4px"><strong>Categorie:</strong> ${d.categorie||'N/A'} &middot; <strong>Famille:</strong> ${d.famille||'N/A'}</div>
+    <div style="font-size:.72rem;color:var(--gray);margin-bottom:4px"><strong>Region:</strong> ${d.region||'N/A'}</div>
+    <div style="font-size:.72rem;color:var(--gray);margin-bottom:4px"><strong>Rating:</strong> ${d.rating||'N/A'} &middot; <strong>Avis:</strong> ${d.avis||'N/A'}</div>
+    <div style="font-size:.72rem;margin-top:6px">Statut: <strong style="color:var(--accent)">${d.status||'nouveau'}</strong></div>
   </div>`;
 
   // Call button
   if(!isAdmin){
-    html+=`<button class="btn btn-accent" style="margin-bottom:16px" onclick="closeSidePanel();startCall(${d.id},'${esc(d.nom)}')">Appeler ce prospect</button>`;
+    html+=`<button class="btn btn-accent" style="width:100%;margin-bottom:16px;padding:12px" onclick="closeDetailPanel();startCall(${d.id},'${esc(d.nom)}')">\uD83D\uDCDE Appeler ce prospect</button>`;
   }
 
-  // Call Script
+  // Reminder setter
+  html+=`<div style="background:var(--s2);border-radius:8px;padding:14px;margin-bottom:16px">
+    <div style="font-size:.72rem;font-weight:700;margin-bottom:8px;color:var(--purple)">Planifier un rappel</div>
+    <div style="display:flex;gap:8px;align-items:end;flex-wrap:wrap">
+      <input type="datetime-local" id="detailReminderDt" style="flex:1;min-width:180px;padding:6px 10px;background:var(--bg);border:1px solid var(--s3);border-radius:6px;color:var(--white);font-size:.72rem;outline:none">
+      <button class="btn btn-ghost btn-sm" onclick="saveDetailReminder(${d.id},'${esc(d.nom)}')">Sauvegarder</button>
+    </div>
+  </div>`;
+
+  // Call Script (collapsible)
   html+=`<div class="script-panel">
-    <h4 onclick="this.parentElement.querySelector('.script-body').classList.toggle('hidden')">Script d'appel (cliquer pour ouvrir/fermer)</h4>
-    <div class="script-body">
-      <div class="script-lang"><div class="script-lang-title">Greek</div>
+    <h4 onclick="this.nextElementSibling.classList.toggle('hidden')">Script d'appel (cliquer pour ouvrir/fermer) \u25BC</h4>
+    <div class="hidden">
+      <div class="script-lang"><div class="script-lang-title">\uD83C\uDDEC\uD83C\uDDF7 Greek</div>
         <div class="script-lang-text">${CALL_SCRIPT_GR.replace('[name]',vendorName)}</div>
       </div>
-      <div class="script-lang"><div class="script-lang-title">English</div>
+      <div class="script-lang"><div class="script-lang-title">\uD83C\uDDEC\uD83C\uDDE7 English</div>
         <div class="script-lang-text">${CALL_SCRIPT_EN.replace('[name]',vendorName)}</div>
       </div>
       <div style="margin-top:12px;font-size:.7rem;font-weight:700;color:var(--gray)">OBJECTIONS</div>
       <div class="objection-btns">
-        <button class="objection-btn" onclick="showObjection('expensive')">Too expensive</button>
-        <button class="objection-btn" onclick="showObjection('have_site')">Already have site</button>
-        <button class="objection-btn" onclick="showObjection('no_time')">No time</button>
+        <button class="objection-btn" onclick="showDetailObjection('expensive')">Too expensive</button>
+        <button class="objection-btn" onclick="showDetailObjection('have_site')">Already have site</button>
+        <button class="objection-btn" onclick="showDetailObjection('no_time')">No time</button>
       </div>
-      <div id="objectionResponse" style="margin-top:10px"></div>
+      <div id="detailObjectionResponse" style="margin-top:10px"></div>
     </div>
   </div>`;
 
+  // Notes textarea
+  html+=`<div style="margin-top:16px">
+    <div style="font-size:.72rem;font-weight:700;margin-bottom:6px;color:var(--gray)">NOTES</div>
+    <textarea id="detailNotes" style="width:100%;min-height:60px;padding:10px;background:var(--bg);border:1px solid var(--s3);border-radius:8px;color:var(--white);font-size:.75rem;outline:none;resize:vertical;font-family:inherit" onblur="updateField(${d.id},'notes',this.value)">${d.notes||''}</textarea>
+  </div>`;
+
   // Call history section
-  html+=`<div style="margin-top:20px"><h4 style="font-size:.82rem;font-weight:700;margin-bottom:12px">Historique d'appels</h4><div id="detailCallHistory"><div style="color:var(--gray);font-size:.72rem">Chargement...</div></div></div>`;
+  html+=`<div style="margin-top:20px"><div style="font-size:.78rem;font-weight:700;margin-bottom:12px;color:var(--gray)">HISTORIQUE D'APPELS</div><div id="detailCallHistory"><div style="color:var(--gray);font-size:.72rem">Chargement...</div></div></div>`;
 
   panel.innerHTML=html;
-  document.getElementById('sidePanelOverlay').classList.remove('hidden');
+  document.getElementById('detailPanel').classList.add('open');
+  document.getElementById('detailPanelBackdrop').classList.add('open');
 
   // Load call history
   loadCallHistory(id).then(calls=>{
     const el=document.getElementById('detailCallHistory');
+    if(!el)return;
     if(!calls.length){el.innerHTML='<div style="color:var(--gray);font-size:.72rem">Aucun appel enregistre.</div>';return;}
     el.innerHTML=calls.map(c=>{
-      const dur=formatDuration(c.duration||0);
+      const dur=formatDuration(c.duration_seconds||c.duration||0);
       const resultClass=c.result==='Interested'?'interested':c.result==='Not interested'?'not-interested':c.result==='Call back'?'callback':'no-answer';
       return `<div class="call-entry">
         <div class="call-entry-head">
           <span class="call-entry-date">${new Date(c.created_at).toLocaleString('fr-FR')}</span>
           <span class="call-entry-result ${resultClass}">${c.result||''}</span>
         </div>
-        <div class="call-entry-info">Duree: ${dur} \u00B7 Par: ${c.vendor_name||''}</div>
+        <div class="call-entry-info">Duree: ${dur} &middot; Par: ${c.vendor_name||''}</div>
         ${c.notes?`<div class="call-entry-notes">${c.notes}</div>`:''}
       </div>`;
     }).join('');
   });
 }
 
-function showObjection(key){
+function closeDetailPanel(){
+  document.getElementById('detailPanel').classList.remove('open');
+  document.getElementById('detailPanelBackdrop').classList.remove('open');
+}
+
+function showDetailObjection(key){
   const obj=OBJECTIONS[key];
-  const el=document.getElementById('objectionResponse');
+  const el=document.getElementById('detailObjectionResponse');
+  if(!el)return;
   el.innerHTML=`<div style="background:var(--bg);border-radius:8px;padding:12px;margin-top:8px">
     <div style="font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:6px">${obj.label}</div>
     <div style="font-size:.7rem;margin-bottom:6px"><strong style="color:var(--yellow)">EN:</strong> ${obj.en}</div>
@@ -905,31 +994,28 @@ function showObjection(key){
   </div>`;
 }
 
+async function saveDetailReminder(prospectId,prospectName){
+  const dt=document.getElementById('detailReminderDt');
+  if(!dt||!dt.value){alert('Selectionnez une date');return;}
+  await sb.from('reminders').insert([{
+    prospect_id:prospectId,
+    vendor_name:currentUser,
+    remind_at:new Date(dt.value).toISOString(),
+    message:'Rappel pour '+prospectName,
+    is_dismissed:false
+  }]);
+  REMINDERS.push({prospect_id:prospectId,vendor_name:currentUser,remind_at:new Date(dt.value).toISOString(),message:'Rappel pour '+prospectName,is_dismissed:false});
+  showToast('Rappel cree','Pour '+prospectName+' le '+new Date(dt.value).toLocaleDateString('fr-FR'),'var(--purple)');
+  dt.value='';
+}
+
 function closeSidePanel(){document.getElementById('sidePanelOverlay').classList.add('hidden')}
 
 // ========================================
-// CALL HISTORY PANEL
+// CALL HISTORY PANEL (legacy side panel)
 // ========================================
 function openCallHistory(id,name){
-  const panel=document.getElementById('sidePanel');
-  panel.innerHTML=`<h3><span>Appels - ${name}</span><button onclick="closeSidePanel()">\u2715</button></h3><div id="chList"><div style="color:var(--gray);font-size:.72rem">Chargement...</div></div>`;
-  document.getElementById('sidePanelOverlay').classList.remove('hidden');
-  loadCallHistory(id).then(calls=>{
-    const el=document.getElementById('chList');
-    if(!calls.length){el.innerHTML='<div style="color:var(--gray);font-size:.72rem">Aucun appel enregistre.</div>';return;}
-    el.innerHTML=calls.map(c=>{
-      const dur=formatDuration(c.duration||0);
-      const resultClass=c.result==='Interested'?'interested':c.result==='Not interested'?'not-interested':c.result==='Call back'?'callback':'no-answer';
-      return `<div class="call-entry">
-        <div class="call-entry-head">
-          <span class="call-entry-date">${new Date(c.created_at).toLocaleString('fr-FR')}</span>
-          <span class="call-entry-result ${resultClass}">${c.result||''}</span>
-        </div>
-        <div class="call-entry-info">Duree: ${dur} \u00B7 Par: ${c.vendor_name||''}</div>
-        ${c.notes?`<div class="call-entry-notes">${c.notes}</div>`:''}
-      </div>`;
-    }).join('');
-  });
+  openProspectDetail(id);
 }
 
 // ========================================
@@ -967,10 +1053,9 @@ function endCall(){
   callTimerInterval=null;
   document.getElementById('callTimerBar').classList.add('hidden');
 
-  // Show result picker modal
   const m=document.getElementById('modal2Content');
   m.innerHTML=`<h3><span>Resultat</span> de l'appel</h3>
-    <div style="margin-bottom:12px;font-size:.78rem;color:var(--gray)">Prospect: <strong style="color:var(--white)">${callTimerProspectName}</strong> \u00B7 Duree: <strong style="color:var(--accent)">${formatDuration(duration)}</strong></div>
+    <div style="margin-bottom:12px;font-size:.78rem;color:var(--gray)">Prospect: <strong style="color:var(--white)">${callTimerProspectName}</strong> &middot; Duree: <strong style="color:var(--accent)">${formatDuration(duration)}</strong></div>
     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
       <button class="btn btn-green" onclick="saveCallResult('Interested',${duration})">Interested</button>
       <button class="btn btn-red" onclick="saveCallResult('Not interested',${duration})">Not interested</button>
@@ -987,7 +1072,7 @@ async function saveCallResult(result,duration){
   await sb.from('call_history').insert([{
     prospect_id:callTimerProspectId,
     vendor_name:currentUser,
-    duration:duration,
+    duration_seconds:duration,
     result:result,
     notes:notes,
     created_at:new Date().toISOString()
@@ -1000,6 +1085,18 @@ async function saveCallResult(result,duration){
   const statusMap={'Interested':'negociation','Not interested':'perdu','Call back':'rappeler','No answer':'appelle'};
   const newStatus=statusMap[result]||'appelle';
   await updateField(callTimerProspectId,'status',newStatus);
+
+  // Update call tracking fields on prospect
+  const row=DATA.find(d=>d.id===callTimerProspectId);
+  if(row){
+    const updates={
+      last_called_at:new Date().toISOString(),
+      total_calls:(parseInt(row.total_calls)||0)+1,
+      call_duration_total:(parseInt(row.call_duration_total)||0)+duration
+    };
+    await sb.from('prospects').update(updates).eq('id',callTimerProspectId);
+    Object.assign(row,updates);
+  }
 
   // If "Call back", show reminder picker
   if(result==='Call back'){
@@ -1014,6 +1111,7 @@ async function saveCallResult(result,duration){
 }
 
 function formatDuration(sec){
+  if(!sec)return '0s';
   const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
   return (h?h+'h ':'')+(m?m+'m ':'')+s+'s';
 }
@@ -1026,7 +1124,7 @@ function showReminderPicker(prospectId,prospectName){
   m.innerHTML=`<h3><span>Planifier</span> un rappel</h3>
     <div style="margin-bottom:12px;font-size:.78rem;color:var(--gray)">Pour: <strong style="color:var(--white)">${prospectName}</strong></div>
     <div class="modal-field"><label>Date et heure du rappel</label><input type="datetime-local" id="reminderDatetime"></div>
-    <div class="modal-field"><label>Notes</label><textarea id="reminderNotes" placeholder="Notes..."></textarea></div>
+    <div class="modal-field"><label>Message</label><textarea id="reminderNotes" placeholder="Message du rappel..."></textarea></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal2()">Annuler</button>
       <button class="btn btn-accent" onclick="saveReminder(${prospectId},'${esc(prospectName)}')">Sauvegarder</button>
@@ -1037,47 +1135,60 @@ function showReminderPicker(prospectId,prospectName){
 async function saveReminder(prospectId,prospectName){
   const dt=document.getElementById('reminderDatetime').value;
   if(!dt){alert('Selectionnez une date');return;}
-  const notes=(document.getElementById('reminderNotes')||{}).value||'';
-  await sb.from('reminders').insert([{
+  const message=(document.getElementById('reminderNotes')||{}).value||'Rappel pour '+prospectName;
+  const row={
     prospect_id:prospectId,
-    prospect_name:prospectName,
     vendor_name:currentUser,
     remind_at:new Date(dt).toISOString(),
-    notes:notes,
-    done:false
-  }]);
-  REMINDERS.push({prospect_id:prospectId,prospect_name:prospectName,vendor_name:currentUser,remind_at:new Date(dt).toISOString(),notes,done:false});
+    message:message,
+    is_dismissed:false
+  };
+  const{data}=await sb.from('reminders').insert([row]).select();
+  if(data&&data[0])REMINDERS.push(data[0]);
+  else REMINDERS.push(row);
   closeModal2();
   showToast('Rappel cree','Pour '+prospectName+' le '+new Date(dt).toLocaleDateString('fr-FR'),'var(--purple)');
 }
 
 function renderReminders(){
   const rv=document.getElementById('remindersView');
-  const myReminders=REMINDERS.filter(r=>r.vendor_name===currentUser);
+  const myReminders=isAdmin?REMINDERS:REMINDERS.filter(r=>r.vendor_name===currentUser);
   const now=new Date();
 
   let html=`<h2 style="font-size:1.2rem;font-weight:800;margin-bottom:20px">Mes Rappels</h2>`;
 
-  const upcoming=myReminders.filter(r=>!r.done).sort((a,b)=>new Date(a.remind_at)-new Date(b.remind_at));
-  const done=myReminders.filter(r=>r.done);
+  const upcoming=myReminders.filter(r=>!r.is_dismissed&&!r.done).sort((a,b)=>new Date(a.remind_at)-new Date(b.remind_at));
+  const done=myReminders.filter(r=>r.is_dismissed||r.done);
 
   if(!upcoming.length&&!done.length){
     html+=`<div style="text-align:center;padding:60px;color:var(--gray)">Aucun rappel. Les rappels sont crees quand vous marquez un prospect "rappeler".</div>`;
     rv.innerHTML=html;return;
   }
 
-  if(upcoming.length){
-    html+=`<div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--gray);margin-bottom:12px;letter-spacing:.08em">A venir (${upcoming.length})</div>`;
-    upcoming.forEach(r=>{
+  // Overdue first
+  const overdue=upcoming.filter(r=>new Date(r.remind_at)<now);
+  const future=upcoming.filter(r=>new Date(r.remind_at)>=now);
+  const sorted=[...overdue,...future];
+
+  if(sorted.length){
+    html+=`<div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--gray);margin-bottom:12px;letter-spacing:.08em">A venir (${sorted.length})</div>`;
+    sorted.forEach(r=>{
       const remDate=new Date(r.remind_at);
-      const overdue=remDate<now;
-      html+=`<div class="reminder-item ${overdue?'overdue':''}" onclick="jumpToProspect(${r.prospect_id})">
+      const isOverdue=remDate<now;
+      const prospect=DATA.find(d=>d.id===r.prospect_id);
+      const pName=prospect?prospect.nom:(r.prospect_name||'Prospect');
+      const pPhone=prospect?prospect.numero:'';
+      html+=`<div class="reminder-item ${isOverdue?'overdue':''}">
         <div style="flex:1">
-          <div style="font-size:.82rem;font-weight:700">${r.prospect_name||'Prospect'}</div>
-          <div style="font-size:.68rem;color:${overdue?'var(--red)':'var(--gray)'};margin-top:2px">${remDate.toLocaleString('fr-FR')} ${overdue?'(EN RETARD)':''}</div>
-          ${r.notes?`<div style="font-size:.68rem;color:var(--gray);font-style:italic;margin-top:2px">${r.notes}</div>`:''}
+          <div style="font-size:.82rem;font-weight:700">${pName}</div>
+          ${pPhone?`<div style="font-size:.72rem;margin-top:2px"><a href="tel:${pPhone}" style="color:var(--accent)">${pPhone}</a></div>`:''}
+          <div style="font-size:.68rem;color:${isOverdue?'var(--red)':'var(--gray)'};margin-top:2px">${remDate.toLocaleString('fr-FR')} ${isOverdue?'(EN RETARD)':''}</div>
+          ${r.message?`<div style="font-size:.68rem;color:var(--gray);font-style:italic;margin-top:2px">${r.message}</div>`:''}
         </div>
-        <button class="btn btn-green btn-sm" onclick="event.stopPropagation();markReminderDone(${r.id})">Fait</button>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+          ${!isAdmin&&prospect?`<button class="btn btn-accent btn-sm" onclick="event.stopPropagation();startCall(${r.prospect_id},'${esc(pName)}')">\uD83D\uDCDE</button>`:''}
+          <button class="btn btn-green btn-sm" onclick="markReminderDone(${r.id})">Done</button>
+        </div>
       </div>`;
     });
   }
@@ -1085,9 +1196,10 @@ function renderReminders(){
   if(done.length){
     html+=`<div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--gray);margin-top:24px;margin-bottom:12px;letter-spacing:.08em">Termines (${done.length})</div>`;
     done.slice(0,20).forEach(r=>{
+      const pName=r.prospect_name||'Prospect';
       html+=`<div class="reminder-item done">
         <div style="flex:1">
-          <div style="font-size:.82rem;font-weight:700">${r.prospect_name||'Prospect'}</div>
+          <div style="font-size:.82rem;font-weight:700">${pName}</div>
           <div style="font-size:.68rem;color:var(--gray);margin-top:2px">${new Date(r.remind_at).toLocaleString('fr-FR')}</div>
         </div>
         <span style="font-size:.72rem;color:var(--green)">Done</span>
@@ -1099,16 +1211,15 @@ function renderReminders(){
 }
 
 async function markReminderDone(id){
-  await sb.from('reminders').update({done:true}).eq('id',id);
+  await sb.from('reminders').update({is_dismissed:true}).eq('id',id);
   const r=REMINDERS.find(x=>x.id===id);
-  if(r)r.done=true;
+  if(r){r.is_dismissed=true;r.done=true;}
   render();
   showToast('Rappel termine','Marque comme fait.','var(--green)');
 }
 
 function jumpToProspect(id){
-  closeSidePanel();
-  // Find prospect and switch to table with filters
+  closeDetailPanel();closeSidePanel();
   const d=DATA.find(x=>x.id===id);
   if(d){
     document.getElementById('q').value=d.nom||'';
@@ -1121,10 +1232,10 @@ function jumpToProspect(id){
 // ========================================
 function renderProjects(){
   const pv=document.getElementById('projectsView');
-  const myProjects=isAdmin?PROJECTS:PROJECTS.filter(p=>p.vendeur===currentUser);
+  const myProjects=isAdmin?PROJECTS:PROJECTS.filter(p=>p.vendeur===currentUser||p.vendeur==='Tous');
 
   let html=`<div class="proj-header"><h2><span>Projets</span> ${isAdmin?'- Tous':'- Mes missions'}</h2>`;
-  if(isAdmin)html+=`<button class="btn btn-accent" onclick="openModal()">+ Nouveau Projet</button>`;
+  html+=`<button class="btn btn-accent" onclick="openModal()">+ Nouveau Projet</button>`;
   html+=`</div><div class="proj-grid">`;
 
   if(myProjects.length===0){
@@ -1133,7 +1244,7 @@ function renderProjects(){
 
   myProjects.forEach(p=>{
     const regionProspects=DATA.filter(d=>d.region===p.region);
-    const assigned=regionProspects.filter(d=>d.vendeur===p.vendeur);
+    const assigned=p.vendeur==='Tous'?regionProspects:regionProspects.filter(d=>d.vendeur===p.vendeur);
     const called=assigned.filter(d=>['appelle','negociation','rappeler','valide','perdu'].includes(d.status));
     const won=assigned.filter(d=>d.status==='valide');
     const lost=assigned.filter(d=>d.status==='perdu');
@@ -1141,7 +1252,6 @@ function renderProjects(){
     const total=regionProspects.length;
     const progress=total>0?((called.length/total)*100).toFixed(0):0;
     const conv=won.length+lost.length>0?((won.length/(won.length+lost.length))*100).toFixed(1):'0';
-    const rev=assigned.reduce((s,d)=>s+(parseFloat(d.revenue)||0),0);
 
     const statusClass=p.status||'active';
     const statusLabel={active:'Actif',paused:'En pause',completed:'Termine'}[statusClass]||'Actif';
@@ -1162,20 +1272,20 @@ function renderProjects(){
         <div class="proj-stat"><div class="proj-stat-val" style="color:var(--yellow)">${called.length}</div><div class="proj-stat-lbl">Appeles</div></div>
         <div class="proj-stat"><div class="proj-stat-val" style="color:var(--green)">${won.length}</div><div class="proj-stat-lbl">Gagnes</div></div>
         <div class="proj-stat"><div class="proj-stat-val" style="color:var(--red)">${lost.length}</div><div class="proj-stat-lbl">Perdus</div></div>
+        <div class="proj-stat"><div class="proj-stat-val" style="color:var(--gray)">${remaining.length}</div><div class="proj-stat-lbl">Restants</div></div>
       </div>
       <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:.65rem">
-        <span style="color:var(--gray)">Restants: <strong style="color:var(--white)">${remaining.length}</strong></span>
         <span style="color:var(--gray)">Conv: <strong style="color:var(--purple)">${conv}%</strong></span>
-        <span style="color:var(--gray)">Rev: <strong style="color:var(--green)">${rev.toLocaleString()}\u20AC</strong></span>
       </div>
       <div class="proj-actions">
         ${isAdmin?`
           <button class="btn btn-ghost btn-sm" onclick="updateProject(${p.id},'active')">Actif</button>
           <button class="btn btn-ghost btn-sm" onclick="updateProject(${p.id},'paused')">Pause</button>
           <button class="btn btn-ghost btn-sm" onclick="updateProject(${p.id},'completed')">Termine</button>
-          <button class="btn btn-ghost btn-sm" onclick="assignRegion(${p.id},'${p.region}','${p.vendeur}')" style="color:var(--green);border-color:var(--green)">Assigner prospects</button>
+          <button class="btn btn-ghost btn-sm" onclick="assignRegion(${p.id},'${esc(p.region)}','${esc(p.vendeur)}')" style="color:var(--green);border-color:var(--green)">Assigner prospects</button>
+          <button class="btn btn-ghost btn-sm" onclick="deleteProject(${p.id})" style="color:var(--red);border-color:var(--red)">Supprimer</button>
         `:`
-          <button class="btn btn-accent btn-sm" onclick="document.getElementById('fReg').value='${p.region}';document.getElementById('fVen').value='${p.vendeur}';switchTab('table');render()">Voir prospects</button>
+          <button class="btn btn-accent btn-sm" onclick="document.getElementById('fReg').value='${esc(p.region)}';document.getElementById('fVen').value='${currentUser}';switchTab('table');render()">Voir prospects</button>
         `}
       </div>
     </div>`;
@@ -1208,57 +1318,62 @@ function renderClients(){
   const cv=document.getElementById('clientsView');
   const myClients=isAdmin?CLIENTS:CLIENTS.filter(c=>c.vendor_name===currentUser);
 
-  let html='';
+  let html=`<div class="clients-header"><h2 style="font-size:1.1rem;font-weight:800">Clients <span style="color:var(--accent)">(${myClients.length})</span></h2></div>`;
+  html+=`<div class="clients-grid">`;
+
   if(!myClients.length){
-    html=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray)"><p style="font-size:1.2rem;margin-bottom:8px">Aucun client</p><p style="font-size:.78rem">Les clients sont crees automatiquement quand un prospect passe en "valide".</p></div>`;
+    html+=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray)"><p style="font-size:1.2rem;margin-bottom:8px">Aucun client</p><p style="font-size:.78rem">Les clients sont crees automatiquement quand un prospect passe en "valide".</p></div>`;
+    html+=`</div>`;
     cv.innerHTML=html;return;
   }
 
   myClients.forEach(c=>{
-    const daysSince=c.sale_date?Math.floor((Date.now()-new Date(c.sale_date))/(1000*60*60*24)):0;
-    const isDelivered=c.site_status==='delivered';
+    const soldDate=c.sold_at||c.sale_date;
+    const daysSince=soldDate?Math.floor((Date.now()-new Date(soldDate))/(1000*60*60*24)):0;
     const statusLabel=SITE_STATUS_LABELS[c.site_status]||c.site_status||'Not started';
     const statusClass=c.site_status||'not_started';
 
     const statusOptions=SITE_STATUSES.map(s=>`<option value="${s}" ${c.site_status===s?'selected':''}>${SITE_STATUS_LABELS[s]}</option>`).join('');
 
-    html+=`<div class="client-card ${isDelivered?'delivered':''}">
+    html+=`<div class="client-card status-${statusClass}">
       <div class="client-card-name">${c.business_name||''}</div>
       <div class="client-card-phone"><a href="tel:${c.phone}">${c.phone||''}</a></div>
-      <div class="client-card-meta">Vendeur: ${c.vendor_name||''} \u00B7 ${daysSince}j depuis vente</div>
-      <div style="margin-bottom:10px"><span class="site-status-badge ${statusClass}">${statusLabel}</span></div>
-      ${!isAdmin?`<div style="margin-bottom:8px">
-        <select class="tsel" onchange="updateClientStatus(${c.id},this.value)">${statusOptions}</select>
-      </div>`:`<div style="margin-bottom:8px">
-        <select class="tsel" onchange="updateClientStatus(${c.id},this.value)">${statusOptions}</select>
-      </div>`}
-      <div style="margin-bottom:8px">
-        <input class="ninp" value="${(c.delivery_notes||'').replace(/"/g,'&quot;')}" onblur="updateClientNotes(${c.id},this.value)" placeholder="Notes de livraison...">
+      <div class="client-card-meta">
+        <span style="display:inline-block;padding:2px 8px;border-radius:8px;font-size:.58rem;font-weight:600;background:rgba(88,166,255,.1);color:var(--accent)">${c.vendor_name||''}</span>
+        &middot; ${daysSince}j depuis vente
       </div>
-      ${c.site_status==='maintenance'?`<div style="font-size:.68rem;color:var(--purple)">
+      <div style="margin-bottom:10px"><span class="site-status-badge ss-${statusClass}">${statusLabel}</span></div>
+      <div style="margin-bottom:8px">
+        <select class="tsel" style="width:100%" onchange="updateClientStatus(${c.id},this.value)">${statusOptions}</select>
+      </div>
+      <div style="margin-bottom:8px">
+        <textarea class="ninp" style="min-height:40px;resize:vertical" onblur="updateClientNotes(${c.id},this.value)" placeholder="Notes de livraison...">${c.delivery_notes||''}</textarea>
+      </div>
+      ${c.with_maintenance||c.site_status==='maintenance'?`<div style="font-size:.68rem;color:var(--purple)">
         <label style="color:var(--gray)">Renouvellement:</label>
         <input type="date" class="ninp" style="width:auto;display:inline-block;margin-left:4px" value="${c.renewal_date||''}" onchange="updateClientRenewal(${c.id},this.value)">
       </div>`:''}
     </div>`;
   });
 
+  html+=`</div>`;
   cv.innerHTML=html;
 }
 
 async function updateClientStatus(id,status){
-  await sb.from('clients').update({site_status:status}).eq('id',id);
+  await sb.from('clients').update({site_status:status,updated_at:new Date().toISOString()}).eq('id',id);
   const c=CLIENTS.find(x=>x.id===id);if(c)c.site_status=status;
   await logActivity('client_status_update','',null,'Client #'+id+' -> '+status);
   render();
 }
 
 async function updateClientNotes(id,notes){
-  await sb.from('clients').update({delivery_notes:notes}).eq('id',id);
+  await sb.from('clients').update({delivery_notes:notes,updated_at:new Date().toISOString()}).eq('id',id);
   const c=CLIENTS.find(x=>x.id===id);if(c)c.delivery_notes=notes;
 }
 
 async function updateClientRenewal(id,date){
-  await sb.from('clients').update({renewal_date:date}).eq('id',id);
+  await sb.from('clients').update({renewal_date:date,updated_at:new Date().toISOString()}).eq('id',id);
   const c=CLIENTS.find(x=>x.id===id);if(c)c.renewal_date=date;
 }
 
@@ -1269,7 +1384,7 @@ function renderLeaderboard(){
   const lv=document.getElementById('leaderboardView');
   const rankings=VENDOR_NAMES.map(v=>{
     const stats=getVendorStats(v);
-    return{name:v,pts:calcPoints(v),calls:stats.calls,wins:stats.wins,rev:stats.rev,nego:stats.nego};
+    return{name:v,pts:calcPoints(v),calls:stats.calls,wins:stats.wins,lost:stats.lost,rev:stats.rev,nego:stats.nego,conv:stats.conv};
   }).sort((a,b)=>b.pts-a.pts);
 
   let html=`<h2 style="font-size:1.2rem;font-weight:800;margin-bottom:24px">\uD83C\uDFC6 Classement en temps reel</h2>`;
@@ -1284,8 +1399,9 @@ function renderLeaderboard(){
         <div class="lb-stat"><div class="lb-stat-val" style="color:var(--yellow)">${r.pts}</div><div class="lb-stat-lbl">Points</div></div>
         <div class="lb-stat"><div class="lb-stat-val" style="color:var(--accent)">${r.calls}</div><div class="lb-stat-lbl">Appels</div></div>
         <div class="lb-stat"><div class="lb-stat-val" style="color:var(--green)">${r.wins}</div><div class="lb-stat-lbl">Gagnes</div></div>
-        <div class="lb-stat"><div class="lb-stat-val" style="color:var(--orange)">${r.nego}</div><div class="lb-stat-lbl">Nego</div></div>
+        <div class="lb-stat"><div class="lb-stat-val" style="color:var(--red)">${r.lost}</div><div class="lb-stat-lbl">Perdus</div></div>
         <div class="lb-stat"><div class="lb-stat-val" style="color:var(--green)">${r.rev.toLocaleString()}\u20AC</div><div class="lb-stat-lbl">Revenue</div></div>
+        <div class="lb-stat"><div class="lb-stat-val" style="color:var(--purple)">${r.conv}%</div><div class="lb-stat-lbl">Conv.</div></div>
       </div>
     </div>`;
   });
@@ -1345,9 +1461,7 @@ function saveBadges(vendor,badges){
 
 function renderBadges(targetVendor){
   const vendor=targetVendor||currentUser;
-  if(isAdmin&&!targetVendor){
-    renderBadgesAdmin();return;
-  }
+  if(isAdmin&&!targetVendor){renderBadgesAdmin();return;}
   const bv=document.getElementById('badgesView');
   const badges=getBadges(vendor);
   const unlocked=Object.values(badges).filter(b=>b.unlocked).length;
@@ -1363,7 +1477,7 @@ function renderBadges(targetVendor){
     html+=`<div class="badges-section"><div class="badges-section-title">${cat} (${catBadges.filter(b=>badges[b.id]&&badges[b.id].unlocked).length}/${catBadges.length})</div><div class="badge-grid">`;
     catBadges.forEach(b=>{
       const state=badges[b.id]||{unlocked:false,date:null};
-      html+=`<div class="badge-card ${state.unlocked?'unlocked':'locked'}">
+      html+=`<div class="badge-card ${state.unlocked?'unlocked':'locked'}" title="${b.desc}">
         <span class="badge-emoji">${b.emoji}</span>
         <div class="badge-name">${b.name}</div>
         <div class="badge-desc">${b.desc}</div>
@@ -1401,12 +1515,11 @@ function renderBadgesAdmin(){
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:4px">${BADGE_DEFS.map(b=>{
         const s=badges[b.id]||{unlocked:false};
-        return `<span style="font-size:1.2rem;${s.unlocked?'':'filter:grayscale(1);opacity:.3'}" title="${b.name}">${b.emoji}</span>`;
+        return `<span style="font-size:1.2rem;${s.unlocked?'':'filter:grayscale(1);opacity:.3'}" title="${b.name}: ${b.desc}">${b.emoji}</span>`;
       }).join('')}</div>
     </div>`;
   });
   html+=`</div>`;
-
   bv.innerHTML=html;
 }
 
@@ -1426,7 +1539,7 @@ function renderBadgesForVendor(vendor){
     html+=`<div class="badges-section"><div class="badges-section-title">${cat} (${catBadges.filter(b=>badges[b.id]&&badges[b.id].unlocked).length}/${catBadges.length})</div><div class="badge-grid">`;
     catBadges.forEach(b=>{
       const state=badges[b.id]||{unlocked:false,date:null};
-      html+=`<div class="badge-card ${state.unlocked?'unlocked':'locked'}">
+      html+=`<div class="badge-card ${state.unlocked?'unlocked':'locked'}" title="${b.desc}">
         <span class="badge-emoji">${b.emoji}</span>
         <div class="badge-name">${b.name}</div>
         <div class="badge-desc">${b.desc}</div>
@@ -1452,7 +1565,7 @@ function renderVendors(){
     <div class="fin-grid">`;
 
   const totalWon=DATA.filter(d=>d.status==='valide').length;
-  const maintenanceCount=CLIENTS.filter(c=>c.site_status==='maintenance').length;
+  const maintenanceCount=CLIENTS.filter(c=>c.site_status==='maintenance'||c.with_maintenance).length;
   const totalRevenue=totalWon*500;
   const revenueWithMaintenance=(totalWon-maintenanceCount)*500+maintenanceCount*700;
   const totalNego=DATA.filter(d=>d.status==='negociation').length;
@@ -1470,11 +1583,11 @@ function renderVendors(){
     <div class="fin-card"><div class="fin-card-val" style="color:var(--green)">${revenueWithMaintenance.toLocaleString()}\u20AC</div><div class="fin-card-lbl">Avec maintenance</div></div>
     <div class="fin-card"><div class="fin-card-val" style="color:var(--yellow)">${forecast.toLocaleString()}\u20AC</div><div class="fin-card-lbl">Prevision (nego x 30%)</div></div>
     <div class="fin-card"><div class="fin-card-val" style="color:var(--accent)">${avgPerVendor.toLocaleString()}\u20AC</div><div class="fin-card-lbl">Moy. par vendeur</div></div>
-    <div class="fin-card" style="border-color:var(--green)"><div class="fin-card-val" style="color:var(--green)">${bestVendor.name}</div><div class="fin-card-lbl">Meilleur vendeur (${bestVendor.rev.toLocaleString()}\u20AC)</div></div>
+    <div class="fin-card" style="border-color:var(--green)"><div class="fin-card-val" style="color:var(--green)">${bestVendor?bestVendor.name:'-'}</div><div class="fin-card-lbl">Meilleur vendeur (${bestVendor?bestVendor.rev.toLocaleString():0}\u20AC)</div></div>
   `;
   finHtml+=`</div></div>`;
 
-  // Inactivity alerts section
+  // Inactivity alerts
   let alertHtml='';
   const dismissed=JSON.parse(localStorage.getItem('dismissed_alerts')||'{}');
   VENDOR_NAMES.forEach(v=>{
@@ -1496,31 +1609,27 @@ function renderVendors(){
   if(dupWarnings.length){
     dupHtml=`<div style="grid-column:1/-1;margin-bottom:16px"><h3 style="font-size:.82rem;font-weight:700;margin-bottom:12px;color:var(--yellow)">Doublons detectes</h3>`;
     dupWarnings.forEach(w=>{
-      dupHtml+=`<div class="dup-item">${w.phone}: ${w.vendors.join(', ')} <button class="btn btn-ghost btn-sm" style="margin-left:8px" onclick="alert('Resolvez manuellement en reassignant le prospect dans le tableau.')">Resoudre</button></div>`;
+      dupHtml+=`<div class="dup-item">${w.phone}: ${w.vendors.join(', ')}</div>`;
     });
     dupHtml+=`</div>`;
   }
 
   vv.innerHTML=finHtml+dupHtml+VENDOR_NAMES.map(v=>{
-    const vd=DATA.filter(d=>d.vendeur===v);
-    const a=vd.length,ap=vd.filter(d=>d.status==='appelle').length;
-    const ne=vd.filter(d=>d.status==='negociation').length,va=vd.filter(d=>d.status==='valide').length;
-    const pe=vd.filter(d=>d.status==='perdu').length;
-    const rev=vd.reduce((s,d)=>s+(parseFloat(d.revenue)||0),0);
-    const conv=va+pe>0?((va/(va+pe))*100).toFixed(1):'0';
-    const projects=PROJECTS.filter(p=>p.vendeur===v);
+    const stats=getVendorStats(v);
     const pts=calcPoints(v);
     const badges=getBadges(v);
     const unlockedCount=Object.values(badges).filter(b=>b.unlocked).length;
+    const projects=PROJECTS.filter(p=>p.vendeur===v);
 
     return `<div class="vendor-card"><h3>${v} <span style="font-size:.7rem;color:var(--yellow);margin-left:8px">\u2B50 ${pts} pts</span></h3>
-      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Assignes</span><span class="vendor-stat-val" style="color:var(--accent)">${a}</span></div>
-      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Appeles</span><span class="vendor-stat-val" style="color:var(--yellow)">${ap}</span></div>
-      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Negociation</span><span class="vendor-stat-val" style="color:var(--orange)">${ne}</span></div>
-      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Gagnes</span><span class="vendor-stat-val" style="color:var(--green)">${va}</span></div>
-      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Perdus</span><span class="vendor-stat-val" style="color:var(--red)">${pe}</span></div>
-      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Revenue</span><span class="vendor-stat-val" style="color:var(--green)">${(va*500).toLocaleString()}\u20AC</span></div>
-      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Conversion</span><span class="vendor-stat-val" style="color:var(--purple)">${conv}%</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Assignes</span><span class="vendor-stat-val" style="color:var(--accent)">${stats.total}</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Appeles</span><span class="vendor-stat-val" style="color:var(--yellow)">${stats.calls}</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Negociation</span><span class="vendor-stat-val" style="color:var(--orange)">${stats.nego}</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Gagnes</span><span class="vendor-stat-val" style="color:var(--green)">${stats.wins}</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Perdus</span><span class="vendor-stat-val" style="color:var(--red)">${stats.lost}</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Revenue</span><span class="vendor-stat-val" style="color:var(--green)">${stats.rev.toLocaleString()}\u20AC</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Prevision</span><span class="vendor-stat-val" style="color:var(--yellow)">${(stats.nego*150).toLocaleString()}\u20AC</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Conversion</span><span class="vendor-stat-val" style="color:var(--purple)">${stats.conv}%</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Points</span><span class="vendor-stat-val" style="color:var(--yellow)">${pts}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Badges</span><span class="vendor-stat-val" style="color:var(--accent)">${unlockedCount}/${BADGE_DEFS.length}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Projets actifs</span><span class="vendor-stat-val" style="color:var(--accent)">${projects.filter(p=>p.status==='active').length}</span></div>
@@ -1547,26 +1656,31 @@ async function renderScripts(){
   await loadVendorScripts();
   const sv=document.getElementById('scriptsView');
 
-  let html=`<div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:0">
+  let html=`<div class="scripts-header">
     <h2 style="font-size:1.1rem;font-weight:800">Mes Scripts <span style="color:var(--gray);font-size:.78rem">(${VENDOR_SCRIPTS.length}/20)</span></h2>
-    ${VENDOR_SCRIPTS.length<20?`<button class="btn btn-accent" onclick="openScriptEditor()">+ Nouveau Script</button>`:''}
+    ${VENDOR_SCRIPTS.length<20?`<button class="btn btn-accent" onclick="openScriptEditor()">+ Add Script</button>`:''}
   </div>`;
 
   if(!VENDOR_SCRIPTS.length){
-    html+=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray)">Aucun script. Creez des post-its pour vos scripts d'appel personnels.</div>`;
+    html+=`<div style="text-align:center;padding:60px;color:var(--gray)">Aucun script. Creez des post-its pour vos scripts d'appel personnels.</div>`;
+  } else {
+    html+=`<div class="scripts-masonry">`;
+    VENDOR_SCRIPTS.forEach(s=>{
+      const colorIdx=POSTIT_COLORS_DARK.findIndex(c=>c.name===(s.color||'yellow'));
+      const pc=colorIdx>=0?POSTIT_COLORS_DARK[colorIdx]:POSTIT_COLORS_DARK[0];
+      // If s.color is a hex, try to match or use default
+      let bgColor=pc.bg,fgColor=pc.fg;
+      html+=`<div class="postit" style="background:${bgColor};color:${fgColor}">
+        <div class="postit-actions">
+          <button onclick="openScriptEditor(${s.id})" style="color:${fgColor}">&#9998;</button>
+          <button onclick="deleteScript(${s.id})" style="color:${fgColor}">&#128465;</button>
+        </div>
+        <div class="postit-title" style="color:${fgColor}">${s.title||''}</div>
+        <div class="postit-content" style="color:${fgColor};opacity:.85">${s.content||''}</div>
+      </div>`;
+    });
+    html+=`</div>`;
   }
-
-  VENDOR_SCRIPTS.forEach(s=>{
-    const color=s.color||'#fef08a';
-    html+=`<div class="postit" style="background:${color}">
-      <div class="postit-actions">
-        <button onclick="openScriptEditor(${s.id})">&#9998;</button>
-        <button onclick="deleteScript(${s.id})">&#10005;</button>
-      </div>
-      <div class="postit-title">${s.title||''}</div>
-      <div class="postit-content">${s.content||''}</div>
-    </div>`;
-  });
 
   sv.innerHTML=html;
 }
@@ -1574,13 +1688,18 @@ async function renderScripts(){
 function openScriptEditor(id){
   const existing=id?VENDOR_SCRIPTS.find(s=>s.id===id):null;
   const m=document.getElementById('modal2Content');
-  const colorButtons=POSTIT_COLORS.map(c=>`<div style="width:32px;height:32px;border-radius:6px;background:${c};cursor:pointer;border:2px solid ${existing&&existing.color===c?'var(--accent)':'transparent'}" onclick="document.querySelectorAll('.color-pick').forEach(e=>e.style.border='2px solid transparent');this.style.border='2px solid var(--accent)';document.getElementById('scriptColor').value='${c}'" class="color-pick"></div>`).join('');
+  const currentColor=existing?existing.color||'yellow':'yellow';
+
+  const colorButtons=POSTIT_COLORS_DARK.map(c=>{
+    const sel=currentColor===c.name;
+    return `<div class="color-circle${sel?' selected':''}" style="background:${c.fg}" onclick="document.querySelectorAll('.color-circle').forEach(e=>e.classList.remove('selected'));this.classList.add('selected');document.getElementById('scriptColor').value='${c.name}'"></div>`;
+  }).join('');
 
   m.innerHTML=`<h3><span>${existing?'Modifier':'Nouveau'}</span> Script</h3>
-    <div class="modal-field"><label>Titre</label><input id="scriptTitle" value="${existing?(existing.title||''):''}"></div>
-    <div class="modal-field"><label>Contenu</label><textarea id="scriptContent" rows="5">${existing?(existing.content||''):'Votre script ici...'}</textarea></div>
-    <div class="modal-field"><label>Couleur</label><div style="display:flex;gap:8px;flex-wrap:wrap">${colorButtons}</div></div>
-    <input type="hidden" id="scriptColor" value="${existing?existing.color||'#fef08a':'#fef08a'}">
+    <div class="modal-field"><label>Titre</label><input id="scriptTitle" value="${existing?(existing.title||'').replace(/"/g,'&quot;'):''}"></div>
+    <div class="modal-field"><label>Contenu</label><textarea id="scriptContent" rows="6">${existing?(existing.content||''):''}</textarea></div>
+    <div class="modal-field"><label>Couleur</label><div style="display:flex;gap:10px;flex-wrap:wrap">${colorButtons}</div></div>
+    <input type="hidden" id="scriptColor" value="${currentColor}">
     <input type="hidden" id="scriptEditId" value="${id||''}">
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal2()">Annuler</button>
@@ -1623,7 +1742,8 @@ async function logActivity(action,prospectName,prospectId,details){
       action:action,
       prospect_name:prospectName||null,
       prospect_id:prospectId||null,
-      details:details||null,
+      old_value:null,
+      new_value:details||null,
       created_at:new Date().toISOString()
     }]);
   }catch(e){console.error('Log error:',e)}
@@ -1636,7 +1756,6 @@ async function renderLogs(){
 
   let html=`<h2 style="font-size:1.2rem;font-weight:800;margin-bottom:16px">Activity Log</h2>`;
 
-  // Filters
   html+=`<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
     <select class="flt" id="logFVendor" onchange="filterLogs()"><option value="">Tous vendeurs</option>${VENDOR_NAMES.map(v=>`<option>${v}</option>`).join('')}<option>Admin</option></select>
     <select class="flt" id="logFAction" onchange="filterLogs()"><option value="">Toutes actions</option><option>status_change</option><option>call</option><option>client_status_update</option><option>blacklist</option><option>restore</option></select>
@@ -1653,7 +1772,7 @@ async function renderLogs(){
       <td>${l.vendor_name||''}</td>
       <td><span class="badge" style="background:rgba(88,166,255,.1);color:var(--accent)">${l.action||''}</span></td>
       <td>${l.prospect_name||''}</td>
-      <td style="color:var(--gray);max-width:300px;overflow:hidden;text-overflow:ellipsis">${l.details||''}</td>
+      <td style="color:var(--gray);max-width:300px;overflow:hidden;text-overflow:ellipsis">${l.new_value||l.old_value||''}</td>
     </tr>`;
   });
 
@@ -1677,7 +1796,7 @@ function filterLogs(){
     <td>${l.vendor_name||''}</td>
     <td><span class="badge" style="background:rgba(88,166,255,.1);color:var(--accent)">${l.action||''}</span></td>
     <td>${l.prospect_name||''}</td>
-    <td style="color:var(--gray);max-width:300px;overflow:hidden;text-overflow:ellipsis">${l.details||''}</td>
+    <td style="color:var(--gray);max-width:300px;overflow:hidden;text-overflow:ellipsis">${l.new_value||l.old_value||''}</td>
   </tr>`).join('');
 }
 
@@ -1692,15 +1811,20 @@ async function blacklistProspect(id,name){
 
   if(!confirm('Blacklister '+name+' ? Raison: '+finalReason))return;
 
+  const row=DATA.find(d=>d.id===id);
   await sb.from('blacklist').insert([{
     prospect_id:id,
-    prospect_name:name,
-    vendor_name:currentUser,
+    phone:row?row.numero:'',
+    business_name:name,
     reason:finalReason,
+    blacklisted_by:currentUser,
     created_at:new Date().toISOString()
   }]);
 
-  BLACKLIST.push({prospect_id:id,prospect_name:name,vendor_name:currentUser,reason:finalReason});
+  // Also mark prospect as blacklisted
+  await sb.from('prospects').update({blacklisted:true}).eq('id',id);
+
+  BLACKLIST.push({prospect_id:id,phone:row?row.numero:'',business_name:name,reason:finalReason,blacklisted_by:currentUser,created_at:new Date().toISOString()});
   DATA=DATA.filter(d=>d.id!==id);
 
   await logActivity('blacklist',name,id,'Reason: '+finalReason);
@@ -1720,16 +1844,17 @@ function renderBlacklist(){
   }
 
   html+=`<div style="overflow-x:auto"><table class="log-table"><thead><tr>
-    <th>Prospect</th><th>Raison</th><th>Par</th><th>Date</th><th>Action</th>
+    <th>Prospect</th><th>Telephone</th><th>Raison</th><th>Par</th><th>Date</th><th>Action</th>
   </tr></thead><tbody>`;
 
   BLACKLIST.forEach(b=>{
     html+=`<tr>
-      <td>${b.prospect_name||'ID: '+b.prospect_id}</td>
+      <td>${b.business_name||b.prospect_name||'ID: '+b.prospect_id}</td>
+      <td>${b.phone||''}</td>
       <td>${b.reason||''}</td>
-      <td>${b.vendor_name||''}</td>
+      <td>${b.blacklisted_by||b.vendor_name||''}</td>
       <td>${b.created_at?new Date(b.created_at).toLocaleDateString('fr-FR'):''}</td>
-      <td><button class="btn btn-ghost btn-sm" onclick="restoreFromBlacklist(${b.id},${b.prospect_id})">Restaurer</button></td>
+      <td><button class="btn btn-green btn-sm" onclick="restoreFromBlacklist(${b.id},${b.prospect_id})">Restaurer</button></td>
     </tr>`;
   });
 
@@ -1740,6 +1865,7 @@ function renderBlacklist(){
 async function restoreFromBlacklist(blId,prospectId){
   if(!confirm('Restaurer ce prospect?'))return;
   await sb.from('blacklist').delete().eq('id',blId);
+  await sb.from('prospects').update({blacklisted:false}).eq('id',prospectId);
   BLACKLIST=BLACKLIST.filter(b=>b.id!==blId);
 
   // Re-fetch the prospect
@@ -1799,7 +1925,6 @@ function renderChallengeBanner(){
   const challenge=DAILY_CHALLENGES.find(c=>c.day===dayOfWeek)||DAILY_CHALLENGES[6];
 
   let current=0,target=challenge.target;
-  const stats=getVendorStats(currentUser);
   if(challenge.metric==='calls_today')current=getTodayCalls(currentUser);
   else if(challenge.metric==='sales_week')current=getWeekSales(currentUser);
   else if(challenge.metric==='interested_today'){
@@ -2018,6 +2143,7 @@ function switchTab(tab){
   const tabMap={table:'tableView',pipeline:'pipelineView',projects:'projectsView',clients:'clientsView',leaderboard:'leaderboardView',badges:'badgesView',vendors:'vendorsView',scripts:'scriptsView',reminders:'remindersView',logs:'logsView',blacklist:'blacklistView'};
   views.forEach(v=>{const el=document.getElementById(v);if(el)el.classList.toggle('hidden',v!==tabMap[tab])});
   document.getElementById('controlsBar').classList.toggle('hidden',tab!=='table');
+  document.getElementById('statsRow').classList.toggle('hidden',tab!=='table'&&tab!=='pipeline');
   render();
 }
 
@@ -2035,13 +2161,17 @@ function doSort(col){
 // ========================================
 async function updateField(id,field,value){
   const obj={};obj[field]=value;obj.updated_at=new Date().toISOString();
-  if(field==='status'&&value==='appelle')obj.call_date=new Date().toISOString();
+  if(field==='status'&&['appelle','negociation','rappeler','valide','perdu'].includes(value)){
+    obj.call_date=new Date().toISOString();
+  }
 
   const row=DATA.find(d=>d.id===id);
   const oldStatus=row?row.status:'';
 
   await sb.from('prospects').update(obj).eq('id',id);
-  if(row){row[field]=value;if(obj.call_date)row.call_date=obj.call_date;row.updated_at=obj.updated_at}
+  if(row){
+    Object.keys(obj).forEach(k=>{row[k]=obj[k]});
+  }
 
   // Log activity
   if(field==='status'){
@@ -2057,8 +2187,9 @@ async function updateField(id,field,value){
         business_name:row.nom||'',
         phone:row.numero||'',
         vendor_name:row.vendeur||currentUser,
-        sale_date:new Date().toISOString(),
-        site_status:'not_started'
+        sold_at:new Date().toISOString(),
+        site_status:'not_started',
+        with_maintenance:false
       };
       const{data}=await sb.from('clients').insert([clientData]).select();
       if(data&&data[0])CLIENTS.push(data[0]);
@@ -2092,17 +2223,28 @@ async function createProject(){
   const name=document.getElementById('projName').value.trim();
   const region=document.getElementById('projRegion').value;
   const vendeur=document.getElementById('projVendeur').value;
-  const status=document.getElementById('projStatus').value;
+  const startDate=document.getElementById('projStartDate').value||null;
+  const desc=document.getElementById('projDesc').value.trim()||null;
   if(!name){alert('Nom requis');return}
   if(!region){alert('Region requise');return}
-  await sb.from('projects').insert([{name,region,vendeur,status}]);
+  const insertData={name,region,vendeur,status:'active'};
+  if(startDate)insertData.created_at=new Date(startDate).toISOString();
+  await sb.from('projects').insert([insertData]);
   closeModal();document.getElementById('projName').value='';
+  document.getElementById('projDesc').value='';
   await loadData();switchTab('projects');
 }
 
 async function updateProject(id,status){
   await sb.from('projects').update({status,updated_at:new Date().toISOString()}).eq('id',id);
   const p=PROJECTS.find(x=>x.id===id);if(p)p.status=status;render();
+}
+
+async function deleteProject(id){
+  if(!confirm('Supprimer ce projet?'))return;
+  await sb.from('projects').delete().eq('id',id);
+  PROJECTS=PROJECTS.filter(p=>p.id!==id);
+  render();
 }
 
 async function assignRegion(projId,region,vendeur){
@@ -2115,15 +2257,22 @@ async function assignRegion(projId,region,vendeur){
     await sb.from('prospects').update({vendeur,updated_at:new Date().toISOString()}).in('id',chunk);
   }
   unassigned.forEach(d=>d.vendeur=vendeur);
-  render();alert(unassigned.length+' prospects assignes a '+vendeur+'!');
+  render();showToast('Assignes!',unassigned.length+' prospects assignes a '+vendeur,'var(--green)');
 }
 
 // ========================================
 // FILTERS
 // ========================================
-function resetFilters(){['q','fFam','fReg','fSta','fTel','fVen'].forEach(id=>document.getElementById(id).value='');render()}
+function resetFilters(){
+  ['q','fFam','fReg','fSta','fTel','fVen'].forEach(id=>document.getElementById(id).value='');
+  statusFilter='';
+  render();
+}
 ['q'].forEach(id=>document.getElementById(id).addEventListener('input',render));
-['fFam','fReg','fSta','fTel','fVen'].forEach(id=>document.getElementById(id).addEventListener('change',render));
+['fFam','fReg','fSta','fTel','fVen'].forEach(id=>document.getElementById(id).addEventListener('change',function(){
+  if(id==='fSta')statusFilter=this.value;
+  render();
+}));
 
 // ========================================
 // EXPORT CSV
@@ -2144,7 +2293,6 @@ function generatePDFReport(){
   const doc=new jsPDF();
   const now=new Date();
 
-  // Header
   doc.setFontSize(20);doc.setTextColor(88,166,255);
   doc.text('VANTAGE CRM - Report',14,20);
   doc.setFontSize(10);doc.setTextColor(139,148,158);
@@ -2155,7 +2303,6 @@ function generatePDFReport(){
   doc.setFontSize(14);doc.setTextColor(230,237,243);
   doc.text('Team Summary',14,y);y+=10;
 
-  // Team totals
   const totalProspects=DATA.length;
   const totalWon=DATA.filter(d=>d.status==='valide').length;
   const totalLost=DATA.filter(d=>d.status==='perdu').length;
@@ -2168,7 +2315,6 @@ function generatePDFReport(){
   doc.text('Revenue: '+totalRevenue.toLocaleString()+' EUR',14,y);y+=6;
   doc.text('Forecast (nego x 30%): '+Math.round(totalNego*500*0.3).toLocaleString()+' EUR',14,y);y+=14;
 
-  // Per vendor
   doc.setFontSize(14);doc.setTextColor(230,237,243);
   doc.text('Vendor Statistics',14,y);y+=10;
 
@@ -2182,7 +2328,7 @@ function generatePDFReport(){
     doc.text(v,14,y);y+=7;
     doc.setFontSize(9);doc.setTextColor(139,148,158);
     doc.text('Calls: '+stats.calls+' | Won: '+stats.wins+' | Negotiation: '+stats.nego+' | Points: '+pts,20,y);y+=5;
-    doc.text('Revenue: '+(stats.wins*500).toLocaleString()+' EUR | Badges: '+unlockedCount+'/'+BADGE_DEFS.length,20,y);y+=10;
+    doc.text('Revenue: '+stats.rev.toLocaleString()+' EUR | Badges: '+unlockedCount+'/'+BADGE_DEFS.length,20,y);y+=10;
 
     if(y>270){doc.addPage();y=20;}
   });
@@ -2195,10 +2341,18 @@ function generatePDFReport(){
 // REALTIME
 // ========================================
 sb.channel('changes').on('postgres_changes',{event:'*',schema:'public',table:'prospects'},p=>{
-  if(p.eventType==='UPDATE'){const i=DATA.findIndex(d=>d.id===p.new.id);if(i>=0)DATA[i]=p.new}
+  if(p.eventType==='UPDATE'){
+    const i=DATA.findIndex(d=>d.id===p.new.id);
+    if(p.new.blacklisted){
+      if(i>=0)DATA.splice(i,1);
+    } else {
+      if(i>=0)DATA[i]=p.new;
+      else DATA.push(p.new);
+    }
+  }
   else if(p.eventType==='INSERT'){
     const blIds=new Set(BLACKLIST.map(b=>b.prospect_id));
-    if(!blIds.has(p.new.id))DATA.push(p.new);
+    if(!blIds.has(p.new.id)&&!p.new.blacklisted)DATA.push(p.new);
   }
   render();
 }).subscribe();
@@ -2218,7 +2372,6 @@ sb.channel('reminder-changes').on('postgres_changes',{event:'*',schema:'public',
 
 sb.channel('blacklist-changes').on('postgres_changes',{event:'*',schema:'public',table:'blacklist'},async()=>{
   const{data}=await sb.from('blacklist').select('*').order('id');BLACKLIST=data||[];
-  // Re-filter DATA
   const blIds=new Set(BLACKLIST.map(b=>b.prospect_id));
   DATA=DATA.filter(d=>!blIds.has(d.id));
   render();
