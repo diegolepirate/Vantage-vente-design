@@ -6,6 +6,7 @@
 <title>Vantage CRM - Sales Pipeline</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0d1117;--s1:#161b22;--s2:#21262d;--s3:#30363d;--accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#db6d28;--purple:#bc8cff;--white:#e6edf3;--gray:#8b949e;--dim:rgba(240,246,252,.04)}
@@ -21,6 +22,11 @@ a{color:var(--accent);text-decoration:none}
 .login-btn{display:block;width:100%;padding:14px;margin-bottom:10px;background:var(--s2);border:1px solid var(--s3);border-radius:8px;color:var(--white);font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
 .login-btn:hover{border-color:var(--accent);background:rgba(88,166,255,.08)}
 .login-btn.admin{border-color:var(--purple);color:var(--purple)}.login-btn.admin:hover{background:rgba(188,140,255,.08)}
+.admin-pw-wrap{margin-top:12px;display:none}
+.admin-pw-wrap input{width:100%;padding:12px;background:var(--bg);border:1px solid var(--s3);border-radius:8px;color:var(--white);font-size:.85rem;text-align:center;outline:none;margin-bottom:8px}
+.admin-pw-wrap input:focus{border-color:var(--purple)}
+.admin-pw-wrap .err{color:var(--red);font-size:.72rem;margin-bottom:8px}
+.admin-pw-wrap .locked{color:var(--red);font-size:.78rem;font-weight:600}
 
 /* LAYOUT */
 #app{display:none}
@@ -30,13 +36,14 @@ a{color:var(--accent);text-decoration:none}
 .topbar-role{font-size:.6rem;padding:3px 8px;border-radius:10px;font-weight:600}
 .topbar-role.admin{background:rgba(188,140,255,.12);color:var(--purple)}
 .topbar-role.vendor{background:rgba(88,166,255,.12);color:var(--accent)}
-.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-right{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .topbar-user{font-size:.78rem;color:var(--gray)}
 .topbar-points{font-size:.78rem;font-weight:700;color:var(--yellow);background:rgba(210,153,34,.1);padding:4px 12px;border-radius:8px}
 .btn{padding:8px 16px;border-radius:8px;font-size:.68rem;font-weight:600;cursor:pointer;transition:.2s;border:none}
 .btn-accent{background:var(--accent);color:var(--bg)}.btn-accent:hover{opacity:.9}
 .btn-ghost{background:transparent;border:1px solid var(--s3);color:var(--gray)}.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
 .btn-green{background:var(--green);color:var(--bg)}.btn-green:hover{opacity:.9}
+.btn-red{background:var(--red);color:var(--bg)}.btn-red:hover{opacity:.9}
 .btn-sm{padding:5px 10px;font-size:.62rem}
 
 /* TABS */
@@ -99,10 +106,12 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 .pipe-col-body{padding:8px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:8px}
 .pipe-card{background:var(--s2);border:1px solid var(--s3);border-radius:8px;padding:12px;cursor:grab;transition:.2s}
 .pipe-card:hover{border-color:var(--accent)}
-.pipe-card-name{font-size:.78rem;font-weight:600;margin-bottom:4px}
+.pipe-card-name{font-size:.78rem;font-weight:600;margin-bottom:4px;cursor:pointer}
+.pipe-card-name:hover{color:var(--accent)}
 .pipe-card-phone{font-size:.7rem;color:var(--accent);margin-bottom:4px}
 .pipe-card-region{font-size:.58rem;color:var(--yellow)}
 .pipe-card-notes{font-size:.62rem;color:var(--gray);margin-top:4px;font-style:italic}
+.pipe-card-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 
 /* VENDOR STATS */
 .vendor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;padding:20px 24px}
@@ -138,12 +147,13 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 
 /* CREATE PROJECT MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;display:flex;align-items:center;justify-content:center}
-.modal{background:var(--s1);border:1px solid var(--s3);border-radius:12px;padding:32px;max-width:440px;width:90%}
+.modal{background:var(--s1);border:1px solid var(--s3);border-radius:12px;padding:32px;max-width:500px;width:90%;max-height:90vh;overflow-y:auto}
 .modal h3{font-size:1rem;font-weight:700;margin-bottom:20px}.modal h3 span{color:var(--accent)}
 .modal-field{margin-bottom:14px}
 .modal-field label{display:block;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-bottom:6px}
-.modal-field input,.modal-field select{width:100%;padding:10px 14px;background:var(--bg);border:1px solid var(--s3);border-radius:8px;color:var(--white);font-size:.82rem;outline:none}
-.modal-field input:focus,.modal-field select:focus{border-color:var(--accent)}
+.modal-field input,.modal-field select,.modal-field textarea{width:100%;padding:10px 14px;background:var(--bg);border:1px solid var(--s3);border-radius:8px;color:var(--white);font-size:.82rem;outline:none;font-family:inherit}
+.modal-field textarea{min-height:80px;resize:vertical}
+.modal-field input:focus,.modal-field select:focus,.modal-field textarea:focus{border-color:var(--accent)}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
 
 /* DAILY CHALLENGE BANNER */
@@ -207,6 +217,95 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 /* REWARD NOTIFICATION */
 .reward-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:.5rem;font-weight:700;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center}
 
+/* CALL TIMER FLOATING BAR */
+.call-timer-bar{position:fixed;bottom:0;left:0;right:0;background:var(--s1);border-top:2px solid var(--accent);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;z-index:100;gap:12px;flex-wrap:wrap;animation:slideUp .3s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.call-timer-name{font-size:.82rem;font-weight:700}
+.call-timer-display{font-size:1.4rem;font-weight:800;color:var(--accent);font-variant-numeric:tabular-nums}
+.call-timer-pulse{width:10px;height:10px;border-radius:50%;background:var(--red);animation:pulse 1s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* SIDE PANEL */
+.side-panel-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;display:flex;justify-content:flex-end}
+.side-panel{width:480px;max-width:95vw;background:var(--s1);border-left:1px solid var(--s3);height:100%;overflow-y:auto;padding:24px;animation:slideInPanel .3s ease}
+@keyframes slideInPanel{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.side-panel h3{font-size:1rem;font-weight:700;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.side-panel h3 button{background:none;border:none;color:var(--gray);cursor:pointer;font-size:1.2rem}
+
+/* CALL HISTORY ENTRY */
+.call-entry{background:var(--s2);border:1px solid var(--s3);border-radius:8px;padding:12px;margin-bottom:8px}
+.call-entry-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.call-entry-date{font-size:.68rem;color:var(--gray)}
+.call-entry-result{font-size:.6rem;font-weight:700;padding:2px 8px;border-radius:10px}
+.call-entry-result.interested{background:rgba(63,185,80,.15);color:var(--green)}
+.call-entry-result.not-interested{background:rgba(248,81,73,.15);color:var(--red)}
+.call-entry-result.callback{background:rgba(188,140,255,.15);color:var(--purple)}
+.call-entry-result.no-answer{background:rgba(139,148,158,.15);color:var(--gray)}
+.call-entry-info{font-size:.72rem;color:var(--gray)}
+.call-entry-notes{font-size:.68rem;color:var(--white);margin-top:6px;font-style:italic}
+
+/* SCRIPTS / POST-IT */
+.scripts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;padding:20px 24px}
+.postit{border-radius:10px;padding:16px;position:relative;min-height:140px;cursor:default;transition:.2s}
+.postit:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.3)}
+.postit-title{font-size:.82rem;font-weight:700;margin-bottom:8px;padding-right:40px;color:#111}
+.postit-content{font-size:.72rem;line-height:1.6;color:#222;white-space:pre-wrap}
+.postit-actions{position:absolute;top:10px;right:10px;display:flex;gap:6px}
+.postit-actions button{background:rgba(0,0,0,.15);border:none;border-radius:50%;width:24px;height:24px;cursor:pointer;font-size:.7rem;color:#333;display:flex;align-items:center;justify-content:center}
+.postit-actions button:hover{background:rgba(0,0,0,.3)}
+
+/* CLIENTS */
+.clients-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;padding:20px 24px}
+.client-card{background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:20px;transition:.2s}
+.client-card:hover{border-color:var(--accent)}
+.client-card.delivered{border-color:var(--green);background:rgba(63,185,80,.04)}
+.client-card-name{font-size:.9rem;font-weight:700;margin-bottom:4px}
+.client-card-phone{font-size:.78rem;color:var(--accent);margin-bottom:8px}
+.client-card-meta{font-size:.68rem;color:var(--gray);margin-bottom:8px}
+.site-status-badge{display:inline-block;padding:3px 10px;border-radius:10px;font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.site-status-badge.not_started{background:rgba(139,148,158,.15);color:var(--gray)}
+.site-status-badge.in_progress{background:rgba(88,166,255,.15);color:var(--accent)}
+.site-status-badge.preview_sent{background:rgba(210,153,34,.15);color:var(--yellow)}
+.site-status-badge.delivered{background:rgba(63,185,80,.15);color:var(--green)}
+.site-status-badge.maintenance{background:rgba(188,140,255,.15);color:var(--purple)}
+
+/* ACTIVITY LOG */
+.log-table{width:100%;border-collapse:collapse}
+.log-table th{background:var(--s2);padding:10px;font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);text-align:left;border-bottom:1px solid var(--s3)}
+.log-table td{padding:8px 10px;font-size:.72rem;border-bottom:1px solid var(--dim)}
+
+/* REMINDERS */
+.reminder-item{background:var(--s2);border:1px solid var(--s3);border-radius:8px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.2s}
+.reminder-item:hover{border-color:var(--accent)}
+.reminder-item.overdue{border-color:var(--red);background:rgba(248,81,73,.06)}
+.reminder-item.done{opacity:.4}
+
+/* CALL SCRIPT PANEL */
+.script-panel{background:var(--s2);border:1px solid var(--s3);border-radius:8px;padding:16px;margin-top:12px}
+.script-panel h4{font-size:.75rem;font-weight:700;margin-bottom:8px;color:var(--accent);cursor:pointer}
+.script-lang{margin-bottom:10px}
+.script-lang-title{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--yellow);margin-bottom:4px}
+.script-lang-text{font-size:.72rem;line-height:1.6;color:var(--white);background:var(--bg);padding:10px;border-radius:6px}
+.objection-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.objection-btn{padding:8px 14px;background:var(--s1);border:1px solid var(--s3);border-radius:8px;color:var(--white);font-size:.68rem;font-weight:600;cursor:pointer;transition:.2s}
+.objection-btn:hover{border-color:var(--accent);background:rgba(88,166,255,.08)}
+
+/* BLACKLIST ICON */
+.bl-icon{cursor:pointer;font-size:.82rem;transition:.2s}.bl-icon:hover{transform:scale(1.2)}
+
+/* ADMIN ALERTS */
+.alert-card{background:rgba(248,81,73,.08);border:1px solid var(--red);border-radius:8px;padding:12px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;font-size:.75rem}
+.alert-card .dismiss{background:none;border:none;color:var(--gray);cursor:pointer;font-size:.82rem}
+
+/* FINANCIAL DASHBOARD */
+.fin-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+.fin-card{background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:20px;text-align:center}
+.fin-card-val{font-size:1.6rem;font-weight:800;line-height:1;margin-bottom:4px}
+.fin-card-lbl{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray)}
+
+/* DUPLICATE WARNING */
+.dup-item{background:rgba(210,153,34,.08);border:1px solid var(--yellow);border-radius:8px;padding:12px;margin-bottom:8px;font-size:.75rem}
+
 .hidden{display:none!important}
 @media(max-width:768px){
   .stats-row{flex-direction:column}.stat-card{min-width:auto}
@@ -216,6 +315,10 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
   .proj-grid{grid-template-columns:1fr}
   .lb-card{flex-direction:column;text-align:center}
   .lb-stats{flex-wrap:wrap;justify-content:center}
+  .scripts-grid{grid-template-columns:1fr}
+  .clients-grid{grid-template-columns:1fr}
+  .fin-grid{grid-template-columns:repeat(2,1fr)}
+  .side-panel{width:100%}
 }
 </style>
 </head>
@@ -232,7 +335,12 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
     <button class="login-btn" onclick="login('Vendeur 1')">Vendeur 1</button>
     <button class="login-btn" onclick="login('Vendeur 2')">Vendeur 2</button>
     <button class="login-btn" onclick="login('Vendeur 3')">Vendeur 3</button>
-    <button class="login-btn admin" onclick="login('Admin')">Admin</button>
+    <button class="login-btn admin" onclick="showAdminLogin()">Admin</button>
+    <div class="admin-pw-wrap" id="adminPwWrap">
+      <div class="err" id="adminPwErr"></div>
+      <input type="password" id="adminPwInput" placeholder="Mot de passe admin..." onkeydown="if(event.key==='Enter')attemptAdminLogin()">
+      <button class="login-btn admin" onclick="attemptAdminLogin()">Connexion Admin</button>
+    </div>
   </div>
 </div>
 
@@ -247,21 +355,30 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
     <div class="topbar-right">
       <span class="topbar-user" id="userName"></span>
       <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-ghost btn-sm" id="btnGenReport" style="display:none" onclick="generatePDFReport()">PDF Report</button>
       <button class="btn btn-ghost btn-sm" onclick="logout()">Deconnexion</button>
     </div>
   </div>
 
-  <div class="tabs">
+  <div class="tabs" id="tabsBar">
     <div class="tab active" data-tab="table" onclick="switchTab('table')">Prospects</div>
     <div class="tab" data-tab="pipeline" onclick="switchTab('pipeline')">Pipeline</div>
     <div class="tab" data-tab="projects" onclick="switchTab('projects')">Projets</div>
+    <div class="tab" data-tab="clients" onclick="switchTab('clients')">Clients</div>
     <div class="tab" data-tab="leaderboard" onclick="switchTab('leaderboard')">Classement</div>
     <div class="tab" data-tab="badges" onclick="switchTab('badges')">Badges</div>
+    <div class="tab hidden" data-tab="scripts" id="tabScripts" onclick="switchTab('scripts')">Mes Scripts</div>
+    <div class="tab hidden" data-tab="reminders" id="tabReminders" onclick="switchTab('reminders')">Rappels</div>
     <div class="tab hidden" data-tab="vendors" id="tabVendors" onclick="switchTab('vendors')">Vendeurs</div>
+    <div class="tab hidden" data-tab="logs" id="tabLogs" onclick="switchTab('logs')">Logs</div>
+    <div class="tab hidden" data-tab="blacklist" id="tabBlacklist" onclick="switchTab('blacklist')">Blacklist</div>
   </div>
 
   <!-- DAILY CHALLENGE -->
   <div class="challenge-banner hidden" id="challengeBanner"></div>
+
+  <!-- ADMIN ALERTS -->
+  <div id="adminAlerts" style="padding:0 24px;margin-top:12px"></div>
 
   <div class="stats-row" id="statsRow"></div>
 
@@ -286,18 +403,24 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
     <th>Vendeur</th>
     <th data-c="status" onclick="doSort('status')">Statut</th>
     <th>Notes</th>
+    <th>Actions</th>
   </tr></thead><tbody id="tbody"></tbody></table></div>
 
   <div class="pipeline hidden" id="pipelineView"></div>
   <div class="projects-wrap hidden" id="projectsView"></div>
+  <div class="clients-grid hidden" id="clientsView"></div>
   <div class="leaderboard-wrap hidden" id="leaderboardView"></div>
   <div class="badges-wrap hidden" id="badgesView"></div>
+  <div class="scripts-grid hidden" id="scriptsView"></div>
+  <div class="hidden" id="remindersView" style="padding:20px 24px"></div>
   <div class="vendor-grid hidden" id="vendorsView"></div>
+  <div class="hidden" id="logsView" style="padding:20px 24px"></div>
+  <div class="hidden" id="blacklistView" style="padding:20px 24px"></div>
 </div>
 
 <!-- CREATE PROJECT MODAL -->
 <div class="modal-overlay hidden" id="modalOverlay" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
+  <div class="modal" id="modalContent">
     <h3><span>Nouveau</span> Projet</h3>
     <div class="modal-field"><label>Nom du projet</label><input id="projName" placeholder="Ex: Mission Crete"></div>
     <div class="modal-field"><label>Region</label><select id="projRegion"></select></div>
@@ -310,16 +433,38 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
   </div>
 </div>
 
+<!-- GENERIC MODAL 2 -->
+<div class="modal-overlay hidden" id="modal2Overlay" onclick="if(event.target===this)closeModal2()">
+  <div class="modal" id="modal2Content"></div>
+</div>
+
+<!-- SIDE PANEL -->
+<div class="side-panel-overlay hidden" id="sidePanelOverlay" onclick="if(event.target===this)closeSidePanel()">
+  <div class="side-panel" id="sidePanel"></div>
+</div>
+
+<!-- CALL TIMER BAR (hidden by default) -->
+<div class="call-timer-bar hidden" id="callTimerBar"></div>
+
 <script>
 const SUPA_URL='https://cckrdgnnufnxfuspihst.supabase.co';
 const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3JkZ25udWZueGZ1c3BpaHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MzcyODksImV4cCI6MjA5MTMxMzI4OX0.Fwrmg_k2epYfLOsFgJZYel8-UC1Npm6IUN0LFoiSQ2U';
 const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
-let DATA=[],PROJECTS=[];
+let DATA=[],PROJECTS=[],CLIENTS=[],CALL_HISTORY=[],REMINDERS=[],ACTIVITY_LOG=[],BLACKLIST=[],VENDOR_SCRIPTS=[];
 let currentUser=null,isAdmin=false,sortCol='',sortDir=1,currentTab='table';
 const STATUSES=['nouveau','appelle','negociation','rappeler','valide','perdu'];
 const VENDORS=['','Vendeur 1','Vendeur 2','Vendeur 3'];
 const VENDOR_NAMES=['Vendeur 1','Vendeur 2','Vendeur 3'];
+const ADMIN_PASSWORD='Dido971$';
+const SITE_STATUSES=['not_started','in_progress','preview_sent','delivered','maintenance'];
+const SITE_STATUS_LABELS={not_started:'Not started',in_progress:'In progress',preview_sent:'Preview sent',delivered:'Delivered',maintenance:'Maintenance'};
+const POSTIT_COLORS=['#fef08a','#93c5fd','#86efac','#f9a8d4','#fdba74','#c4b5fd','#fca5a5','#f5f5f5'];
+
+// ========================================
+// CALL TIMER STATE
+// ========================================
+let callTimerInterval=null,callTimerStart=null,callTimerProspectId=null,callTimerProspectName=null;
 
 // ========================================
 // BADGE DEFINITIONS
@@ -384,6 +529,30 @@ const DAILY_CHALLENGES=[
 ];
 
 // ========================================
+// CALL SCRIPTS
+// ========================================
+const CALL_SCRIPT_GR='\u0393\u03B5\u03B9\u03B1 \u03C3\u03B1\u03C2! \u039C\u03B5 \u03BB\u03AD\u03BD\u03B5 [name]. \u03A0\u03B1\u03C1\u03B1\u03C4\u03AE\u03C1\u03B7\u03C3\u03B1 \u03CC\u03C4\u03B9 \u03B7 \u03B5\u03C0\u03B9\u03C7\u03B5\u03AF\u03C1\u03B7\u03C3\u03AE \u03C3\u03B1\u03C2 \u03B4\u03B5\u03BD \u03AD\u03C7\u03B5\u03B9 \u03B9\u03C3\u03C4\u03BF\u03C3\u03B5\u03BB\u03AF\u03B4\u03B1 \u2014 \u03BC\u03C0\u03BF\u03C1\u03CE \u03BD\u03B1 \u03C3\u03B1\u03C2 \u03C6\u03C4\u03B9\u03AC\u03BE\u03C9 \u03BC\u03B9\u03B1 \u03B5\u03C0\u03B1\u03B3\u03B3\u03B5\u03BB\u03BC\u03B1\u03C4\u03B9\u03BA\u03AE \u03C3\u03B5 5 \u03BC\u03AD\u03C1\u03B5\u03C2. \u03A3\u03B1\u03C2 \u03B5\u03BD\u03B4\u03B9\u03B1\u03C6\u03AD\u03C1\u03B5\u03B9;';
+const CALL_SCRIPT_EN='Hi! I\'m [name]. I noticed your business doesn\'t have a website \u2014 I can build you a professional one in 5 days. Interested?';
+
+const OBJECTIONS={
+  expensive:{
+    label:'Too expensive',
+    en:'One new client/month covers it. One-time 500\u20AC investment.',
+    gr:'\u0388\u03BD\u03B1\u03C2 \u03BD\u03AD\u03BF\u03C2 \u03C0\u03B5\u03BB\u03AC\u03C4\u03B7\u03C2/\u03BC\u03AE\u03BD\u03B1 \u03C4\u03BF \u03BA\u03B1\u03BB\u03CD\u03C0\u03C4\u03B5\u03B9. \u0395\u03C6\u03AC\u03C0\u03B1\u03BE \u03B5\u03C0\u03AD\u03BD\u03B4\u03C5\u03C3\u03B7 500\u20AC.'
+  },
+  have_site:{
+    label:'Already have site',
+    en:'I can check it \u2014 most sites lose clients. I rebuild better for 300\u20AC.',
+    gr:'\u039C\u03C0\u03BF\u03C1\u03CE \u03BD\u03B1 \u03C4\u03BF \u03B5\u03BB\u03AD\u03B3\u03BE\u03C9 \u2014 \u03BF\u03B9 \u03C0\u03B5\u03C1\u03B9\u03C3\u03C3\u03CC\u03C4\u03B5\u03C1\u03B5\u03C2 \u03B9\u03C3\u03C4\u03BF\u03C3\u03B5\u03BB\u03AF\u03B4\u03B5\u03C2 \u03C7\u03AC\u03BD\u03BF\u03C5\u03BD \u03C0\u03B5\u03BB\u03AC\u03C4\u03B5\u03C2. \u03A4\u03BF \u03BE\u03B1\u03BD\u03B1\u03C6\u03C4\u03B9\u03AC\u03C7\u03BD\u03C9 \u03BA\u03B1\u03BB\u03CD\u03C4\u03B5\u03C1\u03B1 \u03B3\u03B9\u03B1 300\u20AC.'
+  },
+  no_time:{
+    label:'No time',
+    en:'You don\'t do anything \u2014 send info+photos, I handle everything.',
+    gr:'\u0394\u03B5\u03BD \u03C7\u03C1\u03B5\u03B9\u03AC\u03B6\u03B5\u03C4\u03B1\u03B9 \u03BD\u03B1 \u03BA\u03AC\u03BD\u03B5\u03C4\u03B5 \u03C4\u03AF\u03C0\u03BF\u03C4\u03B1 \u2014 \u03C3\u03C4\u03B5\u03AF\u03BB\u03C4\u03B5 \u03C0\u03BB\u03B7\u03C1\u03BF\u03C6\u03BF\u03C1\u03AF\u03B5\u03C2+\u03C6\u03C9\u03C4\u03BF\u03B3\u03C1\u03B1\u03C6\u03AF\u03B5\u03C2, \u03C4\u03B1 \u03B1\u03BD\u03B1\u03BB\u03B1\u03BC\u03B2\u03AC\u03BD\u03C9 \u03CC\u03BB\u03B1.'
+  }
+};
+
+// ========================================
 // POINTS SYSTEM
 // ========================================
 function calcPoints(vendor){
@@ -392,7 +561,6 @@ function calcPoints(vendor){
   pts+=vd.filter(d=>d.status==='appelle').length*1;
   pts+=vd.filter(d=>d.status==='negociation').length*20;
   pts+=vd.filter(d=>d.status==='valide').length*100;
-  // Add daily challenge bonus from localStorage
   const bonus=parseInt(localStorage.getItem('bonus_pts_'+vendor)||'0');
   return pts+bonus;
 }
@@ -421,6 +589,53 @@ function getWeekSales(vendor){
 }
 
 // ========================================
+// ADMIN AUTH
+// ========================================
+let adminAttempts=0;
+function showAdminLogin(){
+  const wrap=document.getElementById('adminPwWrap');
+  // Check lock
+  const lockUntil=localStorage.getItem('admin_lock_until');
+  if(lockUntil&&Date.now()<parseInt(lockUntil)){
+    const remaining=Math.ceil((parseInt(lockUntil)-Date.now())/1000);
+    wrap.style.display='block';
+    document.getElementById('adminPwErr').innerHTML='<span class="locked">Compte verrouille. Reessayez dans '+remaining+'s</span>';
+    document.getElementById('adminPwInput').disabled=true;
+    return;
+  }
+  wrap.style.display='block';
+  document.getElementById('adminPwErr').textContent='';
+  document.getElementById('adminPwInput').disabled=false;
+  document.getElementById('adminPwInput').focus();
+}
+
+function attemptAdminLogin(){
+  const lockUntil=localStorage.getItem('admin_lock_until');
+  if(lockUntil&&Date.now()<parseInt(lockUntil)){
+    const remaining=Math.ceil((parseInt(lockUntil)-Date.now())/1000);
+    document.getElementById('adminPwErr').innerHTML='<span class="locked">Compte verrouille. Reessayez dans '+remaining+'s</span>';
+    return;
+  }
+  const pw=document.getElementById('adminPwInput').value;
+  if(pw===ADMIN_PASSWORD){
+    adminAttempts=0;
+    localStorage.removeItem('admin_lock_until');
+    login('Admin');
+  } else {
+    adminAttempts++;
+    if(adminAttempts>=3){
+      const lockTime=Date.now()+5*60*1000;
+      localStorage.setItem('admin_lock_until',String(lockTime));
+      document.getElementById('adminPwErr').innerHTML='<span class="locked">3 tentatives echouees. Verrouille 5 minutes.</span>';
+      document.getElementById('adminPwInput').disabled=true;
+      adminAttempts=0;
+    } else {
+      document.getElementById('adminPwErr').textContent='Mot de passe incorrect ('+(3-adminAttempts)+' essais restants)';
+    }
+  }
+}
+
+// ========================================
 // AUTH
 // ========================================
 function login(name){
@@ -431,23 +646,71 @@ function login(name){
   const rt=document.getElementById('roleTag');
   rt.textContent=isAdmin?'ADMIN':'VENDEUR';
   rt.className='topbar-role '+(isAdmin?'admin':'vendor');
-  if(isAdmin)document.getElementById('tabVendors').classList.remove('hidden');
-  if(!isAdmin)document.getElementById('pointsDisplay').classList.remove('hidden');
+  if(isAdmin){
+    document.getElementById('tabVendors').classList.remove('hidden');
+    document.getElementById('tabLogs').classList.remove('hidden');
+    document.getElementById('tabBlacklist').classList.remove('hidden');
+    document.getElementById('btnGenReport').style.display='';
+  }
+  if(!isAdmin){
+    document.getElementById('pointsDisplay').classList.remove('hidden');
+    document.getElementById('tabScripts').classList.remove('hidden');
+    document.getElementById('tabReminders').classList.remove('hidden');
+  }
   localStorage.setItem('crm_user',name);
   loadData();
 }
 function logout(){localStorage.removeItem('crm_user');location.reload()}
-const saved=localStorage.getItem('crm_user');if(saved)login(saved);
+const saved=localStorage.getItem('crm_user');
+if(saved){
+  if(saved==='Admin'){
+    // Auto-login admin if previously logged in
+    login('Admin');
+  } else {
+    login(saved);
+  }
+}
 
 // ========================================
 // DATA
 // ========================================
 async function loadData(){
-  const{data}=await sb.from('prospects').select('*').order('id');
-  DATA=data||[];
-  const{data:proj}=await sb.from('projects').select('*').order('id');
-  PROJECTS=proj||[];
-  populateFilters();render();
+  const[prospRes,projRes,clientRes,remRes,blRes]=await Promise.all([
+    sb.from('prospects').select('*').order('id'),
+    sb.from('projects').select('*').order('id'),
+    sb.from('clients').select('*').order('id'),
+    sb.from('reminders').select('*').order('remind_at'),
+    sb.from('blacklist').select('*').order('id')
+  ]);
+  DATA=prospRes.data||[];
+  PROJECTS=projRes.data||[];
+  CLIENTS=clientRes.data||[];
+  REMINDERS=remRes.data||[];
+  BLACKLIST=blRes.data||[];
+
+  // Filter out blacklisted prospects
+  const blIds=new Set(BLACKLIST.map(b=>b.prospect_id));
+  DATA=DATA.filter(d=>!blIds.has(d.id));
+
+  populateFilters();
+  render();
+  if(isAdmin)checkDuplicates();
+  if(isAdmin)checkInactivityAlerts();
+}
+
+async function loadCallHistory(prospectId){
+  const{data}=await sb.from('call_history').select('*').eq('prospect_id',prospectId).order('created_at',{ascending:false});
+  return data||[];
+}
+
+async function loadActivityLog(){
+  const{data}=await sb.from('activity_log').select('*').order('created_at',{ascending:false}).limit(500);
+  ACTIVITY_LOG=data||[];
+}
+
+async function loadVendorScripts(){
+  const{data}=await sb.from('vendor_scripts').select('*').eq('vendor_name',currentUser).order('id');
+  VENDOR_SCRIPTS=data||[];
 }
 
 function populateFilters(){
@@ -483,9 +746,14 @@ function render(){
   if(currentTab==='table')renderTable();
   else if(currentTab==='pipeline')renderPipeline();
   else if(currentTab==='projects')renderProjects();
+  else if(currentTab==='clients')renderClients();
   else if(currentTab==='leaderboard')renderLeaderboard();
   else if(currentTab==='badges')renderBadges();
   else if(currentTab==='vendors')renderVendors();
+  else if(currentTab==='scripts')renderScripts();
+  else if(currentTab==='reminders')renderReminders();
+  else if(currentTab==='logs')renderLogs();
+  else if(currentTab==='blacklist')renderBlacklist();
   checkBadges();checkRewards();
 }
 
@@ -503,15 +771,22 @@ function renderStats(){
   const p=d.filter(x=>x.status==='perdu').length;
   const rev=d.reduce((s,x)=>s+(parseFloat(x.revenue)||0),0);
   const conv=v+p>0?((v/(v+p))*100).toFixed(1):'0';
-  document.getElementById('statsRow').innerHTML=`
+  let html=`
     <div class="stat-card"><div class="stat-val blue">${t.toLocaleString()}</div><div class="stat-lbl">Total</div></div>
     <div class="stat-card"><div class="stat-val">${n.toLocaleString()}</div><div class="stat-lbl">Nouveau</div></div>
     <div class="stat-card"><div class="stat-val yellow">${a.toLocaleString()}</div><div class="stat-lbl">Appelle</div></div>
     <div class="stat-card"><div class="stat-val orange">${ne}</div><div class="stat-lbl">Negociation</div></div>
     <div class="stat-card"><div class="stat-val green">${v}</div><div class="stat-lbl">Gagne</div></div>
-    <div class="stat-card"><div class="stat-val red">${p}</div><div class="stat-lbl">Perdu</div></div>
-    ${isAdmin?`<div class="stat-card"><div class="stat-val green">${rev.toLocaleString()}\u20AC</div><div class="stat-lbl">Revenue</div></div>
-    <div class="stat-card"><div class="stat-val purple">${conv}%</div><div class="stat-lbl">Conversion</div></div>`:''}`;
+    <div class="stat-card"><div class="stat-val red">${p}</div><div class="stat-lbl">Perdu</div></div>`;
+  if(isAdmin){
+    const revenue=v*500;
+    const maintenanceCount=CLIENTS.filter(c=>c.site_status==='maintenance').length;
+    const revMaintenance=(v-maintenanceCount)*500+maintenanceCount*700;
+    const forecast=Math.round(ne*500*0.3);
+    html+=`<div class="stat-card"><div class="stat-val green">${revenue.toLocaleString()}\u20AC</div><div class="stat-lbl">Revenue</div></div>
+    <div class="stat-card"><div class="stat-val purple">${conv}%</div><div class="stat-lbl">Conversion</div></div>`;
+  }
+  document.getElementById('statsRow').innerHTML=html;
 }
 
 function renderTable(){
@@ -521,12 +796,17 @@ function renderTable(){
     const fc='b-'+(d.famille||'Autre').replace(/[& ]/g,'');
     const vo=VENDORS.map(v=>`<option ${d.vendeur===v?'selected':''}>${v}</option>`).join('');
     const so=STATUSES.map(s=>`<option ${d.status===s?'selected':''}>${s}</option>`).join('');
-    return `<tr class="${rc}"><td><strong>${d.nom||''}</strong></td><td><a href="tel:${d.numero}" class="phone-link">${d.numero||''}</a></td><td><span class="${tc}">${d.type_tel||''}</span></td><td><span class="badge ${fc}">${d.famille||''}</span></td><td>${d.categorie||''}</td><td><span class="region-tag">${d.region||''}</span></td><td><select class="tsel" onchange="updateField(${d.id},'vendeur',this.value)">${vo}</select></td><td><select class="tsel" onchange="updateField(${d.id},'status',this.value)">${so}</select></td><td><input class="ninp" value="${(d.notes||'').replace(/"/g,'&quot;')}" onblur="updateField(${d.id},'notes',this.value)" placeholder="Notes..."></td></tr>`;
+    const callBtn=(!isAdmin&&d.vendeur===currentUser)?`<button class="btn btn-accent btn-sm" onclick="startCall(${d.id},'${esc(d.nom)}')">Call</button>`:'';
+    const histBtn=`<span style="cursor:pointer;font-size:.75rem;color:var(--accent)" onclick="openCallHistory(${d.id},'${esc(d.nom)}')">${esc(d.nom)}</span>`;
+    const blBtn=`<span class="bl-icon" title="Blacklist" onclick="blacklistProspect(${d.id},'${esc(d.nom)}')">&#128683;</span>`;
+    return `<tr class="${rc}"><td>${histBtn}</td><td><a href="tel:${d.numero}" class="phone-link">${d.numero||''}</a></td><td><span class="${tc}">${d.type_tel||''}</span></td><td><span class="badge ${fc}">${d.famille||''}</span></td><td>${d.categorie||''}</td><td><span class="region-tag">${d.region||''}</span></td><td><select class="tsel" onchange="updateField(${d.id},'vendeur',this.value)">${vo}</select></td><td><select class="tsel" onchange="updateField(${d.id},'status',this.value)">${so}</select></td><td><input class="ninp" value="${(d.notes||'').replace(/"/g,'&quot;')}" onblur="updateField(${d.id},'notes',this.value)" placeholder="Notes..."></td><td style="white-space:nowrap">${callBtn} ${blBtn}</td></tr>`;
   }).join('');
   document.getElementById('visCount').textContent=fd.length;
   document.getElementById('totCount').textContent=DATA.length;
-  if(fd.length>500)document.getElementById('tbody').innerHTML+=`<tr><td colspan="9" style="text-align:center;color:var(--yellow);padding:16px;font-size:.75rem">Limite 500 lignes. Filtrez. Total: ${fd.length}</td></tr>`;
+  if(fd.length>500)document.getElementById('tbody').innerHTML+=`<tr><td colspan="10" style="text-align:center;color:var(--yellow);padding:16px;font-size:.75rem">Limite 500 lignes. Filtrez. Total: ${fd.length}</td></tr>`;
 }
+
+function esc(s){return (s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;')}
 
 function renderPipeline(){
   const pv=document.getElementById('pipelineView');
@@ -534,8 +814,306 @@ function renderPipeline(){
   const my=!isAdmin?DATA.filter(d=>d.vendeur===currentUser):DATA.filter(d=>d.vendeur);
   pv.innerHTML=cols.map(col=>{
     const items=my.filter(d=>d.status===col.key).slice(0,50);
-    return `<div class="pipe-col"><div class="pipe-col-head"><span class="pipe-col-title" style="color:${col.color}">${col.label}</span><span class="pipe-col-count">${my.filter(d=>d.status===col.key).length}</span></div><div class="pipe-col-body" ondragover="event.preventDefault()" ondrop="dropCard(event,'${col.key}')">${items.map(d=>`<div class="pipe-card" draggable="true" ondragstart="dragCard(event,${d.id})"><div class="pipe-card-name">${d.nom||''}</div><div class="pipe-card-phone"><a href="tel:${d.numero}" style="color:var(--accent)">${d.numero||''}</a></div><div class="pipe-card-region">${d.region||''} \u00B7 ${d.famille||''}</div>${d.notes?`<div class="pipe-card-notes">${d.notes}</div>`:''}</div>`).join('')}</div></div>`;
+    return `<div class="pipe-col"><div class="pipe-col-head"><span class="pipe-col-title" style="color:${col.color}">${col.label}</span><span class="pipe-col-count">${my.filter(d=>d.status===col.key).length}</span></div><div class="pipe-col-body" ondragover="event.preventDefault()" ondrop="dropCard(event,'${col.key}')">${items.map(d=>`<div class="pipe-card" draggable="true" ondragstart="dragCard(event,${d.id})">
+      <div class="pipe-card-name" onclick="openProspectDetail(${d.id})">${d.nom||''}</div>
+      <div class="pipe-card-phone"><a href="tel:${d.numero}" style="color:var(--accent)">${d.numero||''}</a></div>
+      <div class="pipe-card-region">${d.region||''} \u00B7 ${d.famille||''}</div>
+      ${d.notes?`<div class="pipe-card-notes">${d.notes}</div>`:''}
+      <div class="pipe-card-actions">
+        ${!isAdmin?`<button class="btn btn-accent btn-sm" onclick="event.stopPropagation();startCall(${d.id},'${esc(d.nom)}')">Call</button>`:''}
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openCallHistory(${d.id},'${esc(d.nom)}')">History</button>
+        <span class="bl-icon" onclick="event.stopPropagation();blacklistProspect(${d.id},'${esc(d.nom)}')">&#128683;</span>
+      </div>
+    </div>`).join('')}</div></div>`;
   }).join('');
+}
+
+// ========================================
+// PROSPECT DETAIL SIDE PANEL
+// ========================================
+function openProspectDetail(id){
+  const d=DATA.find(x=>x.id===id);
+  if(!d)return;
+  const panel=document.getElementById('sidePanel');
+  const vendorName=currentUser;
+
+  let html=`<h3><span>${d.nom||'Prospect'}</span><button onclick="closeSidePanel()">\u2715</button></h3>`;
+  html+=`<div style="margin-bottom:16px">
+    <div style="font-size:.78rem;margin-bottom:4px"><strong>Tel:</strong> <a href="tel:${d.numero}" style="color:var(--accent)">${d.numero||''}</a></div>
+    <div style="font-size:.72rem;color:var(--gray);margin-bottom:4px">${d.famille||''} \u00B7 ${d.categorie||''} \u00B7 ${d.region||''}</div>
+    <div style="font-size:.72rem;color:var(--gray)">Statut: <strong style="color:var(--accent)">${d.status||'nouveau'}</strong></div>
+    ${d.notes?`<div style="font-size:.72rem;color:var(--gray);margin-top:4px;font-style:italic">Notes: ${d.notes}</div>`:''}
+  </div>`;
+
+  // Call button
+  if(!isAdmin){
+    html+=`<button class="btn btn-accent" style="margin-bottom:16px" onclick="closeSidePanel();startCall(${d.id},'${esc(d.nom)}')">Appeler ce prospect</button>`;
+  }
+
+  // Call Script
+  html+=`<div class="script-panel">
+    <h4 onclick="this.parentElement.querySelector('.script-body').classList.toggle('hidden')">Script d'appel (cliquer pour ouvrir/fermer)</h4>
+    <div class="script-body">
+      <div class="script-lang"><div class="script-lang-title">Greek</div>
+        <div class="script-lang-text">${CALL_SCRIPT_GR.replace('[name]',vendorName)}</div>
+      </div>
+      <div class="script-lang"><div class="script-lang-title">English</div>
+        <div class="script-lang-text">${CALL_SCRIPT_EN.replace('[name]',vendorName)}</div>
+      </div>
+      <div style="margin-top:12px;font-size:.7rem;font-weight:700;color:var(--gray)">OBJECTIONS</div>
+      <div class="objection-btns">
+        <button class="objection-btn" onclick="showObjection('expensive')">Too expensive</button>
+        <button class="objection-btn" onclick="showObjection('have_site')">Already have site</button>
+        <button class="objection-btn" onclick="showObjection('no_time')">No time</button>
+      </div>
+      <div id="objectionResponse" style="margin-top:10px"></div>
+    </div>
+  </div>`;
+
+  // Call history section
+  html+=`<div style="margin-top:20px"><h4 style="font-size:.82rem;font-weight:700;margin-bottom:12px">Historique d'appels</h4><div id="detailCallHistory"><div style="color:var(--gray);font-size:.72rem">Chargement...</div></div></div>`;
+
+  panel.innerHTML=html;
+  document.getElementById('sidePanelOverlay').classList.remove('hidden');
+
+  // Load call history
+  loadCallHistory(id).then(calls=>{
+    const el=document.getElementById('detailCallHistory');
+    if(!calls.length){el.innerHTML='<div style="color:var(--gray);font-size:.72rem">Aucun appel enregistre.</div>';return;}
+    el.innerHTML=calls.map(c=>{
+      const dur=formatDuration(c.duration||0);
+      const resultClass=c.result==='Interested'?'interested':c.result==='Not interested'?'not-interested':c.result==='Call back'?'callback':'no-answer';
+      return `<div class="call-entry">
+        <div class="call-entry-head">
+          <span class="call-entry-date">${new Date(c.created_at).toLocaleString('fr-FR')}</span>
+          <span class="call-entry-result ${resultClass}">${c.result||''}</span>
+        </div>
+        <div class="call-entry-info">Duree: ${dur} \u00B7 Par: ${c.vendor_name||''}</div>
+        ${c.notes?`<div class="call-entry-notes">${c.notes}</div>`:''}
+      </div>`;
+    }).join('');
+  });
+}
+
+function showObjection(key){
+  const obj=OBJECTIONS[key];
+  const el=document.getElementById('objectionResponse');
+  el.innerHTML=`<div style="background:var(--bg);border-radius:8px;padding:12px;margin-top:8px">
+    <div style="font-size:.72rem;font-weight:700;color:var(--accent);margin-bottom:6px">${obj.label}</div>
+    <div style="font-size:.7rem;margin-bottom:6px"><strong style="color:var(--yellow)">EN:</strong> ${obj.en}</div>
+    <div style="font-size:.7rem"><strong style="color:var(--yellow)">GR:</strong> ${obj.gr}</div>
+  </div>`;
+}
+
+function closeSidePanel(){document.getElementById('sidePanelOverlay').classList.add('hidden')}
+
+// ========================================
+// CALL HISTORY PANEL
+// ========================================
+function openCallHistory(id,name){
+  const panel=document.getElementById('sidePanel');
+  panel.innerHTML=`<h3><span>Appels - ${name}</span><button onclick="closeSidePanel()">\u2715</button></h3><div id="chList"><div style="color:var(--gray);font-size:.72rem">Chargement...</div></div>`;
+  document.getElementById('sidePanelOverlay').classList.remove('hidden');
+  loadCallHistory(id).then(calls=>{
+    const el=document.getElementById('chList');
+    if(!calls.length){el.innerHTML='<div style="color:var(--gray);font-size:.72rem">Aucun appel enregistre.</div>';return;}
+    el.innerHTML=calls.map(c=>{
+      const dur=formatDuration(c.duration||0);
+      const resultClass=c.result==='Interested'?'interested':c.result==='Not interested'?'not-interested':c.result==='Call back'?'callback':'no-answer';
+      return `<div class="call-entry">
+        <div class="call-entry-head">
+          <span class="call-entry-date">${new Date(c.created_at).toLocaleString('fr-FR')}</span>
+          <span class="call-entry-result ${resultClass}">${c.result||''}</span>
+        </div>
+        <div class="call-entry-info">Duree: ${dur} \u00B7 Par: ${c.vendor_name||''}</div>
+        ${c.notes?`<div class="call-entry-notes">${c.notes}</div>`:''}
+      </div>`;
+    }).join('');
+  });
+}
+
+// ========================================
+// CALL TIMER
+// ========================================
+function startCall(prospectId,prospectName){
+  if(callTimerInterval)return showToast('Appel en cours','Terminez l\'appel actuel d\'abord.','var(--red)');
+  callTimerProspectId=prospectId;
+  callTimerProspectName=prospectName;
+  callTimerStart=Date.now();
+
+  const bar=document.getElementById('callTimerBar');
+  bar.classList.remove('hidden');
+  bar.innerHTML=`
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="call-timer-pulse"></div>
+      <div class="call-timer-name">En appel: ${prospectName}</div>
+    </div>
+    <div class="call-timer-display" id="timerDisplay">00:00:00</div>
+    <button class="btn btn-red" onclick="endCall()">Terminer l'appel</button>`;
+
+  callTimerInterval=setInterval(()=>{
+    const elapsed=Math.floor((Date.now()-callTimerStart)/1000);
+    const h=String(Math.floor(elapsed/3600)).padStart(2,'0');
+    const m=String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
+    const s=String(elapsed%60).padStart(2,'0');
+    const el=document.getElementById('timerDisplay');
+    if(el)el.textContent=h+':'+m+':'+s;
+  },1000);
+}
+
+function endCall(){
+  clearInterval(callTimerInterval);
+  const duration=Math.floor((Date.now()-callTimerStart)/1000);
+  callTimerInterval=null;
+  document.getElementById('callTimerBar').classList.add('hidden');
+
+  // Show result picker modal
+  const m=document.getElementById('modal2Content');
+  m.innerHTML=`<h3><span>Resultat</span> de l'appel</h3>
+    <div style="margin-bottom:12px;font-size:.78rem;color:var(--gray)">Prospect: <strong style="color:var(--white)">${callTimerProspectName}</strong> \u00B7 Duree: <strong style="color:var(--accent)">${formatDuration(duration)}</strong></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <button class="btn btn-green" onclick="saveCallResult('Interested',${duration})">Interested</button>
+      <button class="btn btn-red" onclick="saveCallResult('Not interested',${duration})">Not interested</button>
+      <button class="btn" style="background:var(--purple);color:var(--bg)" onclick="saveCallResult('Call back',${duration})">Call back</button>
+      <button class="btn btn-ghost" onclick="saveCallResult('No answer',${duration})">No answer</button>
+    </div>
+    <div class="modal-field"><label>Notes (optionnel)</label><textarea id="callNotes" placeholder="Notes sur l'appel..."></textarea></div>`;
+  document.getElementById('modal2Overlay').classList.remove('hidden');
+}
+
+async function saveCallResult(result,duration){
+  const notes=(document.getElementById('callNotes')||{}).value||'';
+  // Save to call_history
+  await sb.from('call_history').insert([{
+    prospect_id:callTimerProspectId,
+    vendor_name:currentUser,
+    duration:duration,
+    result:result,
+    notes:notes,
+    created_at:new Date().toISOString()
+  }]);
+
+  // Log activity
+  await logActivity('call',callTimerProspectName,callTimerProspectId,'Result: '+result+', Duration: '+formatDuration(duration));
+
+  // Update prospect status based on result
+  const statusMap={'Interested':'negociation','Not interested':'perdu','Call back':'rappeler','No answer':'appelle'};
+  const newStatus=statusMap[result]||'appelle';
+  await updateField(callTimerProspectId,'status',newStatus);
+
+  // If "Call back", show reminder picker
+  if(result==='Call back'){
+    closeModal2();
+    showReminderPicker(callTimerProspectId,callTimerProspectName);
+    return;
+  }
+
+  closeModal2();
+  showToast('Appel enregistre','Resultat: '+result,'var(--green)');
+  callTimerProspectId=null;callTimerProspectName=null;
+}
+
+function formatDuration(sec){
+  const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),s=sec%60;
+  return (h?h+'h ':'')+(m?m+'m ':'')+s+'s';
+}
+
+// ========================================
+// REMINDERS
+// ========================================
+function showReminderPicker(prospectId,prospectName){
+  const m=document.getElementById('modal2Content');
+  m.innerHTML=`<h3><span>Planifier</span> un rappel</h3>
+    <div style="margin-bottom:12px;font-size:.78rem;color:var(--gray)">Pour: <strong style="color:var(--white)">${prospectName}</strong></div>
+    <div class="modal-field"><label>Date et heure du rappel</label><input type="datetime-local" id="reminderDatetime"></div>
+    <div class="modal-field"><label>Notes</label><textarea id="reminderNotes" placeholder="Notes..."></textarea></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal2()">Annuler</button>
+      <button class="btn btn-accent" onclick="saveReminder(${prospectId},'${esc(prospectName)}')">Sauvegarder</button>
+    </div>`;
+  document.getElementById('modal2Overlay').classList.remove('hidden');
+}
+
+async function saveReminder(prospectId,prospectName){
+  const dt=document.getElementById('reminderDatetime').value;
+  if(!dt){alert('Selectionnez une date');return;}
+  const notes=(document.getElementById('reminderNotes')||{}).value||'';
+  await sb.from('reminders').insert([{
+    prospect_id:prospectId,
+    prospect_name:prospectName,
+    vendor_name:currentUser,
+    remind_at:new Date(dt).toISOString(),
+    notes:notes,
+    done:false
+  }]);
+  REMINDERS.push({prospect_id:prospectId,prospect_name:prospectName,vendor_name:currentUser,remind_at:new Date(dt).toISOString(),notes,done:false});
+  closeModal2();
+  showToast('Rappel cree','Pour '+prospectName+' le '+new Date(dt).toLocaleDateString('fr-FR'),'var(--purple)');
+}
+
+function renderReminders(){
+  const rv=document.getElementById('remindersView');
+  const myReminders=REMINDERS.filter(r=>r.vendor_name===currentUser);
+  const now=new Date();
+
+  let html=`<h2 style="font-size:1.2rem;font-weight:800;margin-bottom:20px">Mes Rappels</h2>`;
+
+  const upcoming=myReminders.filter(r=>!r.done).sort((a,b)=>new Date(a.remind_at)-new Date(b.remind_at));
+  const done=myReminders.filter(r=>r.done);
+
+  if(!upcoming.length&&!done.length){
+    html+=`<div style="text-align:center;padding:60px;color:var(--gray)">Aucun rappel. Les rappels sont crees quand vous marquez un prospect "rappeler".</div>`;
+    rv.innerHTML=html;return;
+  }
+
+  if(upcoming.length){
+    html+=`<div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--gray);margin-bottom:12px;letter-spacing:.08em">A venir (${upcoming.length})</div>`;
+    upcoming.forEach(r=>{
+      const remDate=new Date(r.remind_at);
+      const overdue=remDate<now;
+      html+=`<div class="reminder-item ${overdue?'overdue':''}" onclick="jumpToProspect(${r.prospect_id})">
+        <div style="flex:1">
+          <div style="font-size:.82rem;font-weight:700">${r.prospect_name||'Prospect'}</div>
+          <div style="font-size:.68rem;color:${overdue?'var(--red)':'var(--gray)'};margin-top:2px">${remDate.toLocaleString('fr-FR')} ${overdue?'(EN RETARD)':''}</div>
+          ${r.notes?`<div style="font-size:.68rem;color:var(--gray);font-style:italic;margin-top:2px">${r.notes}</div>`:''}
+        </div>
+        <button class="btn btn-green btn-sm" onclick="event.stopPropagation();markReminderDone(${r.id})">Fait</button>
+      </div>`;
+    });
+  }
+
+  if(done.length){
+    html+=`<div style="font-size:.72rem;font-weight:700;text-transform:uppercase;color:var(--gray);margin-top:24px;margin-bottom:12px;letter-spacing:.08em">Termines (${done.length})</div>`;
+    done.slice(0,20).forEach(r=>{
+      html+=`<div class="reminder-item done">
+        <div style="flex:1">
+          <div style="font-size:.82rem;font-weight:700">${r.prospect_name||'Prospect'}</div>
+          <div style="font-size:.68rem;color:var(--gray);margin-top:2px">${new Date(r.remind_at).toLocaleString('fr-FR')}</div>
+        </div>
+        <span style="font-size:.72rem;color:var(--green)">Done</span>
+      </div>`;
+    });
+  }
+
+  rv.innerHTML=html;
+}
+
+async function markReminderDone(id){
+  await sb.from('reminders').update({done:true}).eq('id',id);
+  const r=REMINDERS.find(x=>x.id===id);
+  if(r)r.done=true;
+  render();
+  showToast('Rappel termine','Marque comme fait.','var(--green)');
+}
+
+function jumpToProspect(id){
+  closeSidePanel();
+  // Find prospect and switch to table with filters
+  const d=DATA.find(x=>x.id===id);
+  if(d){
+    document.getElementById('q').value=d.nom||'';
+    switchTab('table');
+  }
 }
 
 // ========================================
@@ -624,6 +1202,67 @@ function renderProjects(){
 }
 
 // ========================================
+// CLIENTS
+// ========================================
+function renderClients(){
+  const cv=document.getElementById('clientsView');
+  const myClients=isAdmin?CLIENTS:CLIENTS.filter(c=>c.vendor_name===currentUser);
+
+  let html='';
+  if(!myClients.length){
+    html=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray)"><p style="font-size:1.2rem;margin-bottom:8px">Aucun client</p><p style="font-size:.78rem">Les clients sont crees automatiquement quand un prospect passe en "valide".</p></div>`;
+    cv.innerHTML=html;return;
+  }
+
+  myClients.forEach(c=>{
+    const daysSince=c.sale_date?Math.floor((Date.now()-new Date(c.sale_date))/(1000*60*60*24)):0;
+    const isDelivered=c.site_status==='delivered';
+    const statusLabel=SITE_STATUS_LABELS[c.site_status]||c.site_status||'Not started';
+    const statusClass=c.site_status||'not_started';
+
+    const statusOptions=SITE_STATUSES.map(s=>`<option value="${s}" ${c.site_status===s?'selected':''}>${SITE_STATUS_LABELS[s]}</option>`).join('');
+
+    html+=`<div class="client-card ${isDelivered?'delivered':''}">
+      <div class="client-card-name">${c.business_name||''}</div>
+      <div class="client-card-phone"><a href="tel:${c.phone}">${c.phone||''}</a></div>
+      <div class="client-card-meta">Vendeur: ${c.vendor_name||''} \u00B7 ${daysSince}j depuis vente</div>
+      <div style="margin-bottom:10px"><span class="site-status-badge ${statusClass}">${statusLabel}</span></div>
+      ${!isAdmin?`<div style="margin-bottom:8px">
+        <select class="tsel" onchange="updateClientStatus(${c.id},this.value)">${statusOptions}</select>
+      </div>`:`<div style="margin-bottom:8px">
+        <select class="tsel" onchange="updateClientStatus(${c.id},this.value)">${statusOptions}</select>
+      </div>`}
+      <div style="margin-bottom:8px">
+        <input class="ninp" value="${(c.delivery_notes||'').replace(/"/g,'&quot;')}" onblur="updateClientNotes(${c.id},this.value)" placeholder="Notes de livraison...">
+      </div>
+      ${c.site_status==='maintenance'?`<div style="font-size:.68rem;color:var(--purple)">
+        <label style="color:var(--gray)">Renouvellement:</label>
+        <input type="date" class="ninp" style="width:auto;display:inline-block;margin-left:4px" value="${c.renewal_date||''}" onchange="updateClientRenewal(${c.id},this.value)">
+      </div>`:''}
+    </div>`;
+  });
+
+  cv.innerHTML=html;
+}
+
+async function updateClientStatus(id,status){
+  await sb.from('clients').update({site_status:status}).eq('id',id);
+  const c=CLIENTS.find(x=>x.id===id);if(c)c.site_status=status;
+  await logActivity('client_status_update','',null,'Client #'+id+' -> '+status);
+  render();
+}
+
+async function updateClientNotes(id,notes){
+  await sb.from('clients').update({delivery_notes:notes}).eq('id',id);
+  const c=CLIENTS.find(x=>x.id===id);if(c)c.delivery_notes=notes;
+}
+
+async function updateClientRenewal(id,date){
+  await sb.from('clients').update({renewal_date:date}).eq('id',id);
+  const c=CLIENTS.find(x=>x.id===id);if(c)c.renewal_date=date;
+}
+
+// ========================================
 // LEADERBOARD
 // ========================================
 function renderLeaderboard(){
@@ -696,7 +1335,6 @@ function getBadges(vendor){
     return init;
   }
   const parsed=JSON.parse(stored);
-  // Ensure all badges exist
   BADGE_DEFS.forEach(b=>{if(!parsed[b.id])parsed[b.id]={unlocked:false,date:null}});
   return parsed;
 }
@@ -742,7 +1380,6 @@ function renderBadgesAdmin(){
   const bv=document.getElementById('badgesView');
   let html=`<h2 style="font-size:1.2rem;font-weight:800;margin-bottom:24px">\uD83C\uDFC5 Badges - Vue Admin</h2>`;
 
-  // Tabs for each vendor
   html+=`<div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">`;
   VENDOR_NAMES.forEach(v=>{
     const badges=getBadges(v);
@@ -751,7 +1388,6 @@ function renderBadgesAdmin(){
   });
   html+=`</div>`;
 
-  // Summary grid
   html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">`;
   VENDOR_NAMES.forEach(v=>{
     const badges=getBadges(v);
@@ -809,7 +1445,63 @@ function renderBadgesForVendor(vendor){
 function renderVendors(){
   if(!isAdmin)return;
   const vv=document.getElementById('vendorsView');
-  vv.innerHTML=VENDOR_NAMES.map(v=>{
+
+  // Financial dashboard at top
+  let finHtml=`<div style="grid-column:1/-1;margin-bottom:24px">
+    <h2 style="font-size:1.1rem;font-weight:800;margin-bottom:16px">Financial Dashboard</h2>
+    <div class="fin-grid">`;
+
+  const totalWon=DATA.filter(d=>d.status==='valide').length;
+  const maintenanceCount=CLIENTS.filter(c=>c.site_status==='maintenance').length;
+  const totalRevenue=totalWon*500;
+  const revenueWithMaintenance=(totalWon-maintenanceCount)*500+maintenanceCount*700;
+  const totalNego=DATA.filter(d=>d.status==='negociation').length;
+  const forecast=Math.round(totalNego*500*0.3);
+
+  const vendorRevenues=VENDOR_NAMES.map(v=>{
+    const wins=DATA.filter(d=>d.vendeur===v&&d.status==='valide').length;
+    return{name:v,rev:wins*500,wins};
+  }).sort((a,b)=>b.rev-a.rev);
+  const avgPerVendor=Math.round(totalRevenue/VENDOR_NAMES.length);
+  const bestVendor=vendorRevenues[0];
+
+  finHtml+=`
+    <div class="fin-card"><div class="fin-card-val" style="color:var(--green)">${totalRevenue.toLocaleString()}\u20AC</div><div class="fin-card-lbl">Revenue total (${totalWon} x 500\u20AC)</div></div>
+    <div class="fin-card"><div class="fin-card-val" style="color:var(--green)">${revenueWithMaintenance.toLocaleString()}\u20AC</div><div class="fin-card-lbl">Avec maintenance</div></div>
+    <div class="fin-card"><div class="fin-card-val" style="color:var(--yellow)">${forecast.toLocaleString()}\u20AC</div><div class="fin-card-lbl">Prevision (nego x 30%)</div></div>
+    <div class="fin-card"><div class="fin-card-val" style="color:var(--accent)">${avgPerVendor.toLocaleString()}\u20AC</div><div class="fin-card-lbl">Moy. par vendeur</div></div>
+    <div class="fin-card" style="border-color:var(--green)"><div class="fin-card-val" style="color:var(--green)">${bestVendor.name}</div><div class="fin-card-lbl">Meilleur vendeur (${bestVendor.rev.toLocaleString()}\u20AC)</div></div>
+  `;
+  finHtml+=`</div></div>`;
+
+  // Inactivity alerts section
+  let alertHtml='';
+  const dismissed=JSON.parse(localStorage.getItem('dismissed_alerts')||'{}');
+  VENDOR_NAMES.forEach(v=>{
+    const twoDaysAgo=new Date();twoDaysAgo.setDate(twoDaysAgo.getDate()-2);
+    const recentCalls=DATA.filter(d=>d.vendeur===v&&d.call_date&&new Date(d.call_date)>=twoDaysAgo&&['appelle','negociation','rappeler','valide','perdu'].includes(d.status)).length;
+    const alertKey=v+'_'+new Date().toISOString().slice(0,10);
+    if(recentCalls<10&&!dismissed[alertKey]){
+      alertHtml+=`<div class="alert-card">
+        <span style="color:var(--red)"><strong>${v}</strong> \u2014 seulement ${recentCalls} appels en 2 jours</span>
+        <button class="dismiss" onclick="dismissAlert('${alertKey}')">&#10005;</button>
+      </div>`;
+    }
+  });
+  if(alertHtml)finHtml+=`<div style="grid-column:1/-1;margin-bottom:16px"><h3 style="font-size:.82rem;font-weight:700;margin-bottom:12px;color:var(--red)">Alertes d'inactivite</h3>${alertHtml}</div>`;
+
+  // Duplicate warnings
+  let dupHtml='';
+  const dupWarnings=findDuplicates();
+  if(dupWarnings.length){
+    dupHtml=`<div style="grid-column:1/-1;margin-bottom:16px"><h3 style="font-size:.82rem;font-weight:700;margin-bottom:12px;color:var(--yellow)">Doublons detectes</h3>`;
+    dupWarnings.forEach(w=>{
+      dupHtml+=`<div class="dup-item">${w.phone}: ${w.vendors.join(', ')} <button class="btn btn-ghost btn-sm" style="margin-left:8px" onclick="alert('Resolvez manuellement en reassignant le prospect dans le tableau.')">Resoudre</button></div>`;
+    });
+    dupHtml+=`</div>`;
+  }
+
+  vv.innerHTML=finHtml+dupHtml+VENDOR_NAMES.map(v=>{
     const vd=DATA.filter(d=>d.vendeur===v);
     const a=vd.length,ap=vd.filter(d=>d.status==='appelle').length;
     const ne=vd.filter(d=>d.status==='negociation').length,va=vd.filter(d=>d.status==='valide').length;
@@ -827,7 +1519,7 @@ function renderVendors(){
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Negociation</span><span class="vendor-stat-val" style="color:var(--orange)">${ne}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Gagnes</span><span class="vendor-stat-val" style="color:var(--green)">${va}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Perdus</span><span class="vendor-stat-val" style="color:var(--red)">${pe}</span></div>
-      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Revenue</span><span class="vendor-stat-val" style="color:var(--green)">${rev.toLocaleString()}\u20AC</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Revenue</span><span class="vendor-stat-val" style="color:var(--green)">${(va*500).toLocaleString()}\u20AC</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Conversion</span><span class="vendor-stat-val" style="color:var(--purple)">${conv}%</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Points</span><span class="vendor-stat-val" style="color:var(--yellow)">${pts}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Badges</span><span class="vendor-stat-val" style="color:var(--accent)">${unlockedCount}/${BADGE_DEFS.length}</span></div>
@@ -839,6 +1531,261 @@ function renderVendors(){
       <div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="switchTab('badges');renderBadgesForVendor('${v}')">Voir badges</button></div>
     </div>`;
   }).join('');
+}
+
+function dismissAlert(key){
+  const dismissed=JSON.parse(localStorage.getItem('dismissed_alerts')||'{}');
+  dismissed[key]=true;
+  localStorage.setItem('dismissed_alerts',JSON.stringify(dismissed));
+  render();
+}
+
+// ========================================
+// VENDOR SCRIPTS (POST-IT)
+// ========================================
+async function renderScripts(){
+  await loadVendorScripts();
+  const sv=document.getElementById('scriptsView');
+
+  let html=`<div style="grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding:0">
+    <h2 style="font-size:1.1rem;font-weight:800">Mes Scripts <span style="color:var(--gray);font-size:.78rem">(${VENDOR_SCRIPTS.length}/20)</span></h2>
+    ${VENDOR_SCRIPTS.length<20?`<button class="btn btn-accent" onclick="openScriptEditor()">+ Nouveau Script</button>`:''}
+  </div>`;
+
+  if(!VENDOR_SCRIPTS.length){
+    html+=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--gray)">Aucun script. Creez des post-its pour vos scripts d'appel personnels.</div>`;
+  }
+
+  VENDOR_SCRIPTS.forEach(s=>{
+    const color=s.color||'#fef08a';
+    html+=`<div class="postit" style="background:${color}">
+      <div class="postit-actions">
+        <button onclick="openScriptEditor(${s.id})">&#9998;</button>
+        <button onclick="deleteScript(${s.id})">&#10005;</button>
+      </div>
+      <div class="postit-title">${s.title||''}</div>
+      <div class="postit-content">${s.content||''}</div>
+    </div>`;
+  });
+
+  sv.innerHTML=html;
+}
+
+function openScriptEditor(id){
+  const existing=id?VENDOR_SCRIPTS.find(s=>s.id===id):null;
+  const m=document.getElementById('modal2Content');
+  const colorButtons=POSTIT_COLORS.map(c=>`<div style="width:32px;height:32px;border-radius:6px;background:${c};cursor:pointer;border:2px solid ${existing&&existing.color===c?'var(--accent)':'transparent'}" onclick="document.querySelectorAll('.color-pick').forEach(e=>e.style.border='2px solid transparent');this.style.border='2px solid var(--accent)';document.getElementById('scriptColor').value='${c}'" class="color-pick"></div>`).join('');
+
+  m.innerHTML=`<h3><span>${existing?'Modifier':'Nouveau'}</span> Script</h3>
+    <div class="modal-field"><label>Titre</label><input id="scriptTitle" value="${existing?(existing.title||''):''}"></div>
+    <div class="modal-field"><label>Contenu</label><textarea id="scriptContent" rows="5">${existing?(existing.content||''):'Votre script ici...'}</textarea></div>
+    <div class="modal-field"><label>Couleur</label><div style="display:flex;gap:8px;flex-wrap:wrap">${colorButtons}</div></div>
+    <input type="hidden" id="scriptColor" value="${existing?existing.color||'#fef08a':'#fef08a'}">
+    <input type="hidden" id="scriptEditId" value="${id||''}">
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal2()">Annuler</button>
+      <button class="btn btn-accent" onclick="saveScript()">Sauvegarder</button>
+    </div>`;
+  document.getElementById('modal2Overlay').classList.remove('hidden');
+}
+
+async function saveScript(){
+  const title=document.getElementById('scriptTitle').value.trim();
+  const content=document.getElementById('scriptContent').value.trim();
+  const color=document.getElementById('scriptColor').value;
+  const editId=document.getElementById('scriptEditId').value;
+
+  if(!title){alert('Titre requis');return;}
+
+  if(editId){
+    await sb.from('vendor_scripts').update({title,content,color}).eq('id',parseInt(editId));
+  } else {
+    if(VENDOR_SCRIPTS.length>=20){alert('Maximum 20 scripts');return;}
+    await sb.from('vendor_scripts').insert([{title,content,color,vendor_name:currentUser}]);
+  }
+  closeModal2();
+  renderScripts();
+}
+
+async function deleteScript(id){
+  if(!confirm('Supprimer ce script?'))return;
+  await sb.from('vendor_scripts').delete().eq('id',id);
+  renderScripts();
+}
+
+// ========================================
+// ACTIVITY LOG
+// ========================================
+async function logActivity(action,prospectName,prospectId,details){
+  try{
+    await sb.from('activity_log').insert([{
+      vendor_name:currentUser,
+      action:action,
+      prospect_name:prospectName||null,
+      prospect_id:prospectId||null,
+      details:details||null,
+      created_at:new Date().toISOString()
+    }]);
+  }catch(e){console.error('Log error:',e)}
+}
+
+async function renderLogs(){
+  if(!isAdmin)return;
+  await loadActivityLog();
+  const lv=document.getElementById('logsView');
+
+  let html=`<h2 style="font-size:1.2rem;font-weight:800;margin-bottom:16px">Activity Log</h2>`;
+
+  // Filters
+  html+=`<div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+    <select class="flt" id="logFVendor" onchange="filterLogs()"><option value="">Tous vendeurs</option>${VENDOR_NAMES.map(v=>`<option>${v}</option>`).join('')}<option>Admin</option></select>
+    <select class="flt" id="logFAction" onchange="filterLogs()"><option value="">Toutes actions</option><option>status_change</option><option>call</option><option>client_status_update</option><option>blacklist</option><option>restore</option></select>
+    <input type="date" class="search" id="logFDate" onchange="filterLogs()" style="width:auto">
+  </div>`;
+
+  html+=`<div style="overflow-x:auto"><table class="log-table"><thead><tr>
+    <th>Date</th><th>Vendeur</th><th>Action</th><th>Prospect</th><th>Details</th>
+  </tr></thead><tbody id="logTbody">`;
+
+  ACTIVITY_LOG.forEach(l=>{
+    html+=`<tr>
+      <td>${new Date(l.created_at).toLocaleString('fr-FR')}</td>
+      <td>${l.vendor_name||''}</td>
+      <td><span class="badge" style="background:rgba(88,166,255,.1);color:var(--accent)">${l.action||''}</span></td>
+      <td>${l.prospect_name||''}</td>
+      <td style="color:var(--gray);max-width:300px;overflow:hidden;text-overflow:ellipsis">${l.details||''}</td>
+    </tr>`;
+  });
+
+  html+=`</tbody></table></div>`;
+  lv.innerHTML=html;
+}
+
+function filterLogs(){
+  const vendor=document.getElementById('logFVendor').value;
+  const action=document.getElementById('logFAction').value;
+  const date=document.getElementById('logFDate').value;
+  const tbody=document.getElementById('logTbody');
+
+  let filtered=ACTIVITY_LOG;
+  if(vendor)filtered=filtered.filter(l=>l.vendor_name===vendor);
+  if(action)filtered=filtered.filter(l=>l.action===action);
+  if(date)filtered=filtered.filter(l=>l.created_at&&l.created_at.slice(0,10)===date);
+
+  tbody.innerHTML=filtered.map(l=>`<tr>
+    <td>${new Date(l.created_at).toLocaleString('fr-FR')}</td>
+    <td>${l.vendor_name||''}</td>
+    <td><span class="badge" style="background:rgba(88,166,255,.1);color:var(--accent)">${l.action||''}</span></td>
+    <td>${l.prospect_name||''}</td>
+    <td style="color:var(--gray);max-width:300px;overflow:hidden;text-overflow:ellipsis">${l.details||''}</td>
+  </tr>`).join('');
+}
+
+// ========================================
+// BLACKLIST
+// ========================================
+async function blacklistProspect(id,name){
+  const reason=prompt('Raison du blacklist:\n1. Wrong number\n2. Not interested\n3. Rude\n\nEntrez le numero (1-3) ou un texte:');
+  if(!reason&&reason!=='')return;
+  const reasonMap={'1':'Wrong number','2':'Not interested','3':'Rude'};
+  const finalReason=reasonMap[reason]||reason||'Non specifie';
+
+  if(!confirm('Blacklister '+name+' ? Raison: '+finalReason))return;
+
+  await sb.from('blacklist').insert([{
+    prospect_id:id,
+    prospect_name:name,
+    vendor_name:currentUser,
+    reason:finalReason,
+    created_at:new Date().toISOString()
+  }]);
+
+  BLACKLIST.push({prospect_id:id,prospect_name:name,vendor_name:currentUser,reason:finalReason});
+  DATA=DATA.filter(d=>d.id!==id);
+
+  await logActivity('blacklist',name,id,'Reason: '+finalReason);
+  showToast('Blackliste',name+' a ete blackliste.','var(--red)');
+  render();
+}
+
+function renderBlacklist(){
+  if(!isAdmin)return;
+  const bv=document.getElementById('blacklistView');
+
+  let html=`<h2 style="font-size:1.2rem;font-weight:800;margin-bottom:20px">Blacklist (${BLACKLIST.length})</h2>`;
+
+  if(!BLACKLIST.length){
+    html+=`<div style="text-align:center;padding:60px;color:var(--gray)">Aucun prospect blackliste.</div>`;
+    bv.innerHTML=html;return;
+  }
+
+  html+=`<div style="overflow-x:auto"><table class="log-table"><thead><tr>
+    <th>Prospect</th><th>Raison</th><th>Par</th><th>Date</th><th>Action</th>
+  </tr></thead><tbody>`;
+
+  BLACKLIST.forEach(b=>{
+    html+=`<tr>
+      <td>${b.prospect_name||'ID: '+b.prospect_id}</td>
+      <td>${b.reason||''}</td>
+      <td>${b.vendor_name||''}</td>
+      <td>${b.created_at?new Date(b.created_at).toLocaleDateString('fr-FR'):''}</td>
+      <td><button class="btn btn-ghost btn-sm" onclick="restoreFromBlacklist(${b.id},${b.prospect_id})">Restaurer</button></td>
+    </tr>`;
+  });
+
+  html+=`</tbody></table></div>`;
+  bv.innerHTML=html;
+}
+
+async function restoreFromBlacklist(blId,prospectId){
+  if(!confirm('Restaurer ce prospect?'))return;
+  await sb.from('blacklist').delete().eq('id',blId);
+  BLACKLIST=BLACKLIST.filter(b=>b.id!==blId);
+
+  // Re-fetch the prospect
+  const{data}=await sb.from('prospects').select('*').eq('id',prospectId).single();
+  if(data)DATA.push(data);
+
+  await logActivity('restore','',prospectId,'Restored from blacklist');
+  showToast('Restaure','Prospect restaure.','var(--green)');
+  render();
+}
+
+// ========================================
+// DUPLICATE DETECTION
+// ========================================
+function findDuplicates(){
+  const phoneMap={};
+  DATA.forEach(d=>{
+    if(!d.numero||!d.vendeur)return;
+    if(!phoneMap[d.numero])phoneMap[d.numero]=new Set();
+    phoneMap[d.numero].add(d.vendeur);
+  });
+  const dups=[];
+  Object.entries(phoneMap).forEach(([phone,vendors])=>{
+    if(vendors.size>1)dups.push({phone,vendors:[...vendors]});
+  });
+  return dups;
+}
+
+function checkDuplicates(){
+  const dups=findDuplicates();
+  if(dups.length){
+    const el=document.getElementById('adminAlerts');
+    if(el&&isAdmin){
+      let html='';
+      dups.slice(0,5).forEach(d=>{
+        html+=`<div class="alert-card" style="border-color:var(--yellow);background:rgba(210,153,34,.06)">
+          <span style="color:var(--yellow)">Doublon: <strong>${d.phone}</strong> assigne a ${d.vendors.join(' et ')}</span>
+        </div>`;
+      });
+      el.innerHTML=html;
+    }
+  }
+}
+
+function checkInactivityAlerts(){
+  // Handled in renderVendors
 }
 
 // ========================================
@@ -871,12 +1818,10 @@ function renderChallengeBanner(){
   const pct=target>0?Math.min(100,Math.round((current/target)*100)):100;
   const complete=pct>=100;
 
-  // Check and store daily challenge completion
   const todayKey='challenge_'+currentUser+'_'+new Date().toISOString().slice(0,10);
   const alreadyClaimed=localStorage.getItem(todayKey);
   if(complete&&!alreadyClaimed&&challenge.metric!=='rest'){
     localStorage.setItem(todayKey,'1');
-    // Award bonus points
     const bonusMatch=challenge.reward.match(/\+(\d+)/);
     if(bonusMatch){
       const bonus=parseInt(bonusMatch[1]);
@@ -929,28 +1874,23 @@ function checkBadges(){
   if(stats.calls>=10)unlock('getting_started');
   if(stats.nego>=1||stats.wins>=1)unlock('first_blood');
   if(stats.wins>=1)unlock('rookie_sale');
-  // early_bird and night_owl - check call_date times
   const vd=DATA.filter(d=>d.vendeur===vendor&&d.call_date);
   if(vd.some(d=>{const h=new Date(d.call_date).getHours();return h<9}))unlock('early_bird');
   if(vd.some(d=>{const h=new Date(d.call_date).getHours();return h>=19}))unlock('night_owl');
-  // speed_dialer - approximate: if 5+ calls today
   if(todayCalls>=5)unlock('speed_dialer');
   if(stats.notes>=10)unlock('note_taker');
   if(stats.regions.length>=3)unlock('explorer');
 
   // INTERMEDIATE
   if(todayCalls>=10)unlock('call_machine');
-  // hot_streak - track in localStorage
   const streakKey='streak_'+vendor;
   let streak=JSON.parse(localStorage.getItem(streakKey)||'{"days":[],"count":0}');
   const today=new Date().toISOString().slice(0,10);
   if(todayCalls>=10&&!streak.days.includes(today)){
     streak.days.push(today);
-    // Keep only last 30 days
     streak.days=streak.days.filter(d=>{const diff=(new Date()-new Date(d))/(1000*60*60*24);return diff<30});
     localStorage.setItem(streakKey,JSON.stringify(streak));
   }
-  // Check consecutive days with 10+ calls
   if(streak.days.length>=3){
     const sorted=streak.days.sort();
     let consec=1,maxConsec=1;
@@ -962,7 +1902,6 @@ function checkBadges(){
     if(maxConsec>=7)unlock('unstoppable');
   }
   if(weekSales>=3)unlock('silver_tongue');
-  // region_master - check if all prospects in a region are processed
   const vendorRegions=[...new Set(DATA.filter(d=>d.vendeur===vendor).map(d=>d.region))].filter(Boolean);
   vendorRegions.forEach(r=>{
     const rp=DATA.filter(d=>d.region===r&&d.vendeur===vendor);
@@ -970,13 +1909,10 @@ function checkBadges(){
     if(rp.length>0&&done.length===rp.length)unlock('region_master');
   });
   if(stats.total>=50)unlock('hunter');
-  // persuader - 5 nego that became sales (approximate: count valide)
   if(stats.wins>=5)unlock('persuader');
   if(stats.rev>=1000)unlock('revenue_maker');
   if(stats.nego>=10)unlock('pipeline_king');
-  // follow_up_king - approximate with rappeler conversions
   if(stats.wins>=3)unlock('follow_up_king');
-  // weekly_champion
   const rankings=VENDOR_NAMES.map(v=>({name:v,pts:calcPoints(v)})).sort((a,b)=>b.pts-a.pts);
   if(rankings[0].name===vendor)unlock('weekly_champion');
 
@@ -984,12 +1920,10 @@ function checkBadges(){
   if(stats.wins>=10)unlock('legend');
   if(weekSales>=5)unlock('closer');
   if(pts>=500)unlock('elite');
-  // unstoppable already checked above
   if(rankings[0].name===vendor)unlock('top_gun');
   if(stats.rev>=5000)unlock('gold_rush');
   if(stats.calls>=100)unlock('marathon_runner');
   if(stats.wins>=10)unlock('master_negotiator');
-  // island_conqueror - 3 regions completed
   let completedRegions=0;
   vendorRegions.forEach(r=>{
     const rp=DATA.filter(d=>d.region===r&&d.vendeur===vendor);
@@ -1002,16 +1936,13 @@ function checkBadges(){
   // SPECIAL
   if(todayCalls>=15&&getWeekSales(vendor)>=1)unlock('perfect_day');
   if(stats.wins>=1&&stats.rappeler>=3)unlock('comeback_kid');
-  // greek_god - 5 sales in island regions (approximate)
   if(stats.wins>=5)unlock('greek_god');
-  // the_architect - approximate
   if(stats.wins>=3)unlock('the_architect');
   if(stats.wins>=20)unlock('hall_of_fame');
   if(stats.rev>=10000)unlock('money_printer');
 
   saveBadges(vendor,badges);
 
-  // Show toast for new unlocks
   newUnlocks.forEach(id=>{
     const def=BADGE_DEFS.find(b=>b.id===id);
     if(def){
@@ -1083,12 +2014,9 @@ function spawnConfetti(){
 function switchTab(tab){
   currentTab=tab;
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
-  document.getElementById('tableView').classList.toggle('hidden',tab!=='table');
-  document.getElementById('pipelineView').classList.toggle('hidden',tab!=='pipeline');
-  document.getElementById('projectsView').classList.toggle('hidden',tab!=='projects');
-  document.getElementById('leaderboardView').classList.toggle('hidden',tab!=='leaderboard');
-  document.getElementById('badgesView').classList.toggle('hidden',tab!=='badges');
-  document.getElementById('vendorsView').classList.toggle('hidden',tab!=='vendors');
+  const views=['tableView','pipelineView','projectsView','clientsView','leaderboardView','badgesView','vendorsView','scriptsView','remindersView','logsView','blacklistView'];
+  const tabMap={table:'tableView',pipeline:'pipelineView',projects:'projectsView',clients:'clientsView',leaderboard:'leaderboardView',badges:'badgesView',vendors:'vendorsView',scripts:'scriptsView',reminders:'remindersView',logs:'logsView',blacklist:'blacklistView'};
+  views.forEach(v=>{const el=document.getElementById(v);if(el)el.classList.toggle('hidden',v!==tabMap[tab])});
   document.getElementById('controlsBar').classList.toggle('hidden',tab!=='table');
   render();
 }
@@ -1108,9 +2036,41 @@ function doSort(col){
 async function updateField(id,field,value){
   const obj={};obj[field]=value;obj.updated_at=new Date().toISOString();
   if(field==='status'&&value==='appelle')obj.call_date=new Date().toISOString();
-  await sb.from('prospects').update(obj).eq('id',id);
+
   const row=DATA.find(d=>d.id===id);
+  const oldStatus=row?row.status:'';
+
+  await sb.from('prospects').update(obj).eq('id',id);
   if(row){row[field]=value;if(obj.call_date)row.call_date=obj.call_date;row.updated_at=obj.updated_at}
+
+  // Log activity
+  if(field==='status'){
+    await logActivity('status_change',row?row.nom:'',id,oldStatus+' -> '+value);
+  }
+
+  // Auto-create client when status becomes "valide"
+  if(field==='status'&&value==='valide'&&row){
+    const alreadyClient=CLIENTS.find(c=>c.prospect_id===id);
+    if(!alreadyClient){
+      const clientData={
+        prospect_id:id,
+        business_name:row.nom||'',
+        phone:row.numero||'',
+        vendor_name:row.vendeur||currentUser,
+        sale_date:new Date().toISOString(),
+        site_status:'not_started'
+      };
+      const{data}=await sb.from('clients').insert([clientData]).select();
+      if(data&&data[0])CLIENTS.push(data[0]);
+      showToast('Nouveau client!',row.nom+' ajoute aux clients.','var(--green)');
+    }
+  }
+
+  // If rappeler, prompt for reminder
+  if(field==='status'&&value==='rappeler'&&row&&!isAdmin){
+    setTimeout(()=>showReminderPicker(id,row.nom||''),300);
+  }
+
   render();
 }
 
@@ -1126,6 +2086,7 @@ async function dropCard(e,status){e.preventDefault();if(dragId){await updateFiel
 // ========================================
 function openModal(){document.getElementById('modalOverlay').classList.remove('hidden')}
 function closeModal(){document.getElementById('modalOverlay').classList.add('hidden')}
+function closeModal2(){document.getElementById('modal2Overlay').classList.add('hidden')}
 
 async function createProject(){
   const name=document.getElementById('projName').value.trim();
@@ -1175,15 +2136,92 @@ function exportCSV(){
 }
 
 // ========================================
+// PDF REPORT
+// ========================================
+function generatePDFReport(){
+  if(!isAdmin)return;
+  const{jsPDF}=window.jspdf;
+  const doc=new jsPDF();
+  const now=new Date();
+
+  // Header
+  doc.setFontSize(20);doc.setTextColor(88,166,255);
+  doc.text('VANTAGE CRM - Report',14,20);
+  doc.setFontSize(10);doc.setTextColor(139,148,158);
+  doc.text('Generated: '+now.toLocaleString('fr-FR'),14,28);
+  doc.text('Period: Last 30 days',14,34);
+
+  let y=48;
+  doc.setFontSize(14);doc.setTextColor(230,237,243);
+  doc.text('Team Summary',14,y);y+=10;
+
+  // Team totals
+  const totalProspects=DATA.length;
+  const totalWon=DATA.filter(d=>d.status==='valide').length;
+  const totalLost=DATA.filter(d=>d.status==='perdu').length;
+  const totalNego=DATA.filter(d=>d.status==='negociation').length;
+  const totalRevenue=totalWon*500;
+
+  doc.setFontSize(10);doc.setTextColor(139,148,158);
+  doc.text('Total Prospects: '+totalProspects,14,y);y+=6;
+  doc.text('Won: '+totalWon+' | Lost: '+totalLost+' | In Negotiation: '+totalNego,14,y);y+=6;
+  doc.text('Revenue: '+totalRevenue.toLocaleString()+' EUR',14,y);y+=6;
+  doc.text('Forecast (nego x 30%): '+Math.round(totalNego*500*0.3).toLocaleString()+' EUR',14,y);y+=14;
+
+  // Per vendor
+  doc.setFontSize(14);doc.setTextColor(230,237,243);
+  doc.text('Vendor Statistics',14,y);y+=10;
+
+  VENDOR_NAMES.forEach(v=>{
+    const stats=getVendorStats(v);
+    const pts=calcPoints(v);
+    const badges=getBadges(v);
+    const unlockedCount=Object.values(badges).filter(b=>b.unlocked).length;
+
+    doc.setFontSize(11);doc.setTextColor(88,166,255);
+    doc.text(v,14,y);y+=7;
+    doc.setFontSize(9);doc.setTextColor(139,148,158);
+    doc.text('Calls: '+stats.calls+' | Won: '+stats.wins+' | Negotiation: '+stats.nego+' | Points: '+pts,20,y);y+=5;
+    doc.text('Revenue: '+(stats.wins*500).toLocaleString()+' EUR | Badges: '+unlockedCount+'/'+BADGE_DEFS.length,20,y);y+=10;
+
+    if(y>270){doc.addPage();y=20;}
+  });
+
+  doc.save('vantage_report_'+now.toISOString().slice(0,10)+'.pdf');
+  showToast('PDF genere','Rapport telecharge.','var(--green)');
+}
+
+// ========================================
 // REALTIME
 // ========================================
 sb.channel('changes').on('postgres_changes',{event:'*',schema:'public',table:'prospects'},p=>{
   if(p.eventType==='UPDATE'){const i=DATA.findIndex(d=>d.id===p.new.id);if(i>=0)DATA[i]=p.new}
-  else if(p.eventType==='INSERT'){DATA.push(p.new)}
+  else if(p.eventType==='INSERT'){
+    const blIds=new Set(BLACKLIST.map(b=>b.prospect_id));
+    if(!blIds.has(p.new.id))DATA.push(p.new);
+  }
   render();
 }).subscribe();
+
 sb.channel('proj-changes').on('postgres_changes',{event:'*',schema:'public',table:'projects'},async()=>{
   const{data}=await sb.from('projects').select('*').order('id');PROJECTS=data||[];render();
+}).subscribe();
+
+sb.channel('client-changes').on('postgres_changes',{event:'*',schema:'public',table:'clients'},async()=>{
+  const{data}=await sb.from('clients').select('*').order('id');CLIENTS=data||[];render();
+}).subscribe();
+
+sb.channel('reminder-changes').on('postgres_changes',{event:'*',schema:'public',table:'reminders'},async()=>{
+  const{data}=await sb.from('reminders').select('*').order('remind_at');REMINDERS=data||[];
+  if(currentTab==='reminders')render();
+}).subscribe();
+
+sb.channel('blacklist-changes').on('postgres_changes',{event:'*',schema:'public',table:'blacklist'},async()=>{
+  const{data}=await sb.from('blacklist').select('*').order('id');BLACKLIST=data||[];
+  // Re-filter DATA
+  const blIds=new Set(BLACKLIST.map(b=>b.prospect_id));
+  DATA=DATA.filter(d=>!blIds.has(d.id));
+  render();
 }).subscribe();
 </script>
 </body>
