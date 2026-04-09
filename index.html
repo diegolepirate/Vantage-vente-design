@@ -194,15 +194,29 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 .badge-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
 @media(max-width:1024px){.badge-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:600px){.badge-grid{grid-template-columns:repeat(2,1fr)}}
-.badge-card{background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:20px 16px;text-align:center;transition:.3s;position:relative}
-.badge-card.unlocked{border-color:rgba(88,166,255,.3);box-shadow:0 0 15px rgba(88,166,255,.15)}
-.badge-card.locked{opacity:.4}
-.badge-card.locked .badge-emoji{filter:grayscale(1)}
-.badge-card.locked::after{content:'\1F512';position:absolute;top:8px;right:8px;font-size:.6rem}
-.badge-emoji{font-size:3rem;line-height:1;margin-bottom:10px;display:block}
+.badge-card{background:var(--s1);border:2px solid var(--s3);border-radius:12px;padding:20px 16px;text-align:center;transition:.3s;position:relative;overflow:hidden}
+.badge-card.unlocked{box-shadow:0 0 20px rgba(88,166,255,.2)}
+.badge-card.unlocked.rarity-Common{border-color:#8b949e;box-shadow:0 0 15px rgba(139,148,158,.15)}
+.badge-card.unlocked.rarity-Rare{border-color:#58a6ff;box-shadow:0 0 18px rgba(88,166,255,.2)}
+.badge-card.unlocked.rarity-Epic{border-color:#bc8cff;box-shadow:0 0 20px rgba(188,140,255,.25)}
+.badge-card.unlocked.rarity-Legendary{box-shadow:0 0 25px rgba(255,200,50,.3);animation:legendaryPulse 3s ease-in-out infinite}
+.badge-card.locked{filter:grayscale(1);opacity:.4}
+.badge-card.locked .badge-icon svg{opacity:.5}
+.badge-card.locked::after{content:'';position:absolute;top:8px;right:8px;width:12px;height:14px;background:var(--gray);mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='11' width='18' height='11' rx='2'/%3E%3Cpath d='M7 11V7a5 5 0 0110 0v4' fill='none' stroke='currentColor' stroke-width='2'/%3E%3C/svg%3E");-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect x='3' y='11' width='18' height='11' rx='2'/%3E%3Cpath d='M7 11V7a5 5 0 0110 0v4' fill='none' stroke='currentColor' stroke-width='2'/%3E%3C/svg%3E")}
+.badge-card.secret-locked .badge-icon{font-size:1.8rem;color:var(--gray)}
+.badge-icon{display:flex;align-items:center;justify-content:center;margin-bottom:10px;min-height:40px}
+.badge-icon svg{width:32px;height:32px}
 .badge-name{font-size:.72rem;font-weight:700;margin-bottom:4px}
 .badge-desc{font-size:.58rem;color:var(--gray);line-height:1.4}
 .badge-date{font-size:.52rem;color:var(--accent);margin-top:6px}
+.badge-pts{font-size:.52rem;font-weight:700;color:var(--yellow);margin-top:4px}
+.badge-rarity{font-size:.48rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-top:2px}
+.badge-rarity.r-Common{color:#8b949e}.badge-rarity.r-Rare{color:#58a6ff}.badge-rarity.r-Epic{color:#bc8cff}.badge-rarity.r-Legendary{color:#d29922}
+.badge-progress{width:100%;height:3px;background:var(--s3);border-radius:2px;margin-top:8px;overflow:hidden}
+.badge-progress-bar{height:100%;background:var(--accent);border-radius:2px;transition:width .4s ease}
+@keyframes legendaryPulse{0%,100%{box-shadow:0 0 20px rgba(255,200,50,.2)}50%{box-shadow:0 0 30px rgba(255,200,50,.5)}}
+@keyframes legendaryBorder{0%{border-color:#f85149}14%{border-color:#db6d28}28%{border-color:#d29922}42%{border-color:#3fb950}57%{border-color:#58a6ff}71%{border-color:#bc8cff}85%{border-color:#f778ba}100%{border-color:#f85149}}
+.badge-card.unlocked.rarity-Legendary{animation:legendaryBorder 4s linear infinite,legendaryPulse 3s ease-in-out infinite}
 
 /* TOAST */
 .toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
@@ -344,6 +358,87 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
   .fin-grid{grid-template-columns:repeat(2,1fr)}
   #detailPanel{width:100%}
 }
+
+/* ===== VISUAL EFFECTS ===== */
+
+/* Animated gradient on logo */
+.topbar-logo span {
+  background: linear-gradient(90deg, #58a6ff, #bc8cff, #58a6ff);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientShift 3s ease infinite;
+}
+@keyframes gradientShift { 0%{background-position:0%} 50%{background-position:100%} 100%{background-position:0%} }
+
+/* KPI pulse on value change */
+@keyframes statPulse { 0%{transform:scale(1)} 50%{transform:scale(1.05)} 100%{transform:scale(1)} }
+.stat-card.updated .stat-val { animation: statPulse 0.5s ease; }
+
+/* Table row hover accent */
+tr:hover { border-left: 3px solid var(--accent) !important; }
+
+/* Status change transition */
+tr { transition: background-color 0.5s ease, opacity 0.3s ease; }
+
+/* Fade-in for new rows */
+@keyframes fadeInRow { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+tbody tr { animation: fadeInRow 0.3s ease; }
+
+/* Tab animated underline */
+.tab { position: relative; }
+.tab.active::after {
+  content: ''; position: absolute; bottom: 0; left: 10%; width: 80%; height: 2px;
+  background: var(--accent); border-radius: 1px;
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn { from { width:0; left:50%; } to { width:80%; left:10%; } }
+
+/* Pipeline column top border */
+.pipe-col { border-top: 3px solid var(--gray); }
+
+/* Drag card lift effect */
+.pipe-card[draggable]:active { transform: translateY(-4px) scale(1.02); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+
+/* Drop zone highlight */
+.pipe-col-body.drag-over { background: rgba(88,166,255,0.05); border: 1px dashed var(--accent); border-radius: 8px; }
+
+/* Badge staggered fade-in */
+@keyframes badgeFadeIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+/* Unlocked badge golden glow pulse */
+@keyframes goldenPulse { 0%{box-shadow:0 0 10px rgba(210,153,34,.15)} 50%{box-shadow:0 0 25px rgba(210,153,34,.3)} 100%{box-shadow:0 0 10px rgba(210,153,34,.15)} }
+
+/* Leaderboard #1 crown bounce */
+@keyframes crownBounce { 0%{transform:translateY(0)} 50%{transform:translateY(-5px)} 100%{transform:translateY(0)} }
+
+/* Skeleton loading */
+@keyframes shimmer { 0%{background-position:-200px 0} 100%{background-position:200px 0} }
+.skeleton { background: linear-gradient(90deg, var(--s2) 0%, var(--s3) 50%, var(--s2) 100%); background-size: 400px 100%; animation: shimmer 1.5s infinite; border-radius: 4px; height: 16px; }
+.skeleton-row { display:flex; gap:12px; padding:8px 10px; }
+.skeleton-row .skeleton { flex:1; height:14px; }
+.skeleton-card { background:var(--s1); border:1px solid var(--s3); border-radius:10px; padding:16px 20px; min-width:120px; flex:1; }
+.skeleton-card .skeleton { margin-bottom:8px; }
+.skeleton-card .skeleton:last-child { width:60%; }
+
+/* Button micro-interactions */
+.btn { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.btn:hover { transform: translateY(-1px); }
+.btn:active { transform: translateY(0) scale(0.98); }
+
+/* Tab fade transition */
+.tab-content { animation: tabFade 0.3s ease; }
+@keyframes tabFade { from { opacity:0; } to { opacity:1; } }
+
+/* Smooth progress rings for conversion */
+.progress-ring { transform: rotate(-90deg); }
+.progress-ring circle { transition: stroke-dashoffset 0.5s ease; }
+
+/* Load more button */
+.load-more-wrap { text-align:center; padding:16px 24px; }
+.load-more-btn { padding:10px 28px; background:var(--s2); border:1px solid var(--s3); border-radius:8px; color:var(--accent); font-size:.78rem; font-weight:600; cursor:pointer; transition:.2s; }
+.load-more-btn:hover { border-color:var(--accent); background:rgba(88,166,255,.08); transform:translateY(-1px); }
+.load-more-btn:disabled { opacity:.4; cursor:not-allowed; transform:none; }
 </style>
 </head>
 <body>
@@ -487,6 +582,8 @@ let DATA=[],PROJECTS=[],CLIENTS=[],CALL_HISTORY=[],REMINDERS=[],ACTIVITY_LOG=[],
 let ALL_DATA=[]; // unfiltered by blacklist
 let currentUser=null,isAdmin=false,sortCol='',sortDir=1,currentTab='table';
 let statusFilter=''; // for stat card clicking
+let PAGE=0; const PAGE_SIZE=50; let TOTAL_COUNT=0;
+let isLoadingMore=false;
 
 const STATUSES=['nouveau','appelle','negociation','rappeler','valide','perdu'];
 const VENDORS=['','Vendeur 1','Vendeur 2','Vendeur 3'];
@@ -516,42 +613,117 @@ let callTimerInterval=null,callTimerStart=null,callTimerProspectId=null,callTime
 // BADGE DEFINITIONS
 // ========================================
 const BADGE_DEFS=[
-  {id:'first_step',cat:'Debutant',emoji:'\uD83D\uDCDE',name:'First Step',desc:'1 appel effectue'},
-  {id:'ice_breaker',cat:'Debutant',emoji:'\uD83E\uDDCA',name:'Ice Breaker',desc:'5 appels en 1 jour'},
-  {id:'getting_started',cat:'Debutant',emoji:'\uD83D\uDE80',name:'Getting Started',desc:'10 appels effectues'},
-  {id:'first_blood',cat:'Debutant',emoji:'\uD83D\uDD25',name:'First Blood',desc:'1 prospect interesse'},
-  {id:'rookie_sale',cat:'Debutant',emoji:'\u2B50',name:'Rookie Sale',desc:'1 vente'},
-  {id:'early_bird',cat:'Debutant',emoji:'\uD83C\uDF05',name:'Early Bird',desc:'Appel avant 9h'},
-  {id:'night_owl',cat:'Debutant',emoji:'\uD83C\uDF19',name:'Night Owl',desc:'Appel apres 19h'},
-  {id:'speed_dialer',cat:'Debutant',emoji:'\u26A1',name:'Speed Dialer',desc:'5 appels en 1 heure'},
-  {id:'note_taker',cat:'Debutant',emoji:'\u270F\uFE0F',name:'Note Taker',desc:'10 notes ajoutees'},
-  {id:'explorer',cat:'Debutant',emoji:'\uD83D\uDDFA\uFE0F',name:'Explorer',desc:'3 regions differentes'},
-  {id:'call_machine',cat:'Intermediaire',emoji:'\uD83D\uDCF1',name:'Call Machine',desc:'10 appels en 1 jour'},
-  {id:'hot_streak',cat:'Intermediaire',emoji:'\uD83D\uDD25',name:'Hot Streak',desc:'3 jours avec 10+ appels'},
-  {id:'silver_tongue',cat:'Intermediaire',emoji:'\uD83D\uDDE3\uFE0F',name:'Silver Tongue',desc:'3 ventes en 1 semaine'},
-  {id:'region_master',cat:'Intermediaire',emoji:'\uD83C\uDFC1',name:'Region Master',desc:'Region complete'},
-  {id:'hunter',cat:'Intermediaire',emoji:'\uD83C\uDFAF',name:'Hunter',desc:'50 contacts'},
-  {id:'persuader',cat:'Intermediaire',emoji:'\uD83E\uDD1D',name:'Persuader',desc:'5 nego converties'},
-  {id:'revenue_maker',cat:'Intermediaire',emoji:'\uD83D\uDCB0',name:'Revenue Maker',desc:'1000\u20AC de revenue'},
-  {id:'pipeline_king',cat:'Intermediaire',emoji:'\uD83D\uDC51',name:'Pipeline King',desc:'10 en negociation'},
-  {id:'follow_up_king',cat:'Intermediaire',emoji:'\uD83D\uDD04',name:'Follow Up King',desc:'3 rappels convertis'},
-  {id:'weekly_champion',cat:'Intermediaire',emoji:'\uD83C\uDFC6',name:'Weekly Champion',desc:'#1 de la semaine'},
-  {id:'legend',cat:'Avance',emoji:'\uD83D\uDC8E',name:'Legend',desc:'10 ventes'},
-  {id:'closer',cat:'Avance',emoji:'\u270A',name:'Closer',desc:'5 ventes en 1 semaine'},
-  {id:'elite',cat:'Avance',emoji:'\uD83D\uDEE1\uFE0F',name:'Elite',desc:'500 points'},
-  {id:'unstoppable',cat:'Avance',emoji:'\uD83D\uDD25',name:'Unstoppable',desc:'7 jours d\'activite'},
-  {id:'top_gun',cat:'Avance',emoji:'\u2708\uFE0F',name:'Top Gun',desc:'#1 du mois'},
-  {id:'gold_rush',cat:'Avance',emoji:'\uD83E\uDE99',name:'Gold Rush',desc:'5000\u20AC de revenue'},
-  {id:'marathon_runner',cat:'Avance',emoji:'\uD83C\uDFC3',name:'Marathon Runner',desc:'100 appels'},
-  {id:'master_negotiator',cat:'Avance',emoji:'\u265E',name:'Master Negotiator',desc:'10 nego gagnees'},
-  {id:'island_conqueror',cat:'Avance',emoji:'\uD83C\uDFDD\uFE0F',name:'Island Conqueror',desc:'3 regions terminees'},
-  {id:'vantage_legend',cat:'Avance',emoji:'\uD83D\uDC51',name:'Vantage Legend',desc:'1000 points'},
-  {id:'perfect_day',cat:'Special',emoji:'\uD83C\uDF1F',name:'Perfect Day',desc:'15 appels + 1 vente/jour'},
-  {id:'comeback_kid',cat:'Special',emoji:'\uD83E\uDD85',name:'Comeback Kid',desc:'Vente apres 3 rappels'},
-  {id:'greek_god',cat:'Special',emoji:'\uD83C\uDFDB\uFE0F',name:'Greek God',desc:'5 ventes insulaires'},
-  {id:'the_architect',cat:'Special',emoji:'\uD83D\uDCD0',name:'The Architect',desc:'3 ventes maintenance'},
-  {id:'hall_of_fame',cat:'Special',emoji:'\uD83C\uDF96\uFE0F',name:'Hall of Fame',desc:'20 ventes'},
-  {id:'money_printer',cat:'Special',emoji:'\uD83D\uDDA8\uFE0F',name:'Money Printer',desc:'10000\u20AC de revenue'}
+  // FIRST STEPS (1-10) Common
+  {id:'first_dial',cat:'First Steps',name:'First Dial',desc:'Make 1 call',points:10,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M6.62 10.79c1.44 2.83 3.76 5.15 6.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.55.57.55 0 1 .45 1 1V20a1 1 0 01-1 1A17 17 0 013 4a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.45.57 3.57a1 1 0 01-.25 1.02l-2.2 2.2z" fill="#8b949e"/></svg>'},
+  {id:'hello_world',cat:'First Steps',name:'Hello World',desc:'Add 1 note',points:5,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" fill="none" stroke="#8b949e" stroke-width="2"/></svg>'},
+  {id:'on_the_map',cat:'First Steps',name:'On The Map',desc:'Work on 1 region',points:10,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" fill="#8b949e"/><circle cx="12" cy="9" r="2.5" fill="#161b22"/></svg>'},
+  {id:'early_bird',cat:'First Steps',name:'Early Bird',desc:'Call before 9am',points:15,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="5" fill="#d29922"/><path d="M12 1v3M12 20v3M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M1 12h3M20 12h3M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" stroke="#d29922" stroke-width="2" stroke-linecap="round"/></svg>'},
+  {id:'night_owl',cat:'First Steps',name:'Night Owl',desc:'Call after 7pm',points:15,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z" fill="#bc8cff"/></svg>'},
+  {id:'fast_fingers',cat:'First Steps',name:'Fast Fingers',desc:'5 notes in one day',points:10,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="#8b949e" stroke-width="2"/><line x1="6" y1="10" x2="18" y2="10" stroke="#8b949e" stroke-width="1.5"/><line x1="6" y1="14" x2="14" y2="14" stroke="#8b949e" stroke-width="1.5"/><line x1="6" y1="18" x2="10" y2="18" stroke="#8b949e" stroke-width="1.5"/></svg>'},
+  {id:'first_blood',cat:'First Steps',name:'First Blood',desc:'1 interested client',points:20,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2C12 2 6 10 6 14a6 6 0 0012 0C18 10 12 2 12 2z" fill="#f85149"/></svg>'},
+  {id:'rookie',cat:'First Steps',name:'Rookie',desc:'Make 3 calls',points:5,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="12,2 15,9 22,9 17,14 19,22 12,17 5,22 7,14 2,9 9,9" fill="none" stroke="#8b949e" stroke-width="1.5"/></svg>'},
+  {id:'explorer',cat:'First Steps',name:'Explorer',desc:'Visit all tabs',points:10,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#8b949e" stroke-width="2"/><polygon points="16.24,7.76 14.12,14.12 7.76,16.24 9.88,9.88" fill="#58a6ff"/></svg>'},
+  {id:'speed_dial',cat:'First Steps',name:'Speed Dial',desc:'3 calls in 30min',points:20,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="13,2 3,14 12,14 11,22 21,10 12,10" fill="#d29922"/></svg>'},
+  // CALLS (11-20)
+  {id:'dialer',cat:'Calls',name:'Dialer',desc:'Make 10 calls',points:15,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="9" fill="none" stroke="#58a6ff" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="#58a6ff"/><line x1="12" y1="3" x2="12" y2="6" stroke="#58a6ff" stroke-width="2"/><line x1="12" y1="18" x2="12" y2="21" stroke="#58a6ff" stroke-width="2"/></svg>'},
+  {id:'call_center',cat:'Calls',name:'Call Center',desc:'Make 25 calls',points:25,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="#58a6ff" stroke-width="2"/><circle cx="8" cy="9" r="1.5" fill="#58a6ff"/><circle cx="12" cy="9" r="1.5" fill="#58a6ff"/><circle cx="16" cy="9" r="1.5" fill="#58a6ff"/><circle cx="8" cy="15" r="1.5" fill="#58a6ff"/><circle cx="12" cy="15" r="1.5" fill="#58a6ff"/><circle cx="16" cy="15" r="1.5" fill="#58a6ff"/></svg>'},
+  {id:'phone_warrior',cat:'Calls',name:'Phone Warrior',desc:'Make 50 calls',points:40,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2L4 7v10l8 5 8-5V7z" fill="none" stroke="#58a6ff" stroke-width="2"/><path d="M12 8l-3 4h6l-3 4" fill="none" stroke="#58a6ff" stroke-width="2" stroke-linecap="round"/></svg>'},
+  {id:'century_caller',cat:'Calls',name:'Century Caller',desc:'Make 100 calls',points:75,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#58a6ff" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="#58a6ff" font-size="10" font-weight="bold">100</text></svg>'},
+  {id:'marathon_caller',cat:'Calls',name:'Marathon Caller',desc:'Make 200 calls',points:120,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M3 12h4l3-9 4 18 3-9h4" fill="none" stroke="#58a6ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+  {id:'legend_caller',cat:'Calls',name:'Legend Caller',desc:'Make 500 calls',points:250,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="12,2 15,9 22,9 17,14 19,22 12,17 5,22 7,14 2,9 9,9" fill="#58a6ff"/><circle cx="12" cy="12" r="3" fill="#161b22"/></svg>'},
+  {id:'daily_grind',cat:'Calls',name:'Daily Grind',desc:'10 calls in one day',points:30,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="9" fill="none" stroke="#58a6ff" stroke-width="2"/><path d="M12 7v5l3 3" fill="none" stroke="#58a6ff" stroke-width="2" stroke-linecap="round"/></svg>'},
+  {id:'power_day',cat:'Calls',name:'Power Day',desc:'20 calls in one day',points:50,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="5" y="2" width="14" height="20" rx="2" fill="none" stroke="#58a6ff" stroke-width="2"/><rect x="8" y="6" width="8" height="4" rx="1" fill="#58a6ff"/><line x1="8" y1="14" x2="16" y2="14" stroke="#58a6ff" stroke-width="1.5"/><line x1="8" y1="18" x2="13" y2="18" stroke="#58a6ff" stroke-width="1.5"/></svg>'},
+  {id:'beast_mode',cat:'Calls',name:'Beast Mode',desc:'30 calls in one day',points:75,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2L2 7l10 5 10-5-10-5z" fill="#58a6ff"/><path d="M2 17l10 5 10-5" fill="none" stroke="#58a6ff" stroke-width="2"/><path d="M2 12l10 5 10-5" fill="none" stroke="#58a6ff" stroke-width="2"/></svg>'},
+  {id:'machine',cat:'Calls',name:'Machine',desc:'50 calls in one day',points:150,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="#58a6ff" stroke-width="2"/><circle cx="9" cy="9" r="2" fill="#58a6ff"/><circle cx="15" cy="9" r="2" fill="#58a6ff"/><path d="M8 15c0 2.2 1.8 4 4 4s4-1.8 4-4" fill="none" stroke="#58a6ff" stroke-width="2"/></svg>'},
+  // STREAKS (21-28) Rare
+  {id:'consistent',cat:'Streaks',name:'Consistent',desc:'3 days with 5+ calls',points:30,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="3" y="14" width="4" height="7" fill="#bc8cff"/><rect x="10" y="10" width="4" height="11" fill="#bc8cff"/><rect x="17" y="6" width="4" height="15" fill="#bc8cff"/></svg>'},
+  {id:'on_fire',cat:'Streaks',name:'On Fire',desc:'5 days with 10+ calls',points:60,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2c0 4-4 6-4 10a6 6 0 0012 0c0-4-4-6-4-10a4 4 0 01-4 4z" fill="#bc8cff"/></svg>'},
+  {id:'unstoppable',cat:'Streaks',name:'Unstoppable',desc:'7 days with 10+ calls',points:100,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2l3 6 6 1-4 4 1 7-6-3-6 3 1-7-4-4 6-1z" fill="#bc8cff"/><circle cx="12" cy="12" r="3" fill="#161b22"/></svg>'},
+  {id:'iron_will',cat:'Streaks',name:'Iron Will',desc:'14 days with 5+ calls',points:175,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2L4 6v6c0 5.5 3.4 10.7 8 12 4.6-1.3 8-6.5 8-12V6l-8-4z" fill="none" stroke="#bc8cff" stroke-width="2"/><path d="M9 12l2 2 4-4" fill="none" stroke="#bc8cff" stroke-width="2.5" stroke-linecap="round"/></svg>'},
+  {id:'legend_streak',cat:'Streaks',name:'Legend Streak',desc:'30 day activity streak',points:400,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#bc8cff" stroke-width="2"/><path d="M12 6v6l4.5 4.5" fill="none" stroke="#bc8cff" stroke-width="2.5" stroke-linecap="round"/><circle cx="12" cy="12" r="2" fill="#bc8cff"/></svg>'},
+  {id:'monday_warrior',cat:'Streaks',name:'Monday Warrior',desc:'Active on 4 Mondays in a row',points:50,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="#bc8cff" stroke-width="2"/><line x1="3" y1="10" x2="21" y2="10" stroke="#bc8cff" stroke-width="2"/><text x="12" y="18" text-anchor="middle" fill="#bc8cff" font-size="8" font-weight="bold">M</text></svg>'},
+  {id:'weekend_warrior',cat:'Streaks',name:'Weekend Warrior',desc:'Make calls on a Saturday',points:40,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="3" y="4" width="18" height="18" rx="2" fill="none" stroke="#bc8cff" stroke-width="2"/><line x1="3" y1="10" x2="21" y2="10" stroke="#bc8cff" stroke-width="2"/><text x="12" y="18" text-anchor="middle" fill="#bc8cff" font-size="8" font-weight="bold">S</text></svg>'},
+  {id:'no_days_off',cat:'Streaks',name:'No Days Off',desc:'Active 7 days in a row',points:120,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M4 4h16v16H4z" fill="none" stroke="#bc8cff" stroke-width="2"/><path d="M4 4l16 16M20 4L4 20" stroke="#bc8cff" stroke-width="1" opacity=".3"/><path d="M9 12l2 2 4-4" fill="none" stroke="#bc8cff" stroke-width="2.5" stroke-linecap="round"/></svg>'},
+  // SALES (29-40) Rare/Epic
+  {id:'first_sale',cat:'Sales',name:'First Sale',desc:'Close your first sale',points:100,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#d29922" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="#d29922" font-size="12" font-weight="bold">$</text></svg>'},
+  {id:'double_down',cat:'Sales',name:'Double Down',desc:'2 sales in one day',points:150,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="8" cy="12" r="6" fill="none" stroke="#d29922" stroke-width="2"/><circle cx="16" cy="12" r="6" fill="none" stroke="#d29922" stroke-width="2"/></svg>'},
+  {id:'hat_trick',cat:'Sales',name:'Hat Trick',desc:'3 sales in one week',points:200,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="12,3 14,10 21,10" fill="#d29922"/><polygon points="12,3 10,10 3,10" fill="#d29922" opacity=".7"/><polygon points="3,10 21,10 12,17" fill="#d29922" opacity=".5"/></svg>'},
+  {id:'sales_machine',cat:'Sales',name:'Sales Machine',desc:'5 sales in one week',points:300,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="3" y="6" width="18" height="14" rx="2" fill="none" stroke="#d29922" stroke-width="2"/><circle cx="12" cy="13" r="4" fill="none" stroke="#d29922" stroke-width="2"/><line x1="12" y1="2" x2="12" y2="6" stroke="#d29922" stroke-width="2"/><line x1="8" y1="3" x2="8" y2="6" stroke="#d29922" stroke-width="1.5"/><line x1="16" y1="3" x2="16" y2="6" stroke="#d29922" stroke-width="1.5"/></svg>'},
+  {id:'closer',cat:'Sales',name:'Closer',desc:'10 total sales',points:350,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M22 11.08V12a10 10 0 11-5.93-9.14" fill="none" stroke="#d29922" stroke-width="2"/><path d="M22 4L12 14.01l-3-3" fill="none" stroke="#d29922" stroke-width="2.5" stroke-linecap="round"/></svg>'},
+  {id:'elite_closer',cat:'Sales',name:'Elite Closer',desc:'25 total sales',points:600,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7L12 16.4 5.7 21l2.3-7L2 9.4h7.6z" fill="#d29922"/></svg>'},
+  {id:'master_closer',cat:'Sales',name:'Master Closer',desc:'50 total sales',points:1000,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M5 16L3 5l5.5 5L12 2l3.5 8L21 5l-2 11H5z" fill="#d29922"/><path d="M5 19h14v2H5z" fill="#d29922"/></svg>'},
+  {id:'maintenance_king',cat:'Sales',name:'Maintenance King',desc:'5 maintenance deals',points:200,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2 2 0 01-2.83-2.83l6.91-6.91A6 6 0 0114.7 6.3z" fill="none" stroke="#d29922" stroke-width="2"/></svg>'},
+  {id:'full_package',cat:'Sales',name:'Full Package',desc:'10 maintenance deals',points:350,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="3" y="8" width="18" height="13" rx="2" fill="none" stroke="#d29922" stroke-width="2"/><path d="M16 8V5a4 4 0 00-8 0v3" fill="none" stroke="#d29922" stroke-width="2"/><circle cx="12" cy="15" r="2" fill="#d29922"/></svg>'},
+  {id:'quick_sale',cat:'Sales',name:'Quick Sale',desc:'Sale within 24h of first contact',points:100,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#d29922" stroke-width="2"/><polygon points="13,2 3,14 12,14 11,22 21,10 12,10" fill="#d29922" opacity=".6"/></svg>'},
+  {id:'persistence',cat:'Sales',name:'Persistence',desc:'Sale after 5+ follow-ups',points:150,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M1 4v6h6" fill="none" stroke="#d29922" stroke-width="2" stroke-linecap="round"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10" fill="none" stroke="#d29922" stroke-width="2"/></svg>'},
+  {id:'island_seller',cat:'Sales',name:'Island Seller',desc:'Make an island region sale',points:120,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><ellipse cx="12" cy="18" rx="9" ry="3" fill="none" stroke="#d29922" stroke-width="1.5"/><path d="M12 6c-2 0-4 2-4 5c0 2 1.5 4 4 7c2.5-3 4-5 4-7c0-3-2-5-4-5z" fill="#d29922" opacity=".5"/><line x1="12" y1="3" x2="12" y2="14" stroke="#d29922" stroke-width="1.5"/></svg>'},
+  // REVENUE (41-49) Epic
+  {id:'first_500',cat:'Revenue',name:'First 500',desc:'Earn 500 EUR revenue',points:50,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="2" y="4" width="20" height="16" rx="2" fill="none" stroke="#db6d28" stroke-width="2"/><line x1="2" y1="10" x2="22" y2="10" stroke="#db6d28" stroke-width="1.5"/><circle cx="17" cy="15" r="2" fill="#db6d28"/></svg>'},
+  {id:'money_maker',cat:'Revenue',name:'Money Maker',desc:'Earn 1000 EUR revenue',points:100,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#db6d28" stroke-width="2"/><path d="M12 6v12M9 8h4.5a2.5 2.5 0 010 5H9h5a2.5 2.5 0 010 5H9" fill="none" stroke="#db6d28" stroke-width="2" stroke-linecap="round"/></svg>'},
+  {id:'grand',cat:'Revenue',name:'Grand',desc:'Earn 5000 EUR revenue',points:250,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" fill="none" stroke="#db6d28" stroke-width="2.5" stroke-linecap="round"/></svg>'},
+  {id:'high_roller',cat:'Revenue',name:'High Roller',desc:'Earn 10000 EUR revenue',points:500,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="12,2 15,9 22,9 17,14 19,22 12,17 5,22 7,14 2,9 9,9" fill="none" stroke="#db6d28" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="#db6d28"/></svg>'},
+  {id:'revenue_king',cat:'Revenue',name:'Revenue King',desc:'Earn 25000 EUR revenue',points:1000,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M5 16L3 5l5.5 5L12 2l3.5 8L21 5l-2 11H5z" fill="none" stroke="#db6d28" stroke-width="2"/><path d="M5 19h14v3H5z" fill="#db6d28"/></svg>'},
+  {id:'revenue_god',cat:'Revenue',name:'Revenue God',desc:'Earn 50000 EUR revenue',points:2000,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2L2 7l10 5 10-5z" fill="#db6d28" opacity=".3"/><path d="M2 17l10 5 10-5" fill="none" stroke="#db6d28" stroke-width="2"/><path d="M2 12l10 5 10-5" fill="none" stroke="#db6d28" stroke-width="2"/><circle cx="12" cy="9" r="3" fill="#db6d28"/></svg>'},
+  {id:'monthly_target',cat:'Revenue',name:'Monthly Target',desc:'Earn 2000 EUR in one month',points:200,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#db6d28" stroke-width="2"/><circle cx="12" cy="12" r="6" fill="none" stroke="#db6d28" stroke-width="1.5"/><circle cx="12" cy="12" r="2" fill="#db6d28"/></svg>'},
+  {id:'bonus_hunter',cat:'Revenue',name:'Bonus Hunter',desc:'Reach 500 points',points:100,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="12,2 14,8 20,8 15,12 17,18 12,14 7,18 9,12 4,8 10,8" fill="#db6d28"/></svg>'},
+  {id:'double_bonus',cat:'Revenue',name:'Double Bonus',desc:'Reach 1000 points',points:200,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="8,3 10,8 15,8 11,11 13,16 8,13 3,16 5,11 1,8 6,8" fill="#db6d28"/><polygon points="16,8 18,13 23,13 19,16 21,21 16,18 11,21 13,16 9,13 14,13" fill="#db6d28" opacity=".6"/></svg>'},
+  // CONVERSION (50-57) Epic
+  {id:'sharp_shooter',cat:'Conversion',name:'Sharp Shooter',desc:'20% conversion on 20+ contacts',points:150,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#00b4d8" stroke-width="2"/><circle cx="12" cy="12" r="6" fill="none" stroke="#00b4d8" stroke-width="1.5"/><circle cx="12" cy="12" r="2" fill="#00b4d8"/></svg>'},
+  {id:'precision',cat:'Conversion',name:'Precision',desc:'30% conversion on 30+ contacts',points:250,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#00b4d8" stroke-width="2"/><circle cx="12" cy="12" r="6" fill="none" stroke="#00b4d8" stroke-width="1.5"/><circle cx="12" cy="12" r="2" fill="none" stroke="#00b4d8" stroke-width="1.5"/><line x1="12" y1="2" x2="12" y2="6" stroke="#00b4d8" stroke-width="1.5"/><line x1="12" y1="18" x2="12" y2="22" stroke="#00b4d8" stroke-width="1.5"/><line x1="2" y1="12" x2="6" y2="12" stroke="#00b4d8" stroke-width="1.5"/><line x1="18" y1="12" x2="22" y2="12" stroke="#00b4d8" stroke-width="1.5"/></svg>'},
+  {id:'sniper',cat:'Conversion',name:'Sniper',desc:'40% conversion on 20+ contacts',points:400,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#00b4d8" stroke-width="2"/><line x1="22" y1="12" x2="18" y2="12" stroke="#00b4d8" stroke-width="2"/><line x1="6" y1="12" x2="2" y2="12" stroke="#00b4d8" stroke-width="2"/><line x1="12" y1="6" x2="12" y2="2" stroke="#00b4d8" stroke-width="2"/><line x1="12" y1="22" x2="12" y2="18" stroke="#00b4d8" stroke-width="2"/><circle cx="12" cy="12" r="1" fill="#00b4d8"/></svg>'},
+  {id:'follow_up_pro',cat:'Conversion',name:'Follow Up Pro',desc:'5 follow-ups converted to sale',points:150,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M23 4v6h-6" fill="none" stroke="#00b4d8" stroke-width="2" stroke-linecap="round"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" fill="none" stroke="#00b4d8" stroke-width="2"/></svg>'},
+  {id:'negotiator',cat:'Conversion',name:'Negotiator',desc:'10 prospects in negotiation',points:100,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" fill="none" stroke="#00b4d8" stroke-width="2"/><circle cx="9" cy="7" r="4" fill="none" stroke="#00b4d8" stroke-width="2"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" fill="none" stroke="#00b4d8" stroke-width="2"/></svg>'},
+  {id:'master_negotiator',cat:'Conversion',name:'Master Negotiator',desc:'5 negotiations won',points:250,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2L4 6v6c0 5.5 3.4 10.7 8 12 4.6-1.3 8-6.5 8-12V6z" fill="none" stroke="#00b4d8" stroke-width="2"/><polygon points="12,8 13.5,11 17,11 14.25,13 15.25,16.5 12,14.5 8.75,16.5 9.75,13 7,11 10.5,11" fill="#00b4d8"/></svg>'},
+  {id:'objection_crusher',cat:'Conversion',name:'Objection Crusher',desc:'Handle 20 objections',points:75,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#00b4d8" stroke-width="2"/><line x1="8" y1="8" x2="16" y2="16" stroke="#00b4d8" stroke-width="2.5" stroke-linecap="round"/><line x1="16" y1="8" x2="8" y2="16" stroke="#00b4d8" stroke-width="2.5" stroke-linecap="round"/></svg>'},
+  {id:'no_answer_king',cat:'Conversion',name:'No Answer King',desc:'Convert after 10 no-answers',points:100,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M15.05 5A5 5 0 0119 8.95M15.05 1A9 9 0 0123 8.94" fill="none" stroke="#00b4d8" stroke-width="2" stroke-linecap="round"/><path d="M6.62 10.79c1.44 2.83 3.76 5.15 6.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.55.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" fill="none" stroke="#00b4d8" stroke-width="1.5"/></svg>'},
+  // REGIONS (58-67) Rare
+  {id:'crete_conqueror',cat:'Regions',name:'Crete Conqueror',desc:'Complete Crete region',points:150,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M3 17l4-4 4 4 4-4 6 4V3H3z" fill="none" stroke="#3fb950" stroke-width="2"/><line x1="3" y1="21" x2="21" y2="21" stroke="#3fb950" stroke-width="2"/></svg>'},
+  {id:'athens_attacker',cat:'Regions',name:'Athens Attacker',desc:'Complete Athens region',points:150,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M3 21h18M5 21V11l7-8 7 8v10M10 21v-6h4v6" fill="none" stroke="#3fb950" stroke-width="2"/></svg>'},
+  {id:'island_hopper',cat:'Regions',name:'Island Hopper',desc:'Work on 3 island regions',points:120,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="6" cy="12" r="3" fill="#3fb950" opacity=".5"/><circle cx="14" cy="8" r="3" fill="#3fb950" opacity=".7"/><circle cx="18" cy="15" r="3" fill="#3fb950"/></svg>'},
+  {id:'rhodes_warrior',cat:'Regions',name:'Rhodes Warrior',desc:'Complete Rhodes region',points:150,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2L4 6v6c0 5.5 3.4 10.7 8 12 4.6-1.3 8-6.5 8-12V6z" fill="none" stroke="#3fb950" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="#3fb950" font-size="9" font-weight="bold">R</text></svg>'},
+  {id:'santorini_seller',cat:'Regions',name:'Santorini Seller',desc:'Sale in Santorini region',points:120,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M4 18h16" stroke="#3fb950" stroke-width="2"/><rect x="5" y="10" width="6" height="8" rx="1" fill="none" stroke="#3fb950" stroke-width="1.5"/><rect x="13" y="12" width="6" height="6" rx="1" fill="none" stroke="#3fb950" stroke-width="1.5"/><path d="M5 10l3-4 3 4M13 12l3-3 3 3" fill="none" stroke="#3fb950" stroke-width="1.5"/></svg>'},
+  {id:'thessaloniki_tiger',cat:'Regions',name:'Thessaloniki Tiger',desc:'Complete Thessaloniki region',points:150,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2L4 6v6c0 5.5 3.4 10.7 8 12 4.6-1.3 8-6.5 8-12V6z" fill="none" stroke="#3fb950" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="#3fb950" font-size="9" font-weight="bold">T</text></svg>'},
+  {id:'kos_king',cat:'Regions',name:'Kos King',desc:'Complete Kos region',points:120,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2L4 6v6c0 5.5 3.4 10.7 8 12 4.6-1.3 8-6.5 8-12V6z" fill="none" stroke="#3fb950" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="#3fb950" font-size="9" font-weight="bold">K</text></svg>'},
+  {id:'region_master',cat:'Regions',name:'Region Master',desc:'Complete 3 project regions',points:200,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M1 20l5-5 4 4 5-6 7 7" fill="none" stroke="#3fb950" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+  {id:'region_lord',cat:'Regions',name:'Region Lord',desc:'Complete 5 project regions',points:350,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="12,2 15,9 22,9 17,14 19,22 12,17 5,22 7,14 2,9 9,9" fill="none" stroke="#3fb950" stroke-width="2"/><polygon points="12,7 13.5,11 17,11 14,13 15,17 12,14.5 9,17 10,13 7,11 10.5,11" fill="#3fb950"/></svg>'},
+  {id:'greece_dominator',cat:'Regions',name:'Greece Dominator',desc:'Complete 10 project regions',points:600,rarity:'Epic',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#3fb950" stroke-width="2"/><path d="M2 12h20M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10 15 15 0 014-10z" fill="none" stroke="#3fb950" stroke-width="1.5"/></svg>'},
+  // TEAM (68-72)
+  {id:'top_dog',cat:'Team',name:'Top Dog',desc:'Be #1 for a day',points:75,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M6 9l6-7 6 7" fill="none" stroke="#00b4d8" stroke-width="2.5" stroke-linecap="round"/><rect x="4" y="12" width="16" height="9" rx="2" fill="none" stroke="#00b4d8" stroke-width="2"/><text x="12" y="19" text-anchor="middle" fill="#00b4d8" font-size="7" font-weight="bold">1</text></svg>'},
+  {id:'weekly_champion',cat:'Team',name:'Weekly Champion',desc:'Be #1 for a full week',points:200,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M6 2h12v6a6 6 0 01-12 0V2z" fill="none" stroke="#00b4d8" stroke-width="2"/><line x1="12" y1="14" x2="12" y2="18" stroke="#00b4d8" stroke-width="2"/><rect x="7" y="18" width="10" height="3" rx="1" fill="#00b4d8"/></svg>'},
+  {id:'monthly_king',cat:'Team',name:'Monthly King',desc:'Be #1 for a full month',points:500,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M5 16L3 5l5.5 5L12 2l3.5 8L21 5l-2 11H5z" fill="#00b4d8"/><path d="M5 19h14v2H5z" fill="#00b4d8"/></svg>'},
+  {id:'comeback',cat:'Team',name:'Comeback',desc:'Go from #3 to #1',points:150,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M4 14l4-4 4 4 8-8" fill="none" stroke="#00b4d8" stroke-width="2.5" stroke-linecap="round"/><path d="M16 6h4v4" fill="none" stroke="#00b4d8" stroke-width="2.5" stroke-linecap="round"/></svg>'},
+  {id:'consistent_top',cat:'Team',name:'Consistent Top',desc:'Top 2 for 2 weeks',points:200,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="3" y="14" width="5" height="7" rx="1" fill="#00b4d8" opacity=".4"/><rect x="10" y="8" width="5" height="13" rx="1" fill="#00b4d8" opacity=".7"/><rect x="17" y="3" width="5" height="18" rx="1" fill="#00b4d8"/></svg>'},
+  // PIPELINE (73-77) Rare
+  {id:'pipeline_builder',cat:'Pipeline',name:'Pipeline Builder',desc:'10 prospects in pipeline',points:50,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M22 12h-4l-3 9L9 3l-3 9H2" fill="none" stroke="#d29922" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+  {id:'full_pipeline',cat:'Pipeline',name:'Full Pipeline',desc:'20 prospects in pipeline',points:100,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="#d29922" stroke-width="2"/><rect x="6" y="6" width="12" height="3" rx="1" fill="#d29922"/><rect x="6" y="11" width="12" height="3" rx="1" fill="#d29922" opacity=".7"/><rect x="6" y="16" width="12" height="3" rx="1" fill="#d29922" opacity=".4"/></svg>'},
+  {id:'pipeline_master',cat:'Pipeline',name:'Pipeline Master',desc:'Move 50 prospects through stages',points:200,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="#d29922" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+  {id:'kanban_king',cat:'Pipeline',name:'Kanban King',desc:'20 drag-and-drop moves',points:75,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="2" y="3" width="6" height="18" rx="1" fill="none" stroke="#d29922" stroke-width="1.5"/><rect x="9" y="3" width="6" height="18" rx="1" fill="none" stroke="#d29922" stroke-width="1.5"/><rect x="16" y="3" width="6" height="18" rx="1" fill="none" stroke="#d29922" stroke-width="1.5"/><rect x="3" y="5" width="4" height="3" rx=".5" fill="#d29922"/><rect x="10" y="5" width="4" height="3" rx=".5" fill="#d29922"/><rect x="17" y="5" width="4" height="3" rx=".5" fill="#d29922"/></svg>'},
+  {id:'no_leaks',cat:'Pipeline',name:'No Leaks',desc:'5 contacts to negotiation in a week',points:150,rarity:'Rare',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2C12 2 6 10 6 14a6 6 0 0012 0c0-4-6-12-6-12z" fill="none" stroke="#d29922" stroke-width="2"/><path d="M9 12l2 2 4-4" fill="none" stroke="#d29922" stroke-width="2" stroke-linecap="round"/></svg>'},
+  // ORGANIZATION (78-84) Common
+  {id:'note_master',cat:'Organization',name:'Note Master',desc:'Write 50 notes',points:75,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" fill="none" stroke="#8b949e" stroke-width="2"/><path d="M14 2v6h6" fill="none" stroke="#8b949e" stroke-width="2"/><line x1="8" y1="13" x2="16" y2="13" stroke="#8b949e" stroke-width="1.5"/><line x1="8" y1="17" x2="12" y2="17" stroke="#8b949e" stroke-width="1.5"/></svg>'},
+  {id:'detail_oriented',cat:'Organization',name:'Detail Oriented',desc:'Fill 20 prospect details',points:50,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="11" cy="11" r="8" fill="none" stroke="#8b949e" stroke-width="2"/><line x1="21" y1="21" x2="16.65" y2="16.65" stroke="#8b949e" stroke-width="2.5" stroke-linecap="round"/></svg>'},
+  {id:'script_writer',cat:'Organization',name:'Script Writer',desc:'Use 5 call scripts',points:40,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="4" y="4" width="16" height="16" rx="2" fill="none" stroke="#8b949e" stroke-width="2"/><line x1="8" y1="8" x2="16" y2="8" stroke="#8b949e" stroke-width="1.5"/><line x1="8" y1="12" x2="16" y2="12" stroke="#8b949e" stroke-width="1.5"/><line x1="8" y1="16" x2="12" y2="16" stroke="#8b949e" stroke-width="1.5"/></svg>'},
+  {id:'reminder_pro',cat:'Organization',name:'Reminder Pro',desc:'Set 10 reminders',points:50,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" fill="none" stroke="#8b949e" stroke-width="2"/><path d="M13.73 21a2 2 0 01-3.46 0" fill="none" stroke="#8b949e" stroke-width="2"/></svg>'},
+  {id:'zero_inbox',cat:'Organization',name:'Zero Inbox',desc:'Dismiss all notifications',points:30,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="#8b949e" stroke-width="2"/><path d="M3 4l9 8 9-8" fill="none" stroke="#8b949e" stroke-width="2"/></svg>'},
+  {id:'blacklist_guardian',cat:'Organization',name:'Blacklist Guardian',desc:'Blacklist 10 prospects',points:30,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#8b949e" stroke-width="2"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#8b949e" stroke-width="2.5"/></svg>'},
+  {id:'clean_pipeline',cat:'Organization',name:'Clean Pipeline',desc:'Mark 20 prospects as lost',points:25,rarity:'Common',icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2" fill="none" stroke="#8b949e" stroke-width="2"/></svg>'},
+  // SPECIAL/SECRET (85-100) Legendary
+  {id:'the_architect',cat:'Special',name:'The Architect',desc:'3 maintenance sales',points:300,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M2 20h20M6 20V10l6-8 6 8v10M10 20v-6h4v6" fill="none" stroke="#d29922" stroke-width="2"/><line x1="6" y1="14" x2="18" y2="14" stroke="#d29922" stroke-width="1"/></svg>'},
+  {id:'perfect_day',cat:'Special',name:'Perfect Day',desc:'15 calls + 1 sale in a day',points:250,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#d29922" stroke-width="2"/><circle cx="12" cy="12" r="5" fill="#d29922" opacity=".3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="#d29922" stroke-width="1.5"/></svg>'},
+  {id:'phoenix',cat:'Special',name:'Phoenix',desc:'Win a prospect marked as lost',points:200,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2c-2 4-6 6-6 10a6 6 0 0012 0c0-4-4-6-6-10z" fill="none" stroke="#f85149" stroke-width="2"/><path d="M12 22c-2-3-3-5-3-7a3 3 0 016 0c0 2-1 4-3 7z" fill="#f85149" opacity=".5"/></svg>'},
+  {id:'greek_god',cat:'Special',name:'Greek God',desc:'5 island region sales',points:400,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M3 21h18M5 21V11l7-8 7 8v10" fill="none" stroke="#d29922" stroke-width="2"/><line x1="5" y1="14" x2="19" y2="14" stroke="#d29922" stroke-width="1.5"/><circle cx="8" cy="11" r="1" fill="#d29922"/><circle cx="12" cy="8" r="1" fill="#d29922"/><circle cx="16" cy="11" r="1" fill="#d29922"/></svg>'},
+  {id:'vantage_elite',cat:'Special',name:'Vantage Elite',desc:'Reach 500 points',points:200,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="12,2 15,9 22,9 17,14 19,22 12,17 5,22 7,14 2,9 9,9" fill="none" stroke="#58a6ff" stroke-width="2"/><text x="12" y="15" text-anchor="middle" fill="#58a6ff" font-size="6" font-weight="bold">V</text></svg>'},
+  {id:'vantage_legend',cat:'Special',name:'Vantage Legend',desc:'Reach 1000 points',points:400,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="12,2 15,9 22,9 17,14 19,22 12,17 5,22 7,14 2,9 9,9" fill="#d29922" opacity=".3"/><polygon points="12,2 15,9 22,9 17,14 19,22 12,17 5,22 7,14 2,9 9,9" fill="none" stroke="#d29922" stroke-width="2"/><text x="12" y="15" text-anchor="middle" fill="#d29922" font-size="6" font-weight="bold">V</text></svg>'},
+  {id:'vantage_god',cat:'Special',name:'Vantage God',desc:'Reach 2000 points',points:800,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="12,2 15,9 22,9 17,14 19,22 12,17 5,22 7,14 2,9 9,9" fill="#d29922"/><circle cx="12" cy="12" r="3" fill="#161b22"/><text x="12" y="14" text-anchor="middle" fill="#d29922" font-size="5" font-weight="bold">V</text></svg>'},
+  {id:'hall_of_fame',cat:'Special',name:'Hall of Fame',desc:'20 total sales',points:750,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M6 2h12v6a6 6 0 01-12 0V2z" fill="#d29922" opacity=".3"/><path d="M6 2h12v6a6 6 0 01-12 0V2z" fill="none" stroke="#d29922" stroke-width="2"/><line x1="12" y1="14" x2="12" y2="18" stroke="#d29922" stroke-width="2"/><rect x="7" y="18" width="10" height="3" rx="1" fill="#d29922"/><line x1="4" y1="2" x2="4" y2="8" stroke="#d29922" stroke-width="2"/><line x1="20" y1="2" x2="20" y2="8" stroke="#d29922" stroke-width="2"/></svg>'},
+  {id:'money_printer',cat:'Special',name:'Money Printer',desc:'Earn 10000 EUR revenue',points:500,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><rect x="2" y="7" width="20" height="13" rx="2" fill="none" stroke="#d29922" stroke-width="2"/><rect x="5" y="4" width="14" height="3" rx="1" fill="none" stroke="#d29922" stroke-width="1.5"/><circle cx="12" cy="14" r="3" fill="none" stroke="#d29922" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="#d29922" font-size="5" font-weight="bold">$</text></svg>'},
+  {id:'the_one_percent',cat:'Special',name:'The 1%',desc:'Top rank for 3 months',points:1000,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M12 2L4 6v6c0 5.5 3.4 10.7 8 12 4.6-1.3 8-6.5 8-12V6z" fill="#d29922" opacity=".2"/><path d="M12 2L4 6v6c0 5.5 3.4 10.7 8 12 4.6-1.3 8-6.5 8-12V6z" fill="none" stroke="#d29922" stroke-width="2"/><text x="12" y="16" text-anchor="middle" fill="#d29922" font-size="9" font-weight="bold">1%</text></svg>'},
+  {id:'secret_agent',cat:'Special',name:'Secret Agent',desc:'Sale without follow-up',points:175,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="8" r="5" fill="none" stroke="#d29922" stroke-width="2"/><path d="M4 21v-2a8 8 0 0116 0v2" fill="none" stroke="#d29922" stroke-width="2"/><rect x="8" y="6" width="8" height="3" rx="1.5" fill="#d29922" opacity=".5"/></svg>'},
+  {id:'sleeping_giant',cat:'Special',name:'Sleeping Giant',desc:'3 sales after a 0-sale week',points:300,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M2 18h20" stroke="#d29922" stroke-width="2"/><path d="M4 18V8a8 8 0 0116 0v10" fill="none" stroke="#d29922" stroke-width="2"/><circle cx="8" cy="13" r="1" fill="#d29922"/><circle cx="16" cy="13" r="1" fill="#d29922"/><path d="M10 16h4" stroke="#d29922" stroke-width="1.5"/></svg>'},
+  {id:'unstoppable_force',cat:'Special',name:'Unstoppable Force',desc:'10 sales in a month',points:600,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="12,2 14,10 22,10 16,15 18,22 12,18 6,22 8,15 2,10 10,10" fill="none" stroke="#f85149" stroke-width="2"/><polygon points="12,6 13.5,10 17,10 14,12.5 15,16 12,14 9,16 10,12.5 7,10 10.5,10" fill="#f85149"/></svg>'},
+  {id:'the_goat',cat:'Special',name:'The GOAT',desc:'Highest all-time revenue',points:1500,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><path d="M5 16L3 5l5.5 5L12 2l3.5 8L21 5l-2 11H5z" fill="none" stroke="#d29922" stroke-width="2.5"/><path d="M5 19h14v3H5z" fill="#d29922"/><circle cx="12" cy="10" r="3" fill="#d29922" opacity=".4"/></svg>'},
+  {id:'completionist',cat:'Special',name:'Completionist',desc:'Unlock 50 badges',points:1000,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><circle cx="12" cy="12" r="10" fill="none" stroke="#bc8cff" stroke-width="2"/><path d="M8 12l3 3 5-6" fill="none" stroke="#bc8cff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'},
+  {id:'vantage_champion',cat:'Special',name:'Vantage Champion',desc:'Unlock 80 badges',points:2500,rarity:'Legendary',secret:true,icon:'<svg viewBox="0 0 24 24" width="32" height="32"><polygon points="12,1 15,8 22,9 17,14 18,21 12,18 6,21 7,14 2,9 9,8" fill="#d29922" opacity=".3"/><polygon points="12,1 15,8 22,9 17,14 18,21 12,18 6,21 7,14 2,9 9,8" fill="none" stroke="#d29922" stroke-width="2.5"/><path d="M8 12l3 3 5-6" fill="none" stroke="#d29922" stroke-width="2.5" stroke-linecap="round"/></svg>'}
 ];
 
 // ========================================
@@ -699,13 +871,17 @@ if(saved){
 // DATA
 // ========================================
 async function loadData(){
-  const[prospRes,projRes,clientRes,remRes,blRes]=await Promise.all([
-    sb.from('prospects').select('*').order('id'),
+  showSkeletonLoading();
+  PAGE=0;
+  const[prospRes,projRes,clientRes,remRes,blRes,countRes]=await Promise.all([
+    sb.from('prospects').select('*',{count:'exact'}).eq('blacklisted',false).order('id').range(0,PAGE_SIZE-1),
     sb.from('projects').select('*').order('id'),
     sb.from('clients').select('*').order('id'),
     sb.from('reminders').select('*').order('remind_at'),
-    sb.from('blacklist').select('*').order('id')
+    sb.from('blacklist').select('*').order('id'),
+    sb.from('prospects').select('*',{count:'exact',head:true}).eq('blacklisted',false)
   ]);
+  TOTAL_COUNT=countRes.count||prospRes.count||0;
   ALL_DATA=prospRes.data||[];
   PROJECTS=projRes.data||[];
   CLIENTS=clientRes.data||[];
@@ -716,10 +892,67 @@ async function loadData(){
   const blIds=new Set(BLACKLIST.map(b=>b.prospect_id));
   DATA=ALL_DATA.filter(d=>!d.blacklisted&&!blIds.has(d.id));
 
+  hideSkeletonLoading();
   populateFilters();
   render();
+  renderLoadMoreButton();
   if(isAdmin)checkDuplicates();
   if(isAdmin)checkInactivityAlerts();
+}
+
+async function loadMore(){
+  if(isLoadingMore)return;
+  isLoadingMore=true;
+  const btn=document.getElementById('loadMoreBtn');
+  if(btn){btn.disabled=true;btn.textContent='Loading...';}
+  PAGE++;
+  const start=PAGE*PAGE_SIZE;
+  const end=start+PAGE_SIZE-1;
+  const{data,error}=await sb.from('prospects').select('*',{count:'exact'}).eq('blacklisted',false).order('id').range(start,end);
+  if(data&&data.length>0){
+    const blIds=new Set(BLACKLIST.map(b=>b.prospect_id));
+    const newRows=data.filter(d=>!blIds.has(d.id));
+    ALL_DATA=ALL_DATA.concat(data);
+    DATA=DATA.concat(newRows);
+    render();
+  }
+  isLoadingMore=false;
+  renderLoadMoreButton();
+}
+
+function renderLoadMoreButton(){
+  let wrap=document.getElementById('loadMoreWrap');
+  if(!wrap){
+    wrap=document.createElement('div');
+    wrap.id='loadMoreWrap';
+    wrap.className='load-more-wrap';
+    const tw=document.querySelector('.table-wrap');
+    if(tw)tw.appendChild(wrap);
+  }
+  if(DATA.length>=TOTAL_COUNT){
+    wrap.innerHTML=`<span style="font-size:.72rem;color:var(--gray)">All ${TOTAL_COUNT.toLocaleString()} prospects loaded</span>`;
+  } else {
+    wrap.innerHTML=`<button class="load-more-btn" id="loadMoreBtn" onclick="loadMore()">Load more (${DATA.length.toLocaleString()} / ${TOTAL_COUNT.toLocaleString()})</button>`;
+  }
+}
+
+function showSkeletonLoading(){
+  const tbody=document.getElementById('tbody');
+  if(tbody){
+    let sk='';
+    for(let i=0;i<8;i++) sk+=`<tr><td colspan="10"><div class="skeleton-row">${'<div class="skeleton"></div>'.repeat(6)}</div></td></tr>`;
+    tbody.innerHTML=sk;
+  }
+  const sr=document.getElementById('statsRow');
+  if(sr){
+    let skc='';
+    for(let i=0;i<7;i++) skc+=`<div class="skeleton-card"><div class="skeleton" style="height:28px;width:60%"></div><div class="skeleton" style="height:10px;width:40%"></div></div>`;
+    sr.innerHTML=skc;
+  }
+}
+
+function hideSkeletonLoading(){
+  // skeleton is cleared when render() overwrites innerHTML
 }
 
 async function loadCallHistory(prospectId){
@@ -735,6 +968,32 @@ async function loadActivityLog(){
 async function loadVendorScripts(){
   const{data}=await sb.from('vendor_scripts').select('*').eq('vendor_name',currentUser).order('id');
   VENDOR_SCRIPTS=data||[];
+}
+
+// ========================================
+// VISUAL EFFECTS JS
+// ========================================
+function animateValue(el, start, end, duration) {
+  const range = end - start;
+  const startTime = performance.now();
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    el.textContent = Math.floor(start + range * progress).toLocaleString();
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+function handleDragOver(e){
+  e.preventDefault();
+  e.currentTarget.classList.add('drag-over');
+}
+function handleDragLeave(e){
+  e.currentTarget.classList.remove('drag-over');
+}
+function handleDrop(e){
+  e.currentTarget.classList.remove('drag-over');
 }
 
 function populateFilters(){
@@ -806,7 +1065,7 @@ function renderPointsDisplay(){
 }
 
 function renderStats(){
-  const d=DATA,t=d.length;
+  const d=DATA,t=TOTAL_COUNT||d.length;
   const n=d.filter(x=>x.status==='nouveau').length,a=d.filter(x=>x.status==='appelle').length;
   const ne=d.filter(x=>x.status==='negociation').length,ra=d.filter(x=>x.status==='rappeler').length;
   const v=d.filter(x=>x.status==='valide').length,p=d.filter(x=>x.status==='perdu').length;
@@ -877,7 +1136,7 @@ function renderPipeline(){
     const allItems=my.filter(d=>d.status===col.key);
     const items=allItems.slice(0,30);
     const fc=item=>'b-'+(item.famille||'Autre').replace(/[& ]/g,'');
-    return `<div class="pipe-col"><div class="pipe-col-head"><span class="pipe-col-title" style="color:${col.color}">${col.label}</span><span class="pipe-col-count">${allItems.length}</span></div><div class="pipe-col-body" ondragover="event.preventDefault()" ondrop="dropCard(event,'${col.key}')">${items.map(d=>`<div class="pipe-card" draggable="true" ondragstart="dragCard(event,${d.id})">
+    return `<div class="pipe-col"><div class="pipe-col-head"><span class="pipe-col-title" style="color:${col.color}">${col.label}</span><span class="pipe-col-count">${allItems.length}</span></div><div class="pipe-col-body" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event);dropCard(event,'${col.key}')">${items.map(d=>`<div class="pipe-card" draggable="true" ondragstart="dragCard(event,${d.id})">
       <div class="pipe-card-name" onclick="openProspectDetail(${d.id})">${d.nom||''}</div>
       <div class="pipe-card-phone"><a href="tel:${d.numero}" style="color:var(--accent)">${d.numero||''}</a></div>
       <div class="pipe-card-region">${d.region||''} <span class="badge ${fc(d)}" style="margin-left:4px">${d.famille||''}</span></div>
@@ -1459,30 +1718,54 @@ function saveBadges(vendor,badges){
   localStorage.setItem('badges_'+vendor,JSON.stringify(badges));
 }
 
+function renderBadgeCard(b,state){
+  const isSecret=b.secret&&!state.unlocked;
+  const rarityClass='rarity-'+b.rarity;
+  const secretClass=isSecret?'secret-locked':'';
+  let card=`<div class="badge-card ${state.unlocked?'unlocked':'locked'} ${rarityClass} ${secretClass}" title="${isSecret?'Secret Badge':b.desc}">`;
+  if(isSecret){
+    card+=`<div class="badge-icon" style="font-size:1.8rem;color:var(--gray)">???</div>`;
+    card+=`<div class="badge-name" style="color:var(--gray)">Secret Badge</div>`;
+    card+=`<div class="badge-desc">Unlock to reveal</div>`;
+  } else {
+    card+=`<div class="badge-icon">${b.icon}</div>`;
+    card+=`<div class="badge-name">${b.name}</div>`;
+    card+=`<div class="badge-desc">${b.desc}</div>`;
+    if(state.unlocked&&state.date){
+      card+=`<div class="badge-date">${new Date(state.date).toLocaleDateString('fr-FR')}</div>`;
+    }
+    card+=`<div class="badge-pts">${b.points} pts</div>`;
+    card+=`<div class="badge-rarity r-${b.rarity}">${b.rarity}</div>`;
+  }
+  card+=`</div>`;
+  return card;
+}
+
 function renderBadges(targetVendor){
   const vendor=targetVendor||currentUser;
   if(isAdmin&&!targetVendor){renderBadgesAdmin();return;}
   const bv=document.getElementById('badgesView');
   const badges=getBadges(vendor);
   const unlocked=Object.values(badges).filter(b=>b.unlocked).length;
+  const totalPts=BADGE_DEFS.reduce((s,b)=>{const st=badges[b.id];return s+(st&&st.unlocked?b.points:0)},0);
 
   let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
-    <h2 style="font-size:1.2rem;font-weight:800">\uD83C\uDFC5 Mes Badges <span style="color:var(--accent);font-size:.85rem">${unlocked}/${BADGE_DEFS.length}</span></h2>
-    <div style="font-size:.75rem;color:var(--gray)">Points: <strong style="color:var(--yellow)">${calcPoints(vendor)}</strong></div>
+    <h2 style="font-size:1.2rem;font-weight:800">Mes Badges <span style="color:var(--accent);font-size:.85rem">${unlocked}/${BADGE_DEFS.length}</span></h2>
+    <div style="display:flex;gap:16px;align-items:center">
+      <span style="font-size:.75rem;color:var(--gray)">Badge Points: <strong style="color:var(--yellow)">${totalPts}</strong></span>
+      <span style="font-size:.75rem;color:var(--gray)">CRM Points: <strong style="color:var(--yellow)">${calcPoints(vendor)}</strong></span>
+    </div>
   </div>`;
 
-  const cats=['Debutant','Intermediaire','Avance','Special'];
+  const cats=['First Steps','Calls','Streaks','Sales','Revenue','Conversion','Regions','Team','Pipeline','Organization','Special'];
   cats.forEach(cat=>{
     const catBadges=BADGE_DEFS.filter(b=>b.cat===cat);
-    html+=`<div class="badges-section"><div class="badges-section-title">${cat} (${catBadges.filter(b=>badges[b.id]&&badges[b.id].unlocked).length}/${catBadges.length})</div><div class="badge-grid">`;
+    if(!catBadges.length)return;
+    const catUnlocked=catBadges.filter(b=>badges[b.id]&&badges[b.id].unlocked).length;
+    html+=`<div class="badges-section"><div class="badges-section-title">${cat} (${catUnlocked}/${catBadges.length})</div><div class="badge-grid">`;
     catBadges.forEach(b=>{
       const state=badges[b.id]||{unlocked:false,date:null};
-      html+=`<div class="badge-card ${state.unlocked?'unlocked':'locked'}" title="${b.desc}">
-        <span class="badge-emoji">${b.emoji}</span>
-        <div class="badge-name">${b.name}</div>
-        <div class="badge-desc">${b.desc}</div>
-        ${state.unlocked&&state.date?`<div class="badge-date">${new Date(state.date).toLocaleDateString('fr-FR')}</div>`:''}
-      </div>`;
+      html+=renderBadgeCard(b,state);
     });
     html+=`</div></div>`;
   });
@@ -1492,7 +1775,7 @@ function renderBadges(targetVendor){
 
 function renderBadgesAdmin(){
   const bv=document.getElementById('badgesView');
-  let html=`<h2 style="font-size:1.2rem;font-weight:800;margin-bottom:24px">\uD83C\uDFC5 Badges - Vue Admin</h2>`;
+  let html=`<h2 style="font-size:1.2rem;font-weight:800;margin-bottom:24px">Badges - Vue Admin</h2>`;
 
   html+=`<div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">`;
   VENDOR_NAMES.forEach(v=>{
@@ -1507,15 +1790,18 @@ function renderBadgesAdmin(){
     const badges=getBadges(v);
     const unlocked=Object.values(badges).filter(b=>b.unlocked).length;
     const pts=calcPoints(v);
+    const badgePts=BADGE_DEFS.reduce((s,b)=>{const st=badges[b.id];return s+(st&&st.unlocked?b.points:0)},0);
     html+=`<div style="background:var(--s1);border:1px solid var(--s3);border-radius:12px;padding:20px">
       <h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px">${v}</h3>
       <div style="display:flex;gap:16px;margin-bottom:16px">
         <div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:var(--yellow)">${pts}</div><div style="font-size:.55rem;text-transform:uppercase;color:var(--gray)">Points</div></div>
         <div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:var(--accent)">${unlocked}</div><div style="font-size:.55rem;text-transform:uppercase;color:var(--gray)">Badges</div></div>
+        <div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:var(--green)">${badgePts}</div><div style="font-size:.55rem;text-transform:uppercase;color:var(--gray)">Badge Pts</div></div>
       </div>
-      <div style="display:flex;flex-wrap:wrap;gap:4px">${BADGE_DEFS.map(b=>{
+      <div style="display:flex;flex-wrap:wrap;gap:4px;align-items:center">${BADGE_DEFS.map(b=>{
         const s=badges[b.id]||{unlocked:false};
-        return `<span style="font-size:1.2rem;${s.unlocked?'':'filter:grayscale(1);opacity:.3'}" title="${b.name}: ${b.desc}">${b.emoji}</span>`;
+        const iconHtml=b.icon.replace(/width="32"/g,'width="18"').replace(/height="32"/g,'height="18"');
+        return `<span style="display:inline-flex;${s.unlocked?'':'filter:grayscale(1);opacity:.3'}" title="${b.name}: ${b.desc}">${iconHtml}</span>`;
       }).join('')}</div>
     </div>`;
   });
@@ -1529,22 +1815,19 @@ function renderBadgesForVendor(vendor){
   const unlocked=Object.values(badges).filter(b=>b.unlocked).length;
 
   let html=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap">
-    <button class="btn btn-ghost btn-sm" onclick="renderBadges()">\u2190 Retour</button>
-    <h2 style="font-size:1.2rem;font-weight:800">\uD83C\uDFC5 ${vendor} <span style="color:var(--accent);font-size:.85rem">${unlocked}/${BADGE_DEFS.length}</span></h2>
+    <button class="btn btn-ghost btn-sm" onclick="renderBadges()">< Retour</button>
+    <h2 style="font-size:1.2rem;font-weight:800">${vendor} <span style="color:var(--accent);font-size:.85rem">${unlocked}/${BADGE_DEFS.length}</span></h2>
   </div>`;
 
-  const cats=['Debutant','Intermediaire','Avance','Special'];
+  const cats=['First Steps','Calls','Streaks','Sales','Revenue','Conversion','Regions','Team','Pipeline','Organization','Special'];
   cats.forEach(cat=>{
     const catBadges=BADGE_DEFS.filter(b=>b.cat===cat);
-    html+=`<div class="badges-section"><div class="badges-section-title">${cat} (${catBadges.filter(b=>badges[b.id]&&badges[b.id].unlocked).length}/${catBadges.length})</div><div class="badge-grid">`;
+    if(!catBadges.length)return;
+    const catUnlocked=catBadges.filter(b=>badges[b.id]&&badges[b.id].unlocked).length;
+    html+=`<div class="badges-section"><div class="badges-section-title">${cat} (${catUnlocked}/${catBadges.length})</div><div class="badge-grid">`;
     catBadges.forEach(b=>{
       const state=badges[b.id]||{unlocked:false,date:null};
-      html+=`<div class="badge-card ${state.unlocked?'unlocked':'locked'}" title="${b.desc}">
-        <span class="badge-emoji">${b.emoji}</span>
-        <div class="badge-name">${b.name}</div>
-        <div class="badge-desc">${b.desc}</div>
-        ${state.unlocked&&state.date?`<div class="badge-date">${new Date(state.date).toLocaleDateString('fr-FR')}</div>`:''}
-      </div>`;
+      html+=renderBadgeCard(b,state);
     });
     html+=`</div></div>`;
   });
@@ -1633,9 +1916,10 @@ function renderVendors(){
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Points</span><span class="vendor-stat-val" style="color:var(--yellow)">${pts}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Badges</span><span class="vendor-stat-val" style="color:var(--accent)">${unlockedCount}/${BADGE_DEFS.length}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Projets actifs</span><span class="vendor-stat-val" style="color:var(--accent)">${projects.filter(p=>p.status==='active').length}</span></div>
-      <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:4px">${BADGE_DEFS.map(b=>{
+      <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:4px;align-items:center">${BADGE_DEFS.map(b=>{
         const s=badges[b.id]||{unlocked:false};
-        return `<span style="font-size:1.1rem;${s.unlocked?'':'filter:grayscale(1);opacity:.3'}" title="${b.name}">${b.emoji}</span>`;
+        const iconHtml=b.icon.replace(/width="32"/g,'width="16"').replace(/height="32"/g,'height="16"');
+        return `<span style="display:inline-flex;${s.unlocked?'':'filter:grayscale(1);opacity:.3'}" title="${b.name}">${iconHtml}</span>`;
       }).join('')}</div>
       <div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="switchTab('badges');renderBadgesForVendor('${v}')">Voir badges</button></div>
     </div>`;
@@ -1983,6 +2267,8 @@ function checkBadges(){
   const todayCalls=getTodayCalls(vendor);
   const weekSales=getWeekSales(vendor);
   const newUnlocks=[];
+  const vd=DATA.filter(d=>d.vendeur===vendor);
+  const vdCalled=vd.filter(d=>['appelle','negociation','rappeler','valide','perdu'].includes(d.status));
 
   function unlock(id){
     if(!badges[id])badges[id]={unlocked:false,date:null};
@@ -1993,85 +2279,330 @@ function checkBadges(){
     }
   }
 
-  // BEGINNER
-  if(stats.calls>=1)unlock('first_step');
-  if(todayCalls>=5)unlock('ice_breaker');
-  if(stats.calls>=10)unlock('getting_started');
-  if(stats.nego>=1||stats.wins>=1)unlock('first_blood');
-  if(stats.wins>=1)unlock('rookie_sale');
-  const vd=DATA.filter(d=>d.vendeur===vendor&&d.call_date);
-  if(vd.some(d=>{const h=new Date(d.call_date).getHours();return h<9}))unlock('early_bird');
-  if(vd.some(d=>{const h=new Date(d.call_date).getHours();return h>=19}))unlock('night_owl');
-  if(todayCalls>=5)unlock('speed_dialer');
-  if(stats.notes>=10)unlock('note_taker');
-  if(stats.regions.length>=3)unlock('explorer');
-
-  // INTERMEDIATE
-  if(todayCalls>=10)unlock('call_machine');
+  // Track daily activity in localStorage for streak calculations
   const streakKey='streak_'+vendor;
-  let streak=JSON.parse(localStorage.getItem(streakKey)||'{"days":[],"count":0}');
+  const streak5Key='streak5_'+vendor;
+  let streak=JSON.parse(localStorage.getItem(streakKey)||'{"days":[]}');
+  let streak5=JSON.parse(localStorage.getItem(streak5Key)||'{"days":[]}');
   const today=new Date().toISOString().slice(0,10);
+  const now=new Date();
+
+  // Track days with 10+ calls
   if(todayCalls>=10&&!streak.days.includes(today)){
     streak.days.push(today);
-    streak.days=streak.days.filter(d=>{const diff=(new Date()-new Date(d))/(1000*60*60*24);return diff<30});
+    streak.days=streak.days.filter(d=>(new Date()-new Date(d))/(864e5)<60);
     localStorage.setItem(streakKey,JSON.stringify(streak));
   }
-  if(streak.days.length>=3){
-    const sorted=streak.days.sort();
-    let consec=1,maxConsec=1;
+  // Track days with 5+ calls
+  if(todayCalls>=5&&!streak5.days.includes(today)){
+    streak5.days.push(today);
+    streak5.days=streak5.days.filter(d=>(new Date()-new Date(d))/(864e5)<60);
+    localStorage.setItem(streak5Key,JSON.stringify(streak5));
+  }
+
+  // Helper: get consecutive days count from sorted date strings
+  function getMaxConsec(days){
+    if(!days.length)return 0;
+    const sorted=[...days].sort();
+    let consec=1,max=1;
     for(let i=1;i<sorted.length;i++){
       const d1=new Date(sorted[i-1]),d2=new Date(sorted[i]);
-      if((d2-d1)/(1000*60*60*24)<=1){consec++;maxConsec=Math.max(maxConsec,consec)}else{consec=1}
+      if((d2-d1)/864e5<=1){consec++;max=Math.max(max,consec)}else consec=1;
     }
-    if(maxConsec>=3)unlock('hot_streak');
-    if(maxConsec>=7)unlock('unstoppable');
+    return max;
   }
-  if(weekSales>=3)unlock('silver_tongue');
-  const vendorRegions=[...new Set(DATA.filter(d=>d.vendeur===vendor).map(d=>d.region))].filter(Boolean);
-  vendorRegions.forEach(r=>{
-    const rp=DATA.filter(d=>d.region===r&&d.vendeur===vendor);
-    const done=rp.filter(d=>['appelle','negociation','rappeler','valide','perdu'].includes(d.status));
-    if(rp.length>0&&done.length===rp.length)unlock('region_master');
-  });
-  if(stats.total>=50)unlock('hunter');
-  if(stats.wins>=5)unlock('persuader');
-  if(stats.rev>=1000)unlock('revenue_maker');
-  if(stats.nego>=10)unlock('pipeline_king');
-  if(stats.wins>=3)unlock('follow_up_king');
-  const rankings=VENDOR_NAMES.map(v=>({name:v,pts:calcPoints(v)})).sort((a,b)=>b.pts-a.pts);
-  if(rankings[0].name===vendor)unlock('weekly_champion');
 
-  // ADVANCED
-  if(stats.wins>=10)unlock('legend');
-  if(weekSales>=5)unlock('closer');
-  if(pts>=500)unlock('elite');
-  if(rankings[0].name===vendor)unlock('top_gun');
-  if(stats.rev>=5000)unlock('gold_rush');
-  if(stats.calls>=100)unlock('marathon_runner');
-  if(stats.wins>=10)unlock('master_negotiator');
+  // Helper: count today's notes
+  const todayNotes=vd.filter(d=>d.notes&&d.notes.trim()&&d.updated_at&&d.updated_at.slice(0,10)===today).length;
+
+  // Helper: count today's sales
+  const todaySales=vd.filter(d=>d.status==='valide'&&d.updated_at&&d.updated_at.slice(0,10)===today).length;
+
+  // Helper: vendor regions
+  const vendorRegions=[...new Set(vd.map(d=>d.region))].filter(Boolean);
+
+  // Helper: completed regions count
   let completedRegions=0;
+  const completedRegionNames=[];
   vendorRegions.forEach(r=>{
     const rp=DATA.filter(d=>d.region===r&&d.vendeur===vendor);
     const done=rp.filter(d=>['appelle','negociation','rappeler','valide','perdu'].includes(d.status));
-    if(rp.length>0&&done.length===rp.length)completedRegions++;
+    if(rp.length>0&&done.length===rp.length){completedRegions++;completedRegionNames.push(r.toLowerCase())}
   });
-  if(completedRegions>=3)unlock('island_conqueror');
-  if(pts>=1000)unlock('vantage_legend');
 
-  // SPECIAL
-  if(todayCalls>=15&&getWeekSales(vendor)>=1)unlock('perfect_day');
-  if(stats.wins>=1&&stats.rappeler>=3)unlock('comeback_kid');
-  if(stats.wins>=5)unlock('greek_god');
-  if(stats.wins>=3)unlock('the_architect');
+  // Helper: rankings
+  const rankings=VENDOR_NAMES.map(v=>({name:v,pts:calcPoints(v)})).sort((a,b)=>b.pts-a.pts);
+  const myRank=rankings.findIndex(r=>r.name===vendor)+1;
+
+  // Helper: island regions (approximate)
+  const islandKeywords=['crete','creta','rhodes','rhodos','santorini','kos','corfu','mykonos','zakynthos','lesbos','samos','naxos','paros','ios','island'];
+  function isIslandRegion(r){return islandKeywords.some(k=>r.toLowerCase().includes(k))}
+  const islandSales=vd.filter(d=>d.status==='valide'&&d.region&&isIslandRegion(d.region)).length;
+
+  // Helper: track tabs visited
+  const tabsKey='tabs_visited_'+vendor;
+  let tabsVisited=JSON.parse(localStorage.getItem(tabsKey)||'[]');
+  if(typeof currentTab==='string'&&currentTab&&!tabsVisited.includes(currentTab)){
+    tabsVisited.push(currentTab);
+    localStorage.setItem(tabsKey,JSON.stringify(tabsVisited));
+  }
+  const allTabs=['table','pipeline','projects','clients','leaderboard','badges','scripts','reminders'];
+
+  // Helper: track status changes for pipeline_master/kanban_king
+  const dragKey='drag_count_'+vendor;
+  const dragCount=parseInt(localStorage.getItem(dragKey)||'0');
+
+  // Helper: maintenance count (approximate - look for 'maintenance' in notes or categorie)
+  const maintenanceSales=vd.filter(d=>d.status==='valide'&&((d.notes&&d.notes.toLowerCase().includes('maintenance'))||(d.categorie&&d.categorie.toLowerCase().includes('maintenance')))).length;
+
+  // Helper: scripts used count
+  const scriptsKey='scripts_used_'+vendor;
+  const scriptsUsed=parseInt(localStorage.getItem(scriptsKey)||'0');
+
+  // Helper: reminders count
+  const remindersCount=(typeof REMINDERS!=='undefined'?REMINDERS.filter(r=>r.vendor===vendor||r.vendeur===vendor).length:0);
+
+  // Helper: blacklist count
+  const blacklistCount=(typeof BLACKLIST!=='undefined'?BLACKLIST.filter(b=>b.vendor===vendor||b.vendeur===vendor).length:0);
+
+  // Helper: month sales
+  const monthStart=new Date(now.getFullYear(),now.getMonth(),1);
+  const monthSales=vd.filter(d=>d.status==='valide'&&d.updated_at&&new Date(d.updated_at)>=monthStart).length;
+  const monthRev=monthSales*500;
+
+  // Helper: week negotiations
+  const weekStart=new Date(now);weekStart.setDate(now.getDate()-((now.getDay()+6)%7));weekStart.setHours(0,0,0,0);
+  const weekNego=vd.filter(d=>d.status==='negociation'&&d.updated_at&&new Date(d.updated_at)>=weekStart).length;
+
+  // Helper: filled details count
+  const filledDetails=vd.filter(d=>d.nom&&d.numero&&d.region&&d.famille).length;
+
+  // Helper: prospects with notes count
+  const notesCount=vd.filter(d=>d.notes&&d.notes.trim()).length;
+
+  // Helper: active pipeline
+  const pipelineCount=vd.filter(d=>['appelle','negociation','rappeler'].includes(d.status)).length;
+
+  // =============== FIRST STEPS (1-10) ===============
+  if(stats.calls>=1)unlock('first_dial');
+  if(notesCount>=1)unlock('hello_world');
+  if(vendorRegions.length>=1)unlock('on_the_map');
+  const vdDated=vd.filter(d=>d.call_date);
+  if(vdDated.some(d=>{const h=new Date(d.call_date).getHours();return h<9}))unlock('early_bird');
+  if(vdDated.some(d=>{const h=new Date(d.call_date).getHours();return h>=19}))unlock('night_owl');
+  if(todayNotes>=5)unlock('fast_fingers');
+  if(stats.nego>=1||stats.wins>=1)unlock('first_blood');
+  if(stats.calls>=3)unlock('rookie');
+  if(tabsVisited.length>=allTabs.length)unlock('explorer');
+  // Speed Dial: approximate by checking 3+ calls today (we cannot track 30min window easily)
+  if(todayCalls>=3)unlock('speed_dial');
+
+  // =============== CALLS (11-20) ===============
+  if(stats.calls>=10)unlock('dialer');
+  if(stats.calls>=25)unlock('call_center');
+  if(stats.calls>=50)unlock('phone_warrior');
+  if(stats.calls>=100)unlock('century_caller');
+  if(stats.calls>=200)unlock('marathon_caller');
+  if(stats.calls>=500)unlock('legend_caller');
+  if(todayCalls>=10)unlock('daily_grind');
+  if(todayCalls>=20)unlock('power_day');
+  if(todayCalls>=30)unlock('beast_mode');
+  if(todayCalls>=50)unlock('machine');
+
+  // =============== STREAKS (21-28) ===============
+  const maxConsec5=getMaxConsec(streak5.days);
+  const maxConsec10=getMaxConsec(streak.days);
+
+  // Track all activity days for general streak
+  const activityKey='activity_days_'+vendor;
+  let actDays=JSON.parse(localStorage.getItem(activityKey)||'[]');
+  if(todayCalls>=1&&!actDays.includes(today)){
+    actDays.push(today);
+    actDays=actDays.filter(d=>(new Date()-new Date(d))/864e5<90);
+    localStorage.setItem(activityKey,JSON.stringify(actDays));
+  }
+  const maxConsecAct=getMaxConsec(actDays);
+
+  if(maxConsec5>=3)unlock('consistent');
+  if(maxConsec10>=5)unlock('on_fire');
+  if(maxConsec10>=7)unlock('unstoppable');
+  if(maxConsec5>=14)unlock('iron_will');
+  if(maxConsecAct>=30)unlock('legend_streak');
+
+  // Monday Warrior: check if active on 4 consecutive Mondays
+  const mondayKey='mondays_'+vendor;
+  let mondays=JSON.parse(localStorage.getItem(mondayKey)||'[]');
+  if(now.getDay()===1&&todayCalls>=1&&!mondays.includes(today)){
+    mondays.push(today);
+    mondays=mondays.filter(d=>(new Date()-new Date(d))/864e5<60);
+    localStorage.setItem(mondayKey,JSON.stringify(mondays));
+  }
+  if(mondays.length>=4){
+    const sorted=[...mondays].sort().slice(-4);
+    let consec=true;
+    for(let i=1;i<sorted.length;i++){
+      if((new Date(sorted[i])-new Date(sorted[i-1]))/864e5>8)consec=false;
+    }
+    if(consec)unlock('monday_warrior');
+  }
+
+  // Weekend Warrior
+  if(now.getDay()===6&&todayCalls>=1)unlock('weekend_warrior');
+
+  // No Days Off
+  if(maxConsecAct>=7)unlock('no_days_off');
+
+  // =============== SALES (29-40) ===============
+  if(stats.wins>=1)unlock('first_sale');
+  if(todaySales>=2)unlock('double_down');
+  if(weekSales>=3)unlock('hat_trick');
+  if(weekSales>=5)unlock('sales_machine');
+  if(stats.wins>=10)unlock('closer');
+  if(stats.wins>=25)unlock('elite_closer');
+  if(stats.wins>=50)unlock('master_closer');
+  if(maintenanceSales>=5)unlock('maintenance_king');
+  if(maintenanceSales>=10)unlock('full_package');
+
+  // Quick Sale: check if any valide prospect was created and won within 24h
+  vd.filter(d=>d.status==='valide'&&d.created_at&&d.updated_at).forEach(d=>{
+    const created=new Date(d.created_at),updated=new Date(d.updated_at);
+    if((updated-created)/36e5<=24)unlock('quick_sale');
+  });
+
+  // Persistence: sale after many rappeler cycles (approximate)
+  if(stats.wins>=1&&stats.rappeler>=5)unlock('persistence');
+
+  // Island Seller
+  if(islandSales>=1)unlock('island_seller');
+
+  // =============== REVENUE (41-49) ===============
+  if(stats.rev>=500)unlock('first_500');
+  if(stats.rev>=1000)unlock('money_maker');
+  if(stats.rev>=5000)unlock('grand');
+  if(stats.rev>=10000)unlock('high_roller');
+  if(stats.rev>=25000)unlock('revenue_king');
+  if(stats.rev>=50000)unlock('revenue_god');
+  if(monthRev>=2000)unlock('monthly_target');
+  if(pts>=500)unlock('bonus_hunter');
+  if(pts>=1000)unlock('double_bonus');
+
+  // =============== CONVERSION (50-57) ===============
+  const totalDecided=stats.wins+stats.lost;
+  const convRate=totalDecided>0?(stats.wins/totalDecided)*100:0;
+  if(totalDecided>=20&&convRate>=20)unlock('sharp_shooter');
+  if(totalDecided>=30&&convRate>=30)unlock('precision');
+  if(totalDecided>=20&&convRate>=40)unlock('sniper');
+  if(stats.wins>=5&&stats.rappeler>=5)unlock('follow_up_pro');
+  if(stats.nego>=10)unlock('negotiator');
+  if(stats.wins>=5)unlock('master_negotiator');
+  // Objection Crusher: approximate by counting prospects with notes containing objection keywords
+  const objectionCount=vd.filter(d=>d.notes&&/expensive|cher|time|temps|have site|deja|no need|pas besoin/i.test(d.notes)).length;
+  if(objectionCount>=20)unlock('objection_crusher');
+  // No Answer King: approximate
+  if(stats.wins>=1&&vd.filter(d=>d.notes&&/no answer|pas de reponse|ne repond/i.test(d.notes)).length>=10)unlock('no_answer_king');
+
+  // =============== REGIONS (58-67) ===============
+  completedRegionNames.forEach(r=>{
+    if(r.includes('cret'))unlock('crete_conqueror');
+    if(r.includes('athen')||r.includes('attik'))unlock('athens_attacker');
+    if(r.includes('rhod'))unlock('rhodes_warrior');
+    if(r.includes('thessalonik')||r.includes('saloni'))unlock('thessaloniki_tiger');
+    if(r.includes('kos'))unlock('kos_king');
+  });
+  // Santorini Seller
+  if(vd.some(d=>d.status==='valide'&&d.region&&d.region.toLowerCase().includes('santorini')))unlock('santorini_seller');
+  // Island Hopper
+  const islandRegionsWorked=vendorRegions.filter(r=>isIslandRegion(r));
+  if(islandRegionsWorked.length>=3)unlock('island_hopper');
+  if(completedRegions>=3)unlock('region_master');
+  if(completedRegions>=5)unlock('region_lord');
+  if(completedRegions>=10)unlock('greece_dominator');
+
+  // =============== TEAM (68-72) ===============
+  if(myRank===1)unlock('top_dog');
+  // Weekly/Monthly champion tracked via localStorage persistence
+  const topKey='top_rank_'+vendor;
+  let topData=JSON.parse(localStorage.getItem(topKey)||'{"days":[],"weeks":0,"months":0}');
+  if(myRank===1&&!topData.days.includes(today)){
+    topData.days.push(today);
+    topData.days=topData.days.filter(d=>(new Date()-new Date(d))/864e5<90);
+    localStorage.setItem(topKey,JSON.stringify(topData));
+  }
+  const topConsec=getMaxConsec(topData.days);
+  if(topConsec>=7)unlock('weekly_champion');
+  if(topConsec>=30)unlock('monthly_king');
+
+  // Comeback: track previous rank
+  const prevRankKey='prev_rank_'+vendor;
+  const prevRank=parseInt(localStorage.getItem(prevRankKey)||'0');
+  if(prevRank>=3&&myRank===1)unlock('comeback');
+  localStorage.setItem(prevRankKey,String(myRank));
+
+  // Consistent Top 2
+  const top2Key='top2_days_'+vendor;
+  let top2Days=JSON.parse(localStorage.getItem(top2Key)||'[]');
+  if(myRank<=2&&!top2Days.includes(today)){
+    top2Days.push(today);
+    top2Days=top2Days.filter(d=>(new Date()-new Date(d))/864e5<60);
+    localStorage.setItem(top2Key,JSON.stringify(top2Days));
+  }
+  if(getMaxConsec(top2Days)>=14)unlock('consistent_top');
+
+  // =============== PIPELINE (73-77) ===============
+  if(pipelineCount>=10)unlock('pipeline_builder');
+  if(pipelineCount>=20)unlock('full_pipeline');
+  if(dragCount>=50)unlock('pipeline_master');
+  if(dragCount>=20)unlock('kanban_king');
+  if(weekNego>=5)unlock('no_leaks');
+
+  // =============== ORGANIZATION (78-84) ===============
+  if(notesCount>=50)unlock('note_master');
+  if(filledDetails>=20)unlock('detail_oriented');
+  if(scriptsUsed>=5)unlock('script_writer');
+  if(remindersCount>=10)unlock('reminder_pro');
+  // Zero Inbox: approximate
+  const dismissKey='dismissed_all_'+vendor;
+  if(localStorage.getItem(dismissKey)==='true')unlock('zero_inbox');
+  if(blacklistCount>=10)unlock('blacklist_guardian');
+  if(stats.lost>=20)unlock('clean_pipeline');
+
+  // =============== SPECIAL/SECRET (85-100) ===============
+  if(maintenanceSales>=3)unlock('the_architect');
+  if(todayCalls>=15&&todaySales>=1)unlock('perfect_day');
+  // Phoenix: prospect that was perdu then valide (check notes for "perdu" or track)
+  const phoenixKey='phoenix_'+vendor;
+  if(localStorage.getItem(phoenixKey)==='true')unlock('phoenix');
+  if(islandSales>=5)unlock('greek_god');
+  if(pts>=500)unlock('vantage_elite');
+  if(pts>=1000)unlock('vantage_legend');
+  if(pts>=2000)unlock('vantage_god');
   if(stats.wins>=20)unlock('hall_of_fame');
   if(stats.rev>=10000)unlock('money_printer');
+  // The 1%: top rank for 3 months
+  if(topData.days.length>=90)unlock('the_one_percent');
+  // Secret Agent: sale with no rappeler for that prospect
+  const directSales=vd.filter(d=>d.status==='valide'&&!(d.notes&&d.notes.toLowerCase().includes('rappel')));
+  if(directSales.length>=1)unlock('secret_agent');
+  // Sleeping Giant: 3 sales this week after 0 last week
+  const lastWeekStart=new Date(weekStart);lastWeekStart.setDate(lastWeekStart.getDate()-7);
+  const lastWeekSales=vd.filter(d=>d.status==='valide'&&d.updated_at&&new Date(d.updated_at)>=lastWeekStart&&new Date(d.updated_at)<weekStart).length;
+  if(lastWeekSales===0&&weekSales>=3)unlock('sleeping_giant');
+  // Unstoppable Force
+  if(monthSales>=10)unlock('unstoppable_force');
+  // The GOAT: highest all-time revenue
+  const allRevs=VENDOR_NAMES.map(v=>getVendorStats(v).rev);
+  if(stats.rev>0&&stats.rev>=Math.max(...allRevs))unlock('the_goat');
+  // Completionist
+  const unlockedCount=Object.values(badges).filter(b=>b.unlocked).length+newUnlocks.length;
+  if(unlockedCount>=50)unlock('completionist');
+  if(unlockedCount>=80)unlock('vantage_champion');
 
   saveBadges(vendor,badges);
 
   newUnlocks.forEach(id=>{
     const def=BADGE_DEFS.find(b=>b.id===id);
     if(def){
-      showToast('Badge Debloque! '+def.emoji,def.name+' - '+def.desc,'var(--yellow)',true);
+      showToast('Badge Unlocked! +'+def.points+'pts',def.name+' - '+def.desc,'var(--yellow)',true);
     }
   });
 }
@@ -2210,7 +2741,7 @@ async function updateField(id,field,value){
 // ========================================
 let dragId=null;
 function dragCard(e,id){dragId=id;e.dataTransfer.effectAllowed='move'}
-async function dropCard(e,status){e.preventDefault();if(dragId){await updateField(dragId,'status',status);dragId=null}}
+async function dropCard(e,status){e.preventDefault();if(dragId){await updateField(dragId,'status',status);dragId=null;if(!isAdmin){const dk='drag_count_'+currentUser;localStorage.setItem(dk,String((parseInt(localStorage.getItem(dk)||'0'))+1))}}}
 
 // ========================================
 // PROJECTS CRUD
