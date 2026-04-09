@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vantage CRM - Sales Pipeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0d1117;--s1:#161b22;--s2:#21262d;--s3:#30363d;--accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#db6d28;--purple:#bc8cff;--white:#e6edf3;--gray:#8b949e;--dim:rgba(240,246,252,.04)}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+
+/* === LOGIN === */
+#loginScreen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:24px}
+.login-box{background:var(--s1);border:1px solid var(--s3);border-radius:12px;padding:48px;text-align:center;max-width:400px;width:90%}
+.login-logo{font-size:1.5rem;font-weight:800;color:var(--white);margin-bottom:8px}
+.login-logo span{color:var(--accent)}
+.login-sub{font-size:.78rem;color:var(--gray);margin-bottom:32px}
+.login-btn{display:block;width:100%;padding:14px;margin-bottom:10px;background:var(--s2);border:1px solid var(--s3);border-radius:8px;color:var(--white);font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s;text-align:center}
+.login-btn:hover{border-color:var(--accent);background:rgba(88,166,255,.08)}
+.login-btn.admin{border-color:var(--purple);color:var(--purple)}
+.login-btn.admin:hover{background:rgba(188,140,255,.08)}
+
+/* === LAYOUT === */
+#app{display:none}
+.topbar{background:var(--s1);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--s3);position:sticky;top:0;z-index:50}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-logo{font-size:1rem;font-weight:700}.topbar-logo span{color:var(--accent)}
+.topbar-role{font-size:.6rem;padding:3px 8px;border-radius:10px;font-weight:600;letter-spacing:.05em}
+.topbar-role.admin{background:rgba(188,140,255,.12);color:var(--purple)}
+.topbar-role.vendor{background:rgba(88,166,255,.12);color:var(--accent)}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.topbar-user{font-size:.78rem;color:var(--gray)}
+.btn{padding:8px 16px;border-radius:8px;font-size:.68rem;font-weight:600;cursor:pointer;transition:.2s;border:none}
+.btn-accent{background:var(--accent);color:var(--bg)}.btn-accent:hover{opacity:.9}
+.btn-ghost{background:transparent;border:1px solid var(--s3);color:var(--gray)}.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:5px 10px;font-size:.62rem}
+
+/* === TABS === */
+.tabs{display:flex;gap:0;background:var(--s1);padding:0 24px;border-bottom:1px solid var(--s3)}
+.tab{padding:12px 20px;font-size:.75rem;font-weight:600;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;transition:.2s}
+.tab:hover{color:var(--white)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* === STATS === */
+.stats-row{display:flex;gap:12px;padding:20px 24px;flex-wrap:wrap}
+.stat-card{background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:16px 20px;min-width:140px;flex:1}
+.stat-val{font-size:1.6rem;font-weight:800;line-height:1}
+.stat-lbl{font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);margin-top:4px}
+.stat-val.blue{color:var(--accent)}.stat-val.green{color:var(--green)}.stat-val.yellow{color:var(--yellow)}.stat-val.red{color:var(--red)}.stat-val.purple{color:var(--purple)}.stat-val.orange{color:var(--orange)}
+
+/* === CONTROLS === */
+.controls{padding:12px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;background:var(--s1);border-bottom:1px solid var(--s3)}
+.search{padding:8px 14px;background:var(--bg);border:1px solid var(--s3);border-radius:8px;color:var(--white);font-size:.78rem;width:240px;outline:none}
+.search:focus{border-color:var(--accent)}
+.flt{padding:7px 12px;background:var(--bg);border:1px solid var(--s3);border-radius:8px;color:var(--white);font-size:.72rem;outline:none;cursor:pointer}
+.cnt{font-size:.72rem;color:var(--gray);margin-left:auto}
+.cnt b{color:var(--accent)}
+
+/* === TABLE === */
+.table-wrap{padding:0 24px 24px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;margin-top:8px}
+th{background:var(--s1);padding:10px 10px;text-align:left;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);border-bottom:1px solid var(--s3);cursor:pointer;user-select:none;white-space:nowrap;position:sticky;top:88px;z-index:5}
+th:hover{color:var(--accent)}
+th.sa::after{content:" ▲";color:var(--accent)}
+th.sd::after{content:" ▼";color:var(--accent)}
+td{padding:8px 10px;font-size:.76rem;border-bottom:1px solid var(--dim)}
+tr{transition:.15s}
+tr:hover{background:rgba(88,166,255,.03)}
+tr.row-nouveau{}
+tr.row-appelle{background:rgba(210,153,34,.06)!important}
+tr.row-appelle td:first-child{border-left:3px solid var(--yellow)}
+tr.row-valide{background:rgba(63,185,80,.06)!important}
+tr.row-valide td:first-child{border-left:3px solid var(--green)}
+tr.row-perdu{opacity:.4}
+tr.row-perdu td:first-child{border-left:3px solid var(--red)}
+tr.row-negociation{background:rgba(219,109,40,.06)!important}
+tr.row-negociation td:first-child{border-left:3px solid var(--orange)}
+tr.row-rappeler{background:rgba(188,140,255,.06)!important}
+tr.row-rappeler td:first-child{border-left:3px solid var(--purple)}
+
+/* Badges */
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.58rem;font-weight:600;white-space:nowrap}
+.b-Restauration{background:rgba(248,81,73,.1);color:var(--red)}
+.b-Beaute{background:rgba(188,140,255,.1);color:var(--purple)}
+.b-CafeBar{background:rgba(88,166,255,.1);color:var(--accent)}
+.b-Auto{background:rgba(139,148,158,.1);color:var(--gray)}
+.b-Sante{background:rgba(63,185,80,.1);color:var(--green)}
+.b-Boulangerie{background:rgba(210,153,34,.1);color:var(--yellow)}
+.b-Commerce{background:rgba(88,166,255,.1);color:var(--accent)}
+.b-Artisans{background:rgba(219,109,40,.1);color:var(--orange)}
+.b-Services{background:rgba(188,140,255,.1);color:var(--purple)}
+.b-Autre{background:var(--dim);color:var(--gray)}
+
+.type-fixe{font-size:.6rem;color:var(--gray)}.type-port{font-size:.6rem;color:var(--accent);font-weight:600}
+.region-tag{font-size:.6rem;color:var(--yellow)}
+.phone-link{color:var(--accent);font-weight:500;font-size:.75rem}
+.phone-link:hover{text-decoration:underline}
+
+.tsel{padding:3px 6px;background:var(--bg);border:1px solid var(--s3);border-radius:5px;color:var(--white);font-size:.68rem;outline:none;cursor:pointer}
+.ninp{width:100%;min-width:100px;padding:3px 6px;background:var(--bg);border:1px solid rgba(255,255,255,.04);border-radius:4px;color:var(--white);font-size:.7rem;outline:none}
+.ninp:focus{border-color:var(--yellow)}
+
+/* === PIPELINE (Kanban) === */
+.pipeline{display:flex;gap:12px;padding:20px 24px;overflow-x:auto;min-height:70vh}
+.pipe-col{background:var(--s1);border:1px solid var(--s3);border-radius:10px;min-width:260px;flex:1;display:flex;flex-direction:column;max-height:75vh}
+.pipe-col-head{padding:12px 14px;border-bottom:1px solid var(--s3);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0}
+.pipe-col-title{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em}
+.pipe-col-count{font-size:.6rem;background:var(--s2);padding:2px 8px;border-radius:10px;color:var(--gray)}
+.pipe-col-body{padding:8px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:8px}
+.pipe-card{background:var(--s2);border:1px solid var(--s3);border-radius:8px;padding:12px;cursor:grab;transition:.2s}
+.pipe-card:hover{border-color:var(--accent)}
+.pipe-card-name{font-size:.78rem;font-weight:600;margin-bottom:4px}
+.pipe-card-phone{font-size:.7rem;color:var(--accent);margin-bottom:4px}
+.pipe-card-region{font-size:.58rem;color:var(--yellow)}
+.pipe-card-notes{font-size:.62rem;color:var(--gray);margin-top:4px;font-style:italic}
+
+/* === VENDOR STATS === */
+.vendor-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;padding:20px 24px}
+.vendor-card{background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:20px}
+.vendor-card h3{font-size:.9rem;font-weight:700;margin-bottom:12px;color:var(--white)}
+.vendor-stat-row{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--dim)}
+.vendor-stat-row:last-child{border:none}
+.vendor-stat-lbl{font-size:.72rem;color:var(--gray)}
+.vendor-stat-val{font-size:.72rem;font-weight:700}
+
+/* === HIDE === */
+.hidden{display:none!important}
+
+/* === RESPONSIVE === */
+@media(max-width:768px){
+  .stats-row{flex-direction:column}.stat-card{min-width:auto}
+  .controls{padding:10px 14px}.table-wrap{padding:0 14px 14px}
+  .search{width:100%}.pipeline{flex-direction:column}
+  .pipe-col{min-width:auto;max-height:40vh}
+  .topbar{flex-wrap:wrap;gap:8px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo"><span>VANTAGE</span> CRM</div>
+    <div class="login-sub">Sales Pipeline - Grece</div>
+    <button class="login-btn" onclick="login('Vendeur 1')">Vendeur 1</button>
+    <button class="login-btn" onclick="login('Vendeur 2')">Vendeur 2</button>
+    <button class="login-btn" onclick="login('Vendeur 3')">Vendeur 3</button>
+    <button class="login-btn admin" onclick="login('Admin')">Admin</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo"><span>VANTAGE</span> CRM</div>
+      <span class="topbar-role" id="roleTag"></span>
+    </div>
+    <div class="topbar-right">
+      <span class="topbar-user" id="userName"></span>
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">Export CSV</button>
+      <button class="btn btn-ghost btn-sm" onclick="logout()">Deconnexion</button>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-tab="table" onclick="switchTab('table')">Prospects</div>
+    <div class="tab" data-tab="pipeline" onclick="switchTab('pipeline')">Pipeline</div>
+    <div class="tab hidden" data-tab="vendors" id="tabVendors" onclick="switchTab('vendors')">Vendeurs</div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row" id="statsRow"></div>
+
+  <!-- CONTROLS -->
+  <div class="controls" id="controlsBar">
+    <input type="text" class="search" id="q" placeholder="Rechercher nom, ville, categorie...">
+    <select class="flt" id="fFam"><option value="">Toutes familles</option></select>
+    <select class="flt" id="fReg"><option value="">Toutes regions</option></select>
+    <select class="flt" id="fSta"><option value="">Tous statuts</option>
+      <option>nouveau</option><option>appelle</option><option>negociation</option><option>rappeler</option><option>valide</option><option>perdu</option>
+    </select>
+    <select class="flt" id="fTel"><option value="">Fix + Portable</option><option>Fixe</option><option>Portable</option></select>
+    <select class="flt" id="fVen"><option value="">Tous vendeurs</option>
+      <option>Vendeur 1</option><option>Vendeur 2</option><option>Vendeur 3</option>
+    </select>
+    <button class="btn btn-ghost btn-sm" onclick="resetFilters()">Reset</button>
+    <span class="cnt"><b id="visCount">0</b> / <span id="totCount">0</span></span>
+  </div>
+
+  <!-- TABLE VIEW -->
+  <div class="table-wrap" id="tableView">
+    <table>
+      <thead><tr>
+        <th data-c="nom" onclick="doSort('nom')">Nom</th>
+        <th data-c="numero" onclick="doSort('numero')">Numero</th>
+        <th data-c="type_tel" onclick="doSort('type_tel')">Type</th>
+        <th data-c="famille" onclick="doSort('famille')">Famille</th>
+        <th data-c="categorie" onclick="doSort('categorie')">Categorie</th>
+        <th data-c="region" onclick="doSort('region')">Region</th>
+        <th>Vendeur</th>
+        <th data-c="status" onclick="doSort('status')">Statut</th>
+        <th>Notes</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <!-- PIPELINE VIEW -->
+  <div class="pipeline hidden" id="pipelineView"></div>
+
+  <!-- VENDOR STATS VIEW -->
+  <div class="vendor-grid hidden" id="vendorsView"></div>
+</div>
+
+<script>
+const SUPA_URL = 'https://cckrdgnnufnxfuspihst.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNja3JkZ25udWZueGZ1c3BpaHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU3MzcyODksImV4cCI6MjA5MTMxMzI4OX0.Fwrmg_k2epYfLOsFgJZYel8-UC1Npm6IUN0LFoiSQ2U';
+
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+let DATA = [];
+let currentUser = null;
+let isAdmin = false;
+let sortCol = '', sortDir = 1;
+let currentTab = 'table';
+
+const STATUSES = ['nouveau','appelle','negociation','rappeler','valide','perdu'];
+const VENDORS = ['','Vendeur 1','Vendeur 2','Vendeur 3'];
+const STATUS_COLORS = {nouveau:'',appelle:'yellow',negociation:'orange',rappeler:'purple',valide:'green',perdu:'red'};
+
+// === AUTH ===
+function login(name) {
+  currentUser = name;
+  isAdmin = name === 'Admin';
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('userName').textContent = name;
+  const rt = document.getElementById('roleTag');
+  rt.textContent = isAdmin ? 'ADMIN' : 'VENDEUR';
+  rt.className = 'topbar-role ' + (isAdmin ? 'admin' : 'vendor');
+  if (isAdmin) document.getElementById('tabVendors').classList.remove('hidden');
+  localStorage.setItem('crm_user', name);
+  loadData();
+}
+
+function logout() {
+  localStorage.removeItem('crm_user');
+  location.reload();
+}
+
+// Auto-login
+const saved = localStorage.getItem('crm_user');
+if (saved) login(saved);
+
+// === DATA ===
+async function loadData() {
+  const { data, error } = await sb.from('prospects').select('*').order('id');
+  if (error) { console.error(error); return; }
+  DATA = data;
+  populateFilters();
+  render();
+}
+
+function populateFilters() {
+  const familles = [...new Set(DATA.map(d => d.famille))].filter(Boolean).sort();
+  const regions = [...new Set(DATA.map(d => d.region))].filter(Boolean).sort();
+  const fFam = document.getElementById('fFam');
+  const fReg = document.getElementById('fReg');
+  familles.forEach(f => { const o = document.createElement('option'); o.value = f; o.textContent = f; fFam.appendChild(o); });
+  regions.forEach(r => { const o = document.createElement('option'); o.value = r; o.textContent = r; fReg.appendChild(o); });
+}
+
+function getFiltered() {
+  const q = document.getElementById('q').value.toLowerCase();
+  const ff = document.getElementById('fFam').value;
+  const fr = document.getElementById('fReg').value;
+  const fs = document.getElementById('fSta').value;
+  const ft = document.getElementById('fTel').value;
+  const fv = document.getElementById('fVen').value;
+
+  let fd = DATA.filter(d => {
+    if (!isAdmin && currentUser !== 'Admin') {
+      // Vendors see only their prospects + unassigned
+      // Actually let them see all but focus on theirs
+    }
+    if (q && !(
+      (d.nom||'').toLowerCase().includes(q) ||
+      (d.categorie||'').toLowerCase().includes(q) ||
+      (d.region||'').toLowerCase().includes(q) ||
+      (d.numero||'').includes(q) ||
+      (d.adresse||'').toLowerCase().includes(q)
+    )) return false;
+    if (ff && d.famille !== ff) return false;
+    if (fr && d.region !== fr) return false;
+    if (fs && d.status !== fs) return false;
+    if (ft && d.type_tel !== ft) return false;
+    if (fv && d.vendeur !== fv) return false;
+    return true;
+  });
+
+  if (sortCol) {
+    fd.sort((a, b) => {
+      const av = (a[sortCol] || '').toLowerCase();
+      const bv = (b[sortCol] || '').toLowerCase();
+      return av < bv ? -sortDir : av > bv ? sortDir : 0;
+    });
+  }
+  return fd;
+}
+
+// === RENDER ===
+function render() {
+  renderStats();
+  if (currentTab === 'table') renderTable();
+  else if (currentTab === 'pipeline') renderPipeline();
+  else if (currentTab === 'vendors') renderVendors();
+}
+
+function renderStats() {
+  const myData = isAdmin ? DATA : DATA;
+  const total = myData.length;
+  const nouveau = myData.filter(d => d.status === 'nouveau').length;
+  const appelle = myData.filter(d => d.status === 'appelle').length;
+  const nego = myData.filter(d => d.status === 'negociation').length;
+  const valide = myData.filter(d => d.status === 'valide').length;
+  const perdu = myData.filter(d => d.status === 'perdu').length;
+  const fixes = myData.filter(d => d.type_tel === 'Fixe').length;
+  const ports = myData.filter(d => d.type_tel === 'Portable').length;
+  const revenue = myData.reduce((s, d) => s + (parseFloat(d.revenue) || 0), 0);
+  const convRate = valide + perdu > 0 ? ((valide / (valide + perdu)) * 100).toFixed(1) : '0';
+
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card"><div class="stat-val blue">${total.toLocaleString()}</div><div class="stat-lbl">Total Prospects</div></div>
+    <div class="stat-card"><div class="stat-val">${nouveau.toLocaleString()}</div><div class="stat-lbl">Nouveau</div></div>
+    <div class="stat-card"><div class="stat-val yellow">${appelle.toLocaleString()}</div><div class="stat-lbl">Appelle</div></div>
+    <div class="stat-card"><div class="stat-val orange">${nego}</div><div class="stat-lbl">Negociation</div></div>
+    <div class="stat-card"><div class="stat-val green">${valide}</div><div class="stat-lbl">Valide</div></div>
+    <div class="stat-card"><div class="stat-val red">${perdu}</div><div class="stat-lbl">Perdu</div></div>
+    ${isAdmin ? `<div class="stat-card"><div class="stat-val green">${revenue.toLocaleString()}&#8364;</div><div class="stat-lbl">Revenue</div></div>
+    <div class="stat-card"><div class="stat-val purple">${convRate}%</div><div class="stat-lbl">Conversion</div></div>` : ''}
+  `;
+}
+
+function renderTable() {
+  const fd = getFiltered();
+  const show = fd.slice(0, 500);
+
+  document.getElementById('tbody').innerHTML = show.map(d => {
+    const rc = 'row-' + (d.status || 'nouveau');
+    const tc = d.type_tel === 'Portable' ? 'type-port' : 'type-fixe';
+    const fc = 'b-' + (d.famille || 'Autre').replace(/[& ]/g, '');
+    const venOpts = VENDORS.map(v => `<option ${d.vendeur === v ? 'selected' : ''}>${v}</option>`).join('');
+    const staOpts = STATUSES.map(s => `<option ${d.status === s ? 'selected' : ''}>${s}</option>`).join('');
+
+    return `<tr class="${rc}">
+      <td><strong>${d.nom || ''}</strong></td>
+      <td><a href="tel:${d.numero}" class="phone-link">${d.numero || ''}</a></td>
+      <td><span class="${tc}">${d.type_tel || ''}</span></td>
+      <td><span class="badge ${fc}">${d.famille || ''}</span></td>
+      <td>${d.categorie || ''}</td>
+      <td><span class="region-tag">${d.region || ''}</span></td>
+      <td><select class="tsel" onchange="updateField(${d.id},'vendeur',this.value)">${venOpts}</select></td>
+      <td><select class="tsel" onchange="updateField(${d.id},'status',this.value)">${staOpts}</select></td>
+      <td><input class="ninp" value="${(d.notes || '').replace(/"/g, '&quot;')}" onblur="updateField(${d.id},'notes',this.value)" placeholder="Notes..."></td>
+    </tr>`;
+  }).join('');
+
+  document.getElementById('visCount').textContent = fd.length;
+  document.getElementById('totCount').textContent = DATA.length;
+
+  if (fd.length > 500) {
+    document.getElementById('tbody').innerHTML += `<tr><td colspan="9" style="text-align:center;color:var(--yellow);padding:16px;font-size:.75rem">Affichage limite a 500. Utilisez les filtres. Total: ${fd.length}</td></tr>`;
+  }
+}
+
+function renderPipeline() {
+  const pv = document.getElementById('pipelineView');
+  const cols = [
+    { key: 'nouveau', label: 'Nouveau', color: 'var(--gray)' },
+    { key: 'appelle', label: 'Appelle', color: 'var(--yellow)' },
+    { key: 'negociation', label: 'Negociation', color: 'var(--orange)' },
+    { key: 'rappeler', label: 'A Rappeler', color: 'var(--purple)' },
+    { key: 'valide', label: 'Gagne', color: 'var(--green)' },
+    { key: 'perdu', label: 'Perdu', color: 'var(--red)' },
+  ];
+
+  // For vendors, show only their assigned prospects in pipeline
+  const myProspects = !isAdmin ? DATA.filter(d => d.vendeur === currentUser) : DATA.filter(d => d.vendeur);
+
+  pv.innerHTML = cols.map(col => {
+    const items = myProspects.filter(d => d.status === col.key).slice(0, 50);
+    return `<div class="pipe-col">
+      <div class="pipe-col-head">
+        <span class="pipe-col-title" style="color:${col.color}">${col.label}</span>
+        <span class="pipe-col-count">${myProspects.filter(d => d.status === col.key).length}</span>
+      </div>
+      <div class="pipe-col-body" data-status="${col.key}" ondragover="event.preventDefault()" ondrop="dropCard(event,'${col.key}')">
+        ${items.map(d => `
+          <div class="pipe-card" draggable="true" ondragstart="dragCard(event,${d.id})">
+            <div class="pipe-card-name">${d.nom || ''}</div>
+            <div class="pipe-card-phone"><a href="tel:${d.numero}" style="color:var(--accent)">${d.numero || ''}</a></div>
+            <div class="pipe-card-region">${d.region || ''} &middot; ${d.famille || ''}</div>
+            ${d.notes ? `<div class="pipe-card-notes">${d.notes}</div>` : ''}
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderVendors() {
+  if (!isAdmin) return;
+  const vv = document.getElementById('vendorsView');
+  const vendors = ['Vendeur 1', 'Vendeur 2', 'Vendeur 3'];
+
+  vv.innerHTML = vendors.map(v => {
+    const vd = DATA.filter(d => d.vendeur === v);
+    const assigned = vd.length;
+    const appelle = vd.filter(d => d.status === 'appelle').length;
+    const nego = vd.filter(d => d.status === 'negociation').length;
+    const valide = vd.filter(d => d.status === 'valide').length;
+    const perdu = vd.filter(d => d.status === 'perdu').length;
+    const rev = vd.reduce((s, d) => s + (parseFloat(d.revenue) || 0), 0);
+    const conv = valide + perdu > 0 ? ((valide / (valide + perdu)) * 100).toFixed(1) : '0';
+
+    return `<div class="vendor-card">
+      <h3>${v}</h3>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Assignes</span><span class="vendor-stat-val" style="color:var(--accent)">${assigned}</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Appeles</span><span class="vendor-stat-val" style="color:var(--yellow)">${appelle}</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Negociation</span><span class="vendor-stat-val" style="color:var(--orange)">${nego}</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Gagnes</span><span class="vendor-stat-val" style="color:var(--green)">${valide}</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Perdus</span><span class="vendor-stat-val" style="color:var(--red)">${perdu}</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Revenue</span><span class="vendor-stat-val" style="color:var(--green)">${rev.toLocaleString()}&euro;</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Conversion</span><span class="vendor-stat-val" style="color:var(--purple)">${conv}%</span></div>
+    </div>`;
+  }).join('');
+}
+
+// === TABS ===
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.getElementById('tableView').classList.toggle('hidden', tab !== 'table');
+  document.getElementById('pipelineView').classList.toggle('hidden', tab !== 'pipeline');
+  document.getElementById('vendorsView').classList.toggle('hidden', tab !== 'vendors');
+  document.getElementById('controlsBar').classList.toggle('hidden', tab !== 'table');
+  render();
+}
+
+// === SORT ===
+function doSort(col) {
+  document.querySelectorAll('th').forEach(t => t.classList.remove('sa', 'sd'));
+  if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
+  const th = document.querySelector(`th[data-c="${col}"]`);
+  if (th) th.classList.add(sortDir === 1 ? 'sa' : 'sd');
+  render();
+}
+
+// === UPDATE ===
+async function updateField(id, field, value) {
+  const obj = {};
+  obj[field] = value;
+  obj.updated_at = new Date().toISOString();
+  if (field === 'status' && value === 'appelle') obj.call_date = new Date().toISOString();
+
+  await sb.from('prospects').update(obj).eq('id', id);
+
+  // Update local
+  const row = DATA.find(d => d.id === id);
+  if (row) { row[field] = value; if (obj.call_date) row.call_date = obj.call_date; }
+  render();
+}
+
+// === DRAG & DROP ===
+let dragId = null;
+function dragCard(e, id) { dragId = id; e.dataTransfer.effectAllowed = 'move'; }
+async function dropCard(e, status) {
+  e.preventDefault();
+  if (dragId) { await updateField(dragId, 'status', status); dragId = null; }
+}
+
+// === FILTERS ===
+function resetFilters() {
+  ['q','fFam','fReg','fSta','fTel','fVen'].forEach(id => document.getElementById(id).value = '');
+  render();
+}
+['q'].forEach(id => document.getElementById(id).addEventListener('input', render));
+['fFam','fReg','fSta','fTel','fVen'].forEach(id => document.getElementById(id).addEventListener('change', render));
+
+// === EXPORT ===
+function exportCSV() {
+  const fd = getFiltered();
+  let csv = 'nom,numero,type_tel,famille,categorie,region,adresse,vendeur,statut,notes\n';
+  fd.forEach(d => {
+    csv += `"${d.nom||''}","${d.numero||''}","${d.type_tel||''}","${d.famille||''}","${d.categorie||''}","${d.region||''}","${d.adresse||''}","${d.vendeur||''}","${d.status||''}","${(d.notes||'').replace(/"/g,'""')}"\n`;
+  });
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'vantage_prospects.csv';
+  a.click();
+}
+
+// === REALTIME ===
+sb.channel('prospects-changes')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'prospects' }, payload => {
+    if (payload.eventType === 'UPDATE') {
+      const idx = DATA.findIndex(d => d.id === payload.new.id);
+      if (idx >= 0) DATA[idx] = payload.new;
+    }
+    render();
+  })
+  .subscribe();
+</script>
+</body>
+</html>
