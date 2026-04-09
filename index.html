@@ -11,6 +11,7 @@
 :root{--bg:#0d1117;--s1:#161b22;--s2:#21262d;--s3:#30363d;--accent:#58a6ff;--green:#3fb950;--yellow:#d29922;--red:#f85149;--orange:#db6d28;--purple:#bc8cff;--white:#e6edf3;--gray:#8b949e;--dim:rgba(240,246,252,.04)}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--white);min-height:100vh}
 a{color:var(--accent);text-decoration:none}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:3px}
 
 /* LOGIN */
 #loginScreen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;align-items:center;justify-content:center}
@@ -31,6 +32,7 @@ a{color:var(--accent);text-decoration:none}
 .topbar-role.vendor{background:rgba(88,166,255,.12);color:var(--accent)}
 .topbar-right{display:flex;align-items:center;gap:12px}
 .topbar-user{font-size:.78rem;color:var(--gray)}
+.topbar-points{font-size:.78rem;font-weight:700;color:var(--yellow);background:rgba(210,153,34,.1);padding:4px 12px;border-radius:8px}
 .btn{padding:8px 16px;border-radius:8px;font-size:.68rem;font-weight:600;cursor:pointer;transition:.2s;border:none}
 .btn-accent{background:var(--accent);color:var(--bg)}.btn-accent:hover{opacity:.9}
 .btn-ghost{background:transparent;border:1px solid var(--s3);color:var(--gray)}.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
@@ -61,8 +63,8 @@ a{color:var(--accent);text-decoration:none}
 table{width:100%;border-collapse:collapse;margin-top:8px}
 th{background:var(--s1);padding:10px;text-align:left;font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gray);border-bottom:1px solid var(--s3);cursor:pointer;user-select:none;white-space:nowrap;position:sticky;top:88px;z-index:5}
 th:hover{color:var(--accent)}
-th.sa::after{content:" ▲";color:var(--accent)}
-th.sd::after{content:" ▼";color:var(--accent)}
+th.sa::after{content:" \25B2";color:var(--accent)}
+th.sd::after{content:" \25BC";color:var(--accent)}
 td{padding:8px 10px;font-size:.76rem;border-bottom:1px solid var(--dim)}
 tr{transition:.15s}tr:hover{background:rgba(88,166,255,.03)}
 tr.row-nouveau{}
@@ -144,6 +146,67 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 .modal-field input:focus,.modal-field select:focus{border-color:var(--accent)}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
 
+/* DAILY CHALLENGE BANNER */
+.challenge-banner{margin:16px 24px 0;padding:16px 20px;background:var(--s1);border:1px solid var(--s3);border-left:4px solid var(--yellow);border-radius:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.challenge-icon{font-size:1.6rem}
+.challenge-info{flex:1;min-width:200px}
+.challenge-title{font-size:.8rem;font-weight:700;color:var(--yellow);margin-bottom:2px}
+.challenge-desc{font-size:.72rem;color:var(--gray)}
+.challenge-progress{margin-top:6px}
+.challenge-bar-bg{width:100%;height:5px;background:var(--s3);border-radius:3px;overflow:hidden;margin-top:4px}
+.challenge-bar{height:100%;background:var(--yellow);border-radius:3px;transition:width .4s}
+.challenge-pct{font-size:.6rem;color:var(--yellow);font-weight:700}
+
+/* LEADERBOARD */
+.leaderboard-wrap{padding:20px 24px}
+.lb-card{background:var(--s1);border:1px solid var(--s3);border-radius:12px;padding:20px 24px;margin-bottom:12px;display:flex;align-items:center;gap:20px;transition:.2s}
+.lb-card:hover{border-color:var(--accent)}
+.lb-card.rank-1{border-color:var(--yellow);background:rgba(210,153,34,.04)}
+.lb-rank{font-size:1.8rem;font-weight:800;min-width:50px;text-align:center;color:var(--gray)}
+.lb-rank.r1{color:var(--yellow)}
+.lb-rank.r2{color:var(--gray)}
+.lb-rank.r3{color:var(--orange)}
+.lb-name{font-size:1rem;font-weight:700;flex:1}
+.lb-crown{font-size:1.2rem;margin-left:6px}
+.lb-stats{display:flex;gap:24px}
+.lb-stat{text-align:center}
+.lb-stat-val{font-size:1.2rem;font-weight:800}
+.lb-stat-lbl{font-size:.55rem;letter-spacing:.08em;text-transform:uppercase;color:var(--gray);margin-top:2px}
+
+/* BADGES */
+.badges-wrap{padding:20px 24px}
+.badges-section{margin-bottom:32px}
+.badges-section-title{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gray);margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--s3)}
+.badge-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+@media(max-width:1024px){.badge-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.badge-grid{grid-template-columns:repeat(2,1fr)}}
+.badge-card{background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:20px 16px;text-align:center;transition:.3s;position:relative}
+.badge-card.unlocked{border-color:rgba(88,166,255,.3);box-shadow:0 0 20px rgba(88,166,255,.15)}
+.badge-card.locked{opacity:.4;filter:grayscale(1)}
+.badge-card.locked .badge-emoji{filter:grayscale(1)}
+.badge-emoji{font-size:3rem;line-height:1;margin-bottom:10px;display:block}
+.badge-name{font-size:.72rem;font-weight:700;margin-bottom:4px}
+.badge-desc{font-size:.58rem;color:var(--gray);line-height:1.4}
+.badge-date{font-size:.52rem;color:var(--accent);margin-top:6px}
+
+/* TOAST */
+.toast-container{position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--s1);border:1px solid var(--accent);border-radius:10px;padding:16px 20px;min-width:280px;max-width:380px;animation:slideInToast .4s ease;pointer-events:auto;position:relative;overflow:hidden}
+.toast.badge-toast{border-color:var(--yellow)}
+.toast-title{font-size:.82rem;font-weight:700;margin-bottom:4px}
+.toast-body{font-size:.72rem;color:var(--gray)}
+.toast-close{position:absolute;top:8px;right:12px;background:none;border:none;color:var(--gray);cursor:pointer;font-size:.9rem}
+@keyframes slideInToast{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideOutToast{from{transform:translateX(0);opacity:1}to{transform:translateX(120%);opacity:0}}
+
+/* CONFETTI */
+.confetti-container{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:99999;overflow:hidden}
+.confetti-dot{position:absolute;width:8px;height:8px;border-radius:50%;animation:confettiFall 2.5s ease-in forwards}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg) scale(1);opacity:1}100%{transform:translateY(100vh) rotate(720deg) scale(0);opacity:0}}
+
+/* REWARD NOTIFICATION */
+.reward-badge{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;font-size:.5rem;font-weight:700;padding:2px 6px;border-radius:8px;min-width:18px;text-align:center}
+
 .hidden{display:none!important}
 @media(max-width:768px){
   .stats-row{flex-direction:column}.stat-card{min-width:auto}
@@ -151,10 +214,15 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
   .search{width:100%}.pipeline{flex-direction:column}
   .pipe-col{min-width:auto;max-height:40vh}
   .proj-grid{grid-template-columns:1fr}
+  .lb-card{flex-direction:column;text-align:center}
+  .lb-stats{flex-wrap:wrap;justify-content:center}
 }
 </style>
 </head>
 <body>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
 
 <!-- LOGIN -->
 <div id="loginScreen">
@@ -174,6 +242,7 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
     <div class="topbar-left">
       <div class="topbar-logo"><span>VANTAGE</span> CRM</div>
       <span class="topbar-role" id="roleTag"></span>
+      <span class="topbar-points hidden" id="pointsDisplay"></span>
     </div>
     <div class="topbar-right">
       <span class="topbar-user" id="userName"></span>
@@ -186,8 +255,13 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
     <div class="tab active" data-tab="table" onclick="switchTab('table')">Prospects</div>
     <div class="tab" data-tab="pipeline" onclick="switchTab('pipeline')">Pipeline</div>
     <div class="tab" data-tab="projects" onclick="switchTab('projects')">Projets</div>
+    <div class="tab" data-tab="leaderboard" onclick="switchTab('leaderboard')">Classement</div>
+    <div class="tab" data-tab="badges" onclick="switchTab('badges')">Badges</div>
     <div class="tab hidden" data-tab="vendors" id="tabVendors" onclick="switchTab('vendors')">Vendeurs</div>
   </div>
+
+  <!-- DAILY CHALLENGE -->
+  <div class="challenge-banner hidden" id="challengeBanner"></div>
 
   <div class="stats-row" id="statsRow"></div>
 
@@ -216,6 +290,8 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
 
   <div class="pipeline hidden" id="pipelineView"></div>
   <div class="projects-wrap hidden" id="projectsView"></div>
+  <div class="leaderboard-wrap hidden" id="leaderboardView"></div>
+  <div class="badges-wrap hidden" id="badgesView"></div>
   <div class="vendor-grid hidden" id="vendorsView"></div>
 </div>
 
@@ -226,6 +302,7 @@ tr.row-rappeler{background:rgba(188,140,255,.06)!important}tr.row-rappeler td:fi
     <div class="modal-field"><label>Nom du projet</label><input id="projName" placeholder="Ex: Mission Crete"></div>
     <div class="modal-field"><label>Region</label><select id="projRegion"></select></div>
     <div class="modal-field"><label>Vendeur assigne</label><select id="projVendeur"><option>Vendeur 1</option><option>Vendeur 2</option><option>Vendeur 3</option></select></div>
+    <div class="modal-field"><label>Statut</label><select id="projStatus"><option value="active">Actif</option><option value="paused">En pause</option><option value="completed">Termine</option></select></div>
     <div class="modal-actions">
       <button class="btn btn-ghost" onclick="closeModal()">Annuler</button>
       <button class="btn btn-accent" onclick="createProject()">Creer le projet</button>
@@ -242,8 +319,110 @@ let DATA=[],PROJECTS=[];
 let currentUser=null,isAdmin=false,sortCol='',sortDir=1,currentTab='table';
 const STATUSES=['nouveau','appelle','negociation','rappeler','valide','perdu'];
 const VENDORS=['','Vendeur 1','Vendeur 2','Vendeur 3'];
+const VENDOR_NAMES=['Vendeur 1','Vendeur 2','Vendeur 3'];
 
-// === AUTH ===
+// ========================================
+// BADGE DEFINITIONS
+// ========================================
+const BADGE_DEFS=[
+  // BEGINNER
+  {id:'first_step',cat:'Debutant',emoji:'\uD83D\uDCDE',name:'First Step',desc:'1 appel effectue'},
+  {id:'ice_breaker',cat:'Debutant',emoji:'\uD83E\uDDCA',name:'Ice Breaker',desc:'5 appels en 1 jour'},
+  {id:'getting_started',cat:'Debutant',emoji:'\uD83D\uDE80',name:'Getting Started',desc:'10 appels effectues'},
+  {id:'first_blood',cat:'Debutant',emoji:'\uD83D\uDD25',name:'First Blood',desc:'1 prospect interesse'},
+  {id:'rookie_sale',cat:'Debutant',emoji:'\u2B50',name:'Rookie Sale',desc:'1 vente'},
+  {id:'early_bird',cat:'Debutant',emoji:'\uD83C\uDF05',name:'Early Bird',desc:'Appel avant 9h'},
+  {id:'night_owl',cat:'Debutant',emoji:'\uD83C\uDF19',name:'Night Owl',desc:'Appel apres 19h'},
+  {id:'speed_dialer',cat:'Debutant',emoji:'\u26A1',name:'Speed Dialer',desc:'5 appels en 1 heure'},
+  {id:'note_taker',cat:'Debutant',emoji:'\u270F\uFE0F',name:'Note Taker',desc:'10 notes ajoutees'},
+  {id:'explorer',cat:'Debutant',emoji:'\uD83D\uDDFA\uFE0F',name:'Explorer',desc:'3 regions differentes'},
+
+  // INTERMEDIATE
+  {id:'call_machine',cat:'Intermediaire',emoji:'\uD83D\uDCF1',name:'Call Machine',desc:'10 appels en 1 jour'},
+  {id:'hot_streak',cat:'Intermediaire',emoji:'\uD83D\uDD25',name:'Hot Streak',desc:'3 jours avec 10+ appels'},
+  {id:'silver_tongue',cat:'Intermediaire',emoji:'\uD83D\uDDE3\uFE0F',name:'Silver Tongue',desc:'3 ventes en 1 semaine'},
+  {id:'region_master',cat:'Intermediaire',emoji:'\uD83C\uDFC1',name:'Region Master',desc:'Region complete'},
+  {id:'hunter',cat:'Intermediaire',emoji:'\uD83C\uDFAF',name:'Hunter',desc:'50 contacts'},
+  {id:'persuader',cat:'Intermediaire',emoji:'\uD83E\uDD1D',name:'Persuader',desc:'5 nego converties'},
+  {id:'revenue_maker',cat:'Intermediaire',emoji:'\uD83D\uDCB0',name:'Revenue Maker',desc:'1000\u20AC de revenue'},
+  {id:'pipeline_king',cat:'Intermediaire',emoji:'\uD83D\uDC51',name:'Pipeline King',desc:'10 en negociation'},
+  {id:'follow_up_king',cat:'Intermediaire',emoji:'\uD83D\uDD04',name:'Follow Up King',desc:'3 rappels convertis'},
+  {id:'weekly_champion',cat:'Intermediaire',emoji:'\uD83C\uDFC6',name:'Weekly Champion',desc:'#1 de la semaine'},
+
+  // ADVANCED
+  {id:'legend',cat:'Avance',emoji:'\uD83D\uDC8E',name:'Legend',desc:'10 ventes'},
+  {id:'closer',cat:'Avance',emoji:'\u270A',name:'Closer',desc:'5 ventes en 1 semaine'},
+  {id:'elite',cat:'Avance',emoji:'\uD83D\uDEE1\uFE0F',name:'Elite',desc:'500 points'},
+  {id:'unstoppable',cat:'Avance',emoji:'\uD83D\uDD25',name:'Unstoppable',desc:'7 jours d\'activite'},
+  {id:'top_gun',cat:'Avance',emoji:'\u2708\uFE0F',name:'Top Gun',desc:'#1 du mois'},
+  {id:'gold_rush',cat:'Avance',emoji:'\uD83E\uDE99',name:'Gold Rush',desc:'5000\u20AC de revenue'},
+  {id:'marathon_runner',cat:'Avance',emoji:'\uD83C\uDFC3',name:'Marathon Runner',desc:'100 appels'},
+  {id:'master_negotiator',cat:'Avance',emoji:'\u265E',name:'Master Negotiator',desc:'10 nego gagnees'},
+  {id:'island_conqueror',cat:'Avance',emoji:'\uD83C\uDFDD\uFE0F',name:'Island Conqueror',desc:'3 regions terminees'},
+  {id:'vantage_legend',cat:'Avance',emoji:'\uD83D\uDC51',name:'Vantage Legend',desc:'1000 points'},
+
+  // SPECIAL
+  {id:'perfect_day',cat:'Special',emoji:'\uD83C\uDF1F',name:'Perfect Day',desc:'15 appels + 1 vente/jour'},
+  {id:'comeback_kid',cat:'Special',emoji:'\uD83E\uDD85',name:'Comeback Kid',desc:'Vente apres 3 rappels'},
+  {id:'greek_god',cat:'Special',emoji:'\uD83C\uDFDB\uFE0F',name:'Greek God',desc:'5 ventes insulaires'},
+  {id:'the_architect',cat:'Special',emoji:'\uD83D\uDCD0',name:'The Architect',desc:'3 ventes maintenance'},
+  {id:'hall_of_fame',cat:'Special',emoji:'\uD83C\uDF96\uFE0F',name:'Hall of Fame',desc:'20 ventes'},
+  {id:'money_printer',cat:'Special',emoji:'\uD83D\uDDA8\uFE0F',name:'Money Printer',desc:'10000\u20AC de revenue'}
+];
+
+// ========================================
+// DAILY CHALLENGES
+// ========================================
+const DAILY_CHALLENGES=[
+  {day:1,icon:'\uD83D\uDCDE',title:'Lundi Challenge',desc:'Passe 15 appels aujourd\'hui',reward:'+50 points bonus',target:15,metric:'calls_today'},
+  {day:2,icon:'\uD83C\uDFC6',title:'Mardi Challenge',desc:'Gagne 2 ventes cette semaine',reward:'Debloquer badge Gold',target:2,metric:'sales_week'},
+  {day:3,icon:'\uD83D\uDD25',title:'Mercredi Challenge',desc:'Appelle 20 prospects aujourd\'hui',reward:'+30 points',target:20,metric:'calls_today'},
+  {day:4,icon:'\uD83C\uDFAF',title:'Jeudi Challenge',desc:'Obtiens 3 prospects interesses aujourd\'hui',reward:'+40 points',target:3,metric:'interested_today'},
+  {day:5,icon:'\uD83C\uDFDD\uFE0F',title:'Vendredi Challenge',desc:'Complete ta region de projet',reward:'+100 points',target:100,metric:'region_pct'},
+  {day:6,icon:'\u26A1',title:'Samedi Challenge',desc:'Passe 10 appels aujourd\'hui',reward:'+25 points',target:10,metric:'calls_today'},
+  {day:0,icon:'\uD83D\uDCDD',title:'Dimanche',desc:'Jour de repos - revois tes notes',reward:'Repos',target:0,metric:'rest'}
+];
+
+// ========================================
+// POINTS SYSTEM
+// ========================================
+function calcPoints(vendor){
+  const vd=DATA.filter(d=>d.vendeur===vendor);
+  let pts=0;
+  pts+=vd.filter(d=>d.status==='appelle').length*1;
+  pts+=vd.filter(d=>d.status==='negociation').length*20;
+  pts+=vd.filter(d=>d.status==='valide').length*100;
+  // Add daily challenge bonus from localStorage
+  const bonus=parseInt(localStorage.getItem('bonus_pts_'+vendor)||'0');
+  return pts+bonus;
+}
+
+function getVendorStats(vendor){
+  const vd=DATA.filter(d=>d.vendeur===vendor);
+  const calls=vd.filter(d=>['appelle','negociation','rappeler','valide','perdu'].includes(d.status)).length;
+  const wins=vd.filter(d=>d.status==='valide').length;
+  const nego=vd.filter(d=>d.status==='negociation').length;
+  const rev=vd.reduce((s,d)=>s+(parseFloat(d.revenue)||0),0);
+  const regions=[...new Set(vd.map(d=>d.region))].filter(Boolean);
+  const notes=vd.filter(d=>d.notes&&d.notes.trim()).length;
+  const rappeler=vd.filter(d=>d.status==='rappeler').length;
+  return{calls,wins,nego,rev,regions,notes,rappeler,total:vd.length};
+}
+
+function getTodayCalls(vendor){
+  const today=new Date().toISOString().slice(0,10);
+  return DATA.filter(d=>d.vendeur===vendor&&d.call_date&&d.call_date.slice(0,10)===today&&['appelle','negociation','rappeler','valide','perdu'].includes(d.status)).length;
+}
+
+function getWeekSales(vendor){
+  const now=new Date();
+  const monday=new Date(now);monday.setDate(now.getDate()-((now.getDay()+6)%7));monday.setHours(0,0,0,0);
+  return DATA.filter(d=>d.vendeur===vendor&&d.status==='valide'&&d.updated_at&&new Date(d.updated_at)>=monday).length;
+}
+
+// ========================================
+// AUTH
+// ========================================
 function login(name){
   currentUser=name;isAdmin=name==='Admin';
   document.getElementById('loginScreen').style.display='none';
@@ -253,13 +432,16 @@ function login(name){
   rt.textContent=isAdmin?'ADMIN':'VENDEUR';
   rt.className='topbar-role '+(isAdmin?'admin':'vendor');
   if(isAdmin)document.getElementById('tabVendors').classList.remove('hidden');
+  if(!isAdmin)document.getElementById('pointsDisplay').classList.remove('hidden');
   localStorage.setItem('crm_user',name);
   loadData();
 }
 function logout(){localStorage.removeItem('crm_user');location.reload()}
 const saved=localStorage.getItem('crm_user');if(saved)login(saved);
 
-// === DATA ===
+// ========================================
+// DATA
+// ========================================
 async function loadData(){
   const{data}=await sb.from('prospects').select('*').order('id');
   DATA=data||[];
@@ -272,7 +454,6 @@ function populateFilters(){
   const fams=[...new Set(DATA.map(d=>d.famille))].filter(Boolean).sort();
   const regs=[...new Set(DATA.map(d=>d.region))].filter(Boolean).sort();
   const fF=document.getElementById('fFam'),fR=document.getElementById('fReg'),pR=document.getElementById('projRegion');
-  // Clear existing options except first
   while(fF.children.length>1)fF.removeChild(fF.lastChild);
   while(fR.children.length>1)fR.removeChild(fR.lastChild);
   pR.innerHTML='';
@@ -294,13 +475,25 @@ function getFiltered(){
   return fd;
 }
 
-// === RENDER ===
+// ========================================
+// RENDER
+// ========================================
 function render(){
-  renderStats();
+  renderStats();renderPointsDisplay();renderChallengeBanner();
   if(currentTab==='table')renderTable();
   else if(currentTab==='pipeline')renderPipeline();
   else if(currentTab==='projects')renderProjects();
+  else if(currentTab==='leaderboard')renderLeaderboard();
+  else if(currentTab==='badges')renderBadges();
   else if(currentTab==='vendors')renderVendors();
+  checkBadges();checkRewards();
+}
+
+function renderPointsDisplay(){
+  if(isAdmin){document.getElementById('pointsDisplay').classList.add('hidden');return;}
+  const pts=calcPoints(currentUser);
+  document.getElementById('pointsDisplay').textContent='\u2B50 '+pts+' pts';
+  document.getElementById('pointsDisplay').classList.remove('hidden');
 }
 
 function renderStats(){
@@ -317,7 +510,7 @@ function renderStats(){
     <div class="stat-card"><div class="stat-val orange">${ne}</div><div class="stat-lbl">Negociation</div></div>
     <div class="stat-card"><div class="stat-val green">${v}</div><div class="stat-lbl">Gagne</div></div>
     <div class="stat-card"><div class="stat-val red">${p}</div><div class="stat-lbl">Perdu</div></div>
-    ${isAdmin?`<div class="stat-card"><div class="stat-val green">${rev.toLocaleString()}&euro;</div><div class="stat-lbl">Revenue</div></div>
+    ${isAdmin?`<div class="stat-card"><div class="stat-val green">${rev.toLocaleString()}\u20AC</div><div class="stat-lbl">Revenue</div></div>
     <div class="stat-card"><div class="stat-val purple">${conv}%</div><div class="stat-lbl">Conversion</div></div>`:''}`;
 }
 
@@ -341,11 +534,13 @@ function renderPipeline(){
   const my=!isAdmin?DATA.filter(d=>d.vendeur===currentUser):DATA.filter(d=>d.vendeur);
   pv.innerHTML=cols.map(col=>{
     const items=my.filter(d=>d.status===col.key).slice(0,50);
-    return `<div class="pipe-col"><div class="pipe-col-head"><span class="pipe-col-title" style="color:${col.color}">${col.label}</span><span class="pipe-col-count">${my.filter(d=>d.status===col.key).length}</span></div><div class="pipe-col-body" ondragover="event.preventDefault()" ondrop="dropCard(event,'${col.key}')">${items.map(d=>`<div class="pipe-card" draggable="true" ondragstart="dragCard(event,${d.id})"><div class="pipe-card-name">${d.nom||''}</div><div class="pipe-card-phone"><a href="tel:${d.numero}" style="color:var(--accent)">${d.numero||''}</a></div><div class="pipe-card-region">${d.region||''} &middot; ${d.famille||''}</div>${d.notes?`<div class="pipe-card-notes">${d.notes}</div>`:''}</div>`).join('')}</div></div>`;
+    return `<div class="pipe-col"><div class="pipe-col-head"><span class="pipe-col-title" style="color:${col.color}">${col.label}</span><span class="pipe-col-count">${my.filter(d=>d.status===col.key).length}</span></div><div class="pipe-col-body" ondragover="event.preventDefault()" ondrop="dropCard(event,'${col.key}')">${items.map(d=>`<div class="pipe-card" draggable="true" ondragstart="dragCard(event,${d.id})"><div class="pipe-card-name">${d.nom||''}</div><div class="pipe-card-phone"><a href="tel:${d.numero}" style="color:var(--accent)">${d.numero||''}</a></div><div class="pipe-card-region">${d.region||''} \u00B7 ${d.famille||''}</div>${d.notes?`<div class="pipe-card-notes">${d.notes}</div>`:''}</div>`).join('')}</div></div>`;
   }).join('');
 }
 
-// === PROJECTS ===
+// ========================================
+// PROJECTS
+// ========================================
 function renderProjects(){
   const pv=document.getElementById('projectsView');
   const myProjects=isAdmin?PROJECTS:PROJECTS.filter(p=>p.vendeur===currentUser);
@@ -393,7 +588,7 @@ function renderProjects(){
       <div style="display:flex;justify-content:space-between;margin-top:12px;font-size:.65rem">
         <span style="color:var(--gray)">Restants: <strong style="color:var(--white)">${remaining.length}</strong></span>
         <span style="color:var(--gray)">Conv: <strong style="color:var(--purple)">${conv}%</strong></span>
-        <span style="color:var(--gray)">Rev: <strong style="color:var(--green)">${rev.toLocaleString()}&euro;</strong></span>
+        <span style="color:var(--gray)">Rev: <strong style="color:var(--green)">${rev.toLocaleString()}\u20AC</strong></span>
       </div>
       <div class="proj-actions">
         ${isAdmin?`
@@ -410,7 +605,6 @@ function renderProjects(){
 
   html+=`</div>`;
 
-  // Admin: show all regions overview
   if(isAdmin){
     const regions=[...new Set(DATA.map(d=>d.region))].filter(Boolean).sort();
     html+=`<div style="margin-top:32px"><h3 style="font-size:.85rem;font-weight:700;margin-bottom:16px;color:var(--gray)">REGIONS DISPONIBLES</h3>`;
@@ -429,10 +623,193 @@ function renderProjects(){
   pv.innerHTML=html;
 }
 
+// ========================================
+// LEADERBOARD
+// ========================================
+function renderLeaderboard(){
+  const lv=document.getElementById('leaderboardView');
+  const rankings=VENDOR_NAMES.map(v=>{
+    const stats=getVendorStats(v);
+    return{name:v,pts:calcPoints(v),calls:stats.calls,wins:stats.wins,rev:stats.rev,nego:stats.nego};
+  }).sort((a,b)=>b.pts-a.pts);
+
+  let html=`<h2 style="font-size:1.2rem;font-weight:800;margin-bottom:24px">\uD83C\uDFC6 Classement en temps reel</h2>`;
+
+  rankings.forEach((r,i)=>{
+    const rank=i+1;
+    const crown=rank===1?'\uD83D\uDC51':'';
+    html+=`<div class="lb-card ${rank===1?'rank-1':''}">
+      <div class="lb-rank r${rank}">#${rank}</div>
+      <div class="lb-name">${r.name} ${crown}</div>
+      <div class="lb-stats">
+        <div class="lb-stat"><div class="lb-stat-val" style="color:var(--yellow)">${r.pts}</div><div class="lb-stat-lbl">Points</div></div>
+        <div class="lb-stat"><div class="lb-stat-val" style="color:var(--accent)">${r.calls}</div><div class="lb-stat-lbl">Appels</div></div>
+        <div class="lb-stat"><div class="lb-stat-val" style="color:var(--green)">${r.wins}</div><div class="lb-stat-lbl">Gagnes</div></div>
+        <div class="lb-stat"><div class="lb-stat-val" style="color:var(--orange)">${r.nego}</div><div class="lb-stat-lbl">Nego</div></div>
+        <div class="lb-stat"><div class="lb-stat-val" style="color:var(--green)">${r.rev.toLocaleString()}\u20AC</div><div class="lb-stat-lbl">Revenue</div></div>
+      </div>
+    </div>`;
+  });
+
+  // Weekly/Monthly highlights
+  html+=`<div style="margin-top:32px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">`;
+  const weekSales=VENDOR_NAMES.map(v=>({name:v,sales:getWeekSales(v)})).sort((a,b)=>b.sales-a.sales);
+  html+=`<div style="background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:20px">
+    <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gray);margin-bottom:12px">Ventes cette semaine</div>
+    ${weekSales.map((w,i)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--dim);font-size:.78rem">
+      <span>${i===0?'\uD83E\uDD47':''}${i===1?'\uD83E\uDD48':''}${i===2?'\uD83E\uDD49':''} ${w.name}</span>
+      <strong style="color:var(--green)">${w.sales}</strong>
+    </div>`).join('')}
+  </div>`;
+
+  const callsToday=VENDOR_NAMES.map(v=>({name:v,calls:getTodayCalls(v)})).sort((a,b)=>b.calls-a.calls);
+  html+=`<div style="background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:20px">
+    <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gray);margin-bottom:12px">Appels aujourd'hui</div>
+    ${callsToday.map((w,i)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--dim);font-size:.78rem">
+      <span>${i===0?'\uD83E\uDD47':''}${i===1?'\uD83E\uDD48':''}${i===2?'\uD83E\uDD49':''} ${w.name}</span>
+      <strong style="color:var(--accent)">${w.calls}</strong>
+    </div>`).join('')}
+  </div>`;
+
+  const ptsRank=VENDOR_NAMES.map(v=>({name:v,pts:calcPoints(v)})).sort((a,b)=>b.pts-a.pts);
+  html+=`<div style="background:var(--s1);border:1px solid var(--s3);border-radius:10px;padding:20px">
+    <div style="font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--gray);margin-bottom:12px">Points totaux</div>
+    ${ptsRank.map((w,i)=>`<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--dim);font-size:.78rem">
+      <span>${i===0?'\uD83E\uDD47':''}${i===1?'\uD83E\uDD48':''}${i===2?'\uD83E\uDD49':''} ${w.name}</span>
+      <strong style="color:var(--yellow)">${w.pts}</strong>
+    </div>`).join('')}
+  </div>`;
+
+  html+=`</div>`;
+  lv.innerHTML=html;
+}
+
+// ========================================
+// BADGES RENDER
+// ========================================
+function getBadges(vendor){
+  const key='badges_'+vendor;
+  let stored=localStorage.getItem(key);
+  if(!stored){
+    const init={};BADGE_DEFS.forEach(b=>{init[b.id]={unlocked:false,date:null}});
+    localStorage.setItem(key,JSON.stringify(init));
+    return init;
+  }
+  const parsed=JSON.parse(stored);
+  // Ensure all badges exist
+  BADGE_DEFS.forEach(b=>{if(!parsed[b.id])parsed[b.id]={unlocked:false,date:null}});
+  return parsed;
+}
+
+function saveBadges(vendor,badges){
+  localStorage.setItem('badges_'+vendor,JSON.stringify(badges));
+}
+
+function renderBadges(targetVendor){
+  const vendor=targetVendor||currentUser;
+  if(isAdmin&&!targetVendor){
+    renderBadgesAdmin();return;
+  }
+  const bv=document.getElementById('badgesView');
+  const badges=getBadges(vendor);
+  const unlocked=Object.values(badges).filter(b=>b.unlocked).length;
+
+  let html=`<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+    <h2 style="font-size:1.2rem;font-weight:800">\uD83C\uDFC5 Mes Badges <span style="color:var(--accent);font-size:.85rem">${unlocked}/${BADGE_DEFS.length}</span></h2>
+    <div style="font-size:.75rem;color:var(--gray)">Points: <strong style="color:var(--yellow)">${calcPoints(vendor)}</strong></div>
+  </div>`;
+
+  const cats=['Debutant','Intermediaire','Avance','Special'];
+  cats.forEach(cat=>{
+    const catBadges=BADGE_DEFS.filter(b=>b.cat===cat);
+    html+=`<div class="badges-section"><div class="badges-section-title">${cat} (${catBadges.filter(b=>badges[b.id]&&badges[b.id].unlocked).length}/${catBadges.length})</div><div class="badge-grid">`;
+    catBadges.forEach(b=>{
+      const state=badges[b.id]||{unlocked:false,date:null};
+      html+=`<div class="badge-card ${state.unlocked?'unlocked':'locked'}">
+        <span class="badge-emoji">${b.emoji}</span>
+        <div class="badge-name">${b.name}</div>
+        <div class="badge-desc">${b.desc}</div>
+        ${state.unlocked&&state.date?`<div class="badge-date">${new Date(state.date).toLocaleDateString('fr-FR')}</div>`:''}
+      </div>`;
+    });
+    html+=`</div></div>`;
+  });
+
+  bv.innerHTML=html;
+}
+
+function renderBadgesAdmin(){
+  const bv=document.getElementById('badgesView');
+  let html=`<h2 style="font-size:1.2rem;font-weight:800;margin-bottom:24px">\uD83C\uDFC5 Badges - Vue Admin</h2>`;
+
+  // Tabs for each vendor
+  html+=`<div style="display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap">`;
+  VENDOR_NAMES.forEach(v=>{
+    const badges=getBadges(v);
+    const unlocked=Object.values(badges).filter(b=>b.unlocked).length;
+    html+=`<button class="btn btn-ghost" onclick="renderBadgesForVendor('${v}')" style="font-size:.75rem">${v} <span style="color:var(--accent);margin-left:4px">${unlocked}/${BADGE_DEFS.length}</span></button>`;
+  });
+  html+=`</div>`;
+
+  // Summary grid
+  html+=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">`;
+  VENDOR_NAMES.forEach(v=>{
+    const badges=getBadges(v);
+    const unlocked=Object.values(badges).filter(b=>b.unlocked).length;
+    const pts=calcPoints(v);
+    html+=`<div style="background:var(--s1);border:1px solid var(--s3);border-radius:12px;padding:20px">
+      <h3 style="font-size:.9rem;font-weight:700;margin-bottom:12px">${v}</h3>
+      <div style="display:flex;gap:16px;margin-bottom:16px">
+        <div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:var(--yellow)">${pts}</div><div style="font-size:.55rem;text-transform:uppercase;color:var(--gray)">Points</div></div>
+        <div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:var(--accent)">${unlocked}</div><div style="font-size:.55rem;text-transform:uppercase;color:var(--gray)">Badges</div></div>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">${BADGE_DEFS.map(b=>{
+        const s=badges[b.id]||{unlocked:false};
+        return `<span style="font-size:1.2rem;${s.unlocked?'':'filter:grayscale(1);opacity:.3'}" title="${b.name}">${b.emoji}</span>`;
+      }).join('')}</div>
+    </div>`;
+  });
+  html+=`</div>`;
+
+  bv.innerHTML=html;
+}
+
+function renderBadgesForVendor(vendor){
+  const bv=document.getElementById('badgesView');
+  const badges=getBadges(vendor);
+  const unlocked=Object.values(badges).filter(b=>b.unlocked).length;
+
+  let html=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap">
+    <button class="btn btn-ghost btn-sm" onclick="renderBadges()">\u2190 Retour</button>
+    <h2 style="font-size:1.2rem;font-weight:800">\uD83C\uDFC5 ${vendor} <span style="color:var(--accent);font-size:.85rem">${unlocked}/${BADGE_DEFS.length}</span></h2>
+  </div>`;
+
+  const cats=['Debutant','Intermediaire','Avance','Special'];
+  cats.forEach(cat=>{
+    const catBadges=BADGE_DEFS.filter(b=>b.cat===cat);
+    html+=`<div class="badges-section"><div class="badges-section-title">${cat} (${catBadges.filter(b=>badges[b.id]&&badges[b.id].unlocked).length}/${catBadges.length})</div><div class="badge-grid">`;
+    catBadges.forEach(b=>{
+      const state=badges[b.id]||{unlocked:false,date:null};
+      html+=`<div class="badge-card ${state.unlocked?'unlocked':'locked'}">
+        <span class="badge-emoji">${b.emoji}</span>
+        <div class="badge-name">${b.name}</div>
+        <div class="badge-desc">${b.desc}</div>
+        ${state.unlocked&&state.date?`<div class="badge-date">${new Date(state.date).toLocaleDateString('fr-FR')}</div>`:''}
+      </div>`;
+    });
+    html+=`</div></div>`;
+  });
+
+  bv.innerHTML=html;
+}
+
+// ========================================
+// VENDORS (ADMIN)
+// ========================================
 function renderVendors(){
   if(!isAdmin)return;
   const vv=document.getElementById('vendorsView');
-  vv.innerHTML=['Vendeur 1','Vendeur 2','Vendeur 3'].map(v=>{
+  vv.innerHTML=VENDOR_NAMES.map(v=>{
     const vd=DATA.filter(d=>d.vendeur===v);
     const a=vd.length,ap=vd.filter(d=>d.status==='appelle').length;
     const ne=vd.filter(d=>d.status==='negociation').length,va=vd.filter(d=>d.status==='valide').length;
@@ -440,54 +817,313 @@ function renderVendors(){
     const rev=vd.reduce((s,d)=>s+(parseFloat(d.revenue)||0),0);
     const conv=va+pe>0?((va/(va+pe))*100).toFixed(1):'0';
     const projects=PROJECTS.filter(p=>p.vendeur===v);
-    return `<div class="vendor-card"><h3>${v}</h3>
+    const pts=calcPoints(v);
+    const badges=getBadges(v);
+    const unlockedCount=Object.values(badges).filter(b=>b.unlocked).length;
+
+    return `<div class="vendor-card"><h3>${v} <span style="font-size:.7rem;color:var(--yellow);margin-left:8px">\u2B50 ${pts} pts</span></h3>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Assignes</span><span class="vendor-stat-val" style="color:var(--accent)">${a}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Appeles</span><span class="vendor-stat-val" style="color:var(--yellow)">${ap}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Negociation</span><span class="vendor-stat-val" style="color:var(--orange)">${ne}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Gagnes</span><span class="vendor-stat-val" style="color:var(--green)">${va}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Perdus</span><span class="vendor-stat-val" style="color:var(--red)">${pe}</span></div>
-      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Revenue</span><span class="vendor-stat-val" style="color:var(--green)">${rev.toLocaleString()}&euro;</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Revenue</span><span class="vendor-stat-val" style="color:var(--green)">${rev.toLocaleString()}\u20AC</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Conversion</span><span class="vendor-stat-val" style="color:var(--purple)">${conv}%</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Points</span><span class="vendor-stat-val" style="color:var(--yellow)">${pts}</span></div>
+      <div class="vendor-stat-row"><span class="vendor-stat-lbl">Badges</span><span class="vendor-stat-val" style="color:var(--accent)">${unlockedCount}/${BADGE_DEFS.length}</span></div>
       <div class="vendor-stat-row"><span class="vendor-stat-lbl">Projets actifs</span><span class="vendor-stat-val" style="color:var(--accent)">${projects.filter(p=>p.status==='active').length}</span></div>
+      <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:4px">${BADGE_DEFS.map(b=>{
+        const s=badges[b.id]||{unlocked:false};
+        return `<span style="font-size:1.1rem;${s.unlocked?'':'filter:grayscale(1);opacity:.3'}" title="${b.name}">${b.emoji}</span>`;
+      }).join('')}</div>
+      <div style="margin-top:12px"><button class="btn btn-ghost btn-sm" onclick="switchTab('badges');renderBadgesForVendor('${v}')">Voir badges</button></div>
     </div>`;
   }).join('');
 }
 
-// === TABS ===
+// ========================================
+// DAILY CHALLENGE
+// ========================================
+function renderChallengeBanner(){
+  if(isAdmin){document.getElementById('challengeBanner').classList.add('hidden');return;}
+  const banner=document.getElementById('challengeBanner');
+  banner.classList.remove('hidden');
+  const dayOfWeek=new Date().getDay();
+  const challenge=DAILY_CHALLENGES.find(c=>c.day===dayOfWeek)||DAILY_CHALLENGES[6];
+
+  let current=0,target=challenge.target;
+  const stats=getVendorStats(currentUser);
+  if(challenge.metric==='calls_today')current=getTodayCalls(currentUser);
+  else if(challenge.metric==='sales_week')current=getWeekSales(currentUser);
+  else if(challenge.metric==='interested_today'){
+    const today=new Date().toISOString().slice(0,10);
+    current=DATA.filter(d=>d.vendeur===currentUser&&d.status==='negociation'&&d.updated_at&&d.updated_at.slice(0,10)===today).length;
+  }else if(challenge.metric==='region_pct'){
+    const myProj=PROJECTS.find(p=>p.vendeur===currentUser&&p.status==='active');
+    if(myProj){
+      const rp=DATA.filter(d=>d.region===myProj.region);
+      const called=rp.filter(d=>d.vendeur===currentUser&&['appelle','negociation','rappeler','valide','perdu'].includes(d.status));
+      current=rp.length>0?Math.round((called.length/rp.length)*100):0;
+    }
+    target=100;
+  }else if(challenge.metric==='rest'){current=0;target=0;}
+
+  const pct=target>0?Math.min(100,Math.round((current/target)*100)):100;
+  const complete=pct>=100;
+
+  // Check and store daily challenge completion
+  const todayKey='challenge_'+currentUser+'_'+new Date().toISOString().slice(0,10);
+  const alreadyClaimed=localStorage.getItem(todayKey);
+  if(complete&&!alreadyClaimed&&challenge.metric!=='rest'){
+    localStorage.setItem(todayKey,'1');
+    // Award bonus points
+    const bonusMatch=challenge.reward.match(/\+(\d+)/);
+    if(bonusMatch){
+      const bonus=parseInt(bonusMatch[1]);
+      const currentBonus=parseInt(localStorage.getItem('bonus_pts_'+currentUser)||'0');
+      localStorage.setItem('bonus_pts_'+currentUser,String(currentBonus+bonus));
+    }
+    showToast('Challenge Complete!',challenge.title+' - '+challenge.reward,'var(--green)');
+  }
+
+  banner.innerHTML=`
+    <div class="challenge-icon">${challenge.icon}</div>
+    <div class="challenge-info">
+      <div class="challenge-title">${challenge.title} ${complete?'\u2705':''}</div>
+      <div class="challenge-desc">${challenge.desc} \u2192 ${challenge.reward}</div>
+      ${target>0?`<div class="challenge-progress">
+        <div style="display:flex;justify-content:space-between">
+          <span class="challenge-pct">${current}/${target}</span>
+          <span class="challenge-pct">${pct}%</span>
+        </div>
+        <div class="challenge-bar-bg"><div class="challenge-bar" style="width:${pct}%"></div></div>
+      </div>`:''}
+    </div>`;
+}
+
+// ========================================
+// BADGE CHECKING
+// ========================================
+function checkBadges(){
+  if(isAdmin)return;
+  const vendor=currentUser;
+  const badges=getBadges(vendor);
+  const stats=getVendorStats(vendor);
+  const pts=calcPoints(vendor);
+  const todayCalls=getTodayCalls(vendor);
+  const weekSales=getWeekSales(vendor);
+  const newUnlocks=[];
+
+  function unlock(id){
+    if(!badges[id])badges[id]={unlocked:false,date:null};
+    if(!badges[id].unlocked){
+      badges[id].unlocked=true;
+      badges[id].date=new Date().toISOString();
+      newUnlocks.push(id);
+    }
+  }
+
+  // BEGINNER
+  if(stats.calls>=1)unlock('first_step');
+  if(todayCalls>=5)unlock('ice_breaker');
+  if(stats.calls>=10)unlock('getting_started');
+  if(stats.nego>=1||stats.wins>=1)unlock('first_blood');
+  if(stats.wins>=1)unlock('rookie_sale');
+  // early_bird and night_owl - check call_date times
+  const vd=DATA.filter(d=>d.vendeur===vendor&&d.call_date);
+  if(vd.some(d=>{const h=new Date(d.call_date).getHours();return h<9}))unlock('early_bird');
+  if(vd.some(d=>{const h=new Date(d.call_date).getHours();return h>=19}))unlock('night_owl');
+  // speed_dialer - approximate: if 5+ calls today
+  if(todayCalls>=5)unlock('speed_dialer');
+  if(stats.notes>=10)unlock('note_taker');
+  if(stats.regions.length>=3)unlock('explorer');
+
+  // INTERMEDIATE
+  if(todayCalls>=10)unlock('call_machine');
+  // hot_streak - track in localStorage
+  const streakKey='streak_'+vendor;
+  let streak=JSON.parse(localStorage.getItem(streakKey)||'{"days":[],"count":0}');
+  const today=new Date().toISOString().slice(0,10);
+  if(todayCalls>=10&&!streak.days.includes(today)){
+    streak.days.push(today);
+    // Keep only last 30 days
+    streak.days=streak.days.filter(d=>{const diff=(new Date()-new Date(d))/(1000*60*60*24);return diff<30});
+    localStorage.setItem(streakKey,JSON.stringify(streak));
+  }
+  // Check consecutive days with 10+ calls
+  if(streak.days.length>=3){
+    const sorted=streak.days.sort();
+    let consec=1,maxConsec=1;
+    for(let i=1;i<sorted.length;i++){
+      const d1=new Date(sorted[i-1]),d2=new Date(sorted[i]);
+      if((d2-d1)/(1000*60*60*24)<=1){consec++;maxConsec=Math.max(maxConsec,consec)}else{consec=1}
+    }
+    if(maxConsec>=3)unlock('hot_streak');
+    if(maxConsec>=7)unlock('unstoppable');
+  }
+  if(weekSales>=3)unlock('silver_tongue');
+  // region_master - check if all prospects in a region are processed
+  const vendorRegions=[...new Set(DATA.filter(d=>d.vendeur===vendor).map(d=>d.region))].filter(Boolean);
+  vendorRegions.forEach(r=>{
+    const rp=DATA.filter(d=>d.region===r&&d.vendeur===vendor);
+    const done=rp.filter(d=>['appelle','negociation','rappeler','valide','perdu'].includes(d.status));
+    if(rp.length>0&&done.length===rp.length)unlock('region_master');
+  });
+  if(stats.total>=50)unlock('hunter');
+  // persuader - 5 nego that became sales (approximate: count valide)
+  if(stats.wins>=5)unlock('persuader');
+  if(stats.rev>=1000)unlock('revenue_maker');
+  if(stats.nego>=10)unlock('pipeline_king');
+  // follow_up_king - approximate with rappeler conversions
+  if(stats.wins>=3)unlock('follow_up_king');
+  // weekly_champion
+  const rankings=VENDOR_NAMES.map(v=>({name:v,pts:calcPoints(v)})).sort((a,b)=>b.pts-a.pts);
+  if(rankings[0].name===vendor)unlock('weekly_champion');
+
+  // ADVANCED
+  if(stats.wins>=10)unlock('legend');
+  if(weekSales>=5)unlock('closer');
+  if(pts>=500)unlock('elite');
+  // unstoppable already checked above
+  if(rankings[0].name===vendor)unlock('top_gun');
+  if(stats.rev>=5000)unlock('gold_rush');
+  if(stats.calls>=100)unlock('marathon_runner');
+  if(stats.wins>=10)unlock('master_negotiator');
+  // island_conqueror - 3 regions completed
+  let completedRegions=0;
+  vendorRegions.forEach(r=>{
+    const rp=DATA.filter(d=>d.region===r&&d.vendeur===vendor);
+    const done=rp.filter(d=>['appelle','negociation','rappeler','valide','perdu'].includes(d.status));
+    if(rp.length>0&&done.length===rp.length)completedRegions++;
+  });
+  if(completedRegions>=3)unlock('island_conqueror');
+  if(pts>=1000)unlock('vantage_legend');
+
+  // SPECIAL
+  if(todayCalls>=15&&getWeekSales(vendor)>=1)unlock('perfect_day');
+  if(stats.wins>=1&&stats.rappeler>=3)unlock('comeback_kid');
+  // greek_god - 5 sales in island regions (approximate)
+  if(stats.wins>=5)unlock('greek_god');
+  // the_architect - approximate
+  if(stats.wins>=3)unlock('the_architect');
+  if(stats.wins>=20)unlock('hall_of_fame');
+  if(stats.rev>=10000)unlock('money_printer');
+
+  saveBadges(vendor,badges);
+
+  // Show toast for new unlocks
+  newUnlocks.forEach(id=>{
+    const def=BADGE_DEFS.find(b=>b.id===id);
+    if(def){
+      showToast('Badge Debloque! '+def.emoji,def.name+' - '+def.desc,'var(--yellow)',true);
+    }
+  });
+}
+
+// ========================================
+// REWARDS CHECK
+// ========================================
+function checkRewards(){
+  if(!isAdmin)return;
+  const notifKey='reward_notifs';
+  let notifs=JSON.parse(localStorage.getItem(notifKey)||'{}');
+  VENDOR_NAMES.forEach(v=>{
+    const pts=calcPoints(v);
+    if(pts>=500&&!notifs[v+'_500']){
+      notifs[v+'_500']=true;
+      showToast('\uD83C\uDF89 Bonus 50\u20AC!',v+' a atteint 500 points!','var(--green)');
+    }
+    if(pts>=1000&&!notifs[v+'_1000']){
+      notifs[v+'_1000']=true;
+      showToast('\uD83C\uDF89 Bonus 150\u20AC!',v+' a atteint 1000 points!','var(--green)');
+    }
+  });
+  localStorage.setItem(notifKey,JSON.stringify(notifs));
+}
+
+// ========================================
+// TOAST SYSTEM
+// ========================================
+function showToast(title,body,borderColor,withConfetti){
+  const container=document.getElementById('toastContainer');
+  const toast=document.createElement('div');
+  toast.className='toast'+(borderColor==='var(--yellow)'?' badge-toast':'');
+  toast.style.borderColor=borderColor||'var(--accent)';
+  toast.innerHTML=`<button class="toast-close" onclick="this.parentElement.remove()">\u2715</button><div class="toast-title">${title}</div><div class="toast-body">${body}</div>`;
+  container.appendChild(toast);
+  if(withConfetti)spawnConfetti();
+  setTimeout(()=>{
+    toast.style.animation='slideOutToast .4s ease forwards';
+    setTimeout(()=>toast.remove(),400);
+  },4000);
+}
+
+function spawnConfetti(){
+  const container=document.createElement('div');
+  container.className='confetti-container';
+  document.body.appendChild(container);
+  const colors=['#58a6ff','#3fb950','#d29922','#f85149','#bc8cff','#db6d28','#ff7eb3','#7ee8fa'];
+  for(let i=0;i<40;i++){
+    const dot=document.createElement('div');
+    dot.className='confetti-dot';
+    dot.style.left=Math.random()*100+'%';
+    dot.style.top='-10px';
+    dot.style.background=colors[Math.floor(Math.random()*colors.length)];
+    dot.style.animationDelay=Math.random()*1.5+'s';
+    dot.style.width=(4+Math.random()*8)+'px';
+    dot.style.height=dot.style.width;
+    container.appendChild(dot);
+  }
+  setTimeout(()=>container.remove(),4000);
+}
+
+// ========================================
+// TABS
+// ========================================
 function switchTab(tab){
   currentTab=tab;
   document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.tab===tab));
   document.getElementById('tableView').classList.toggle('hidden',tab!=='table');
   document.getElementById('pipelineView').classList.toggle('hidden',tab!=='pipeline');
   document.getElementById('projectsView').classList.toggle('hidden',tab!=='projects');
+  document.getElementById('leaderboardView').classList.toggle('hidden',tab!=='leaderboard');
+  document.getElementById('badgesView').classList.toggle('hidden',tab!=='badges');
   document.getElementById('vendorsView').classList.toggle('hidden',tab!=='vendors');
   document.getElementById('controlsBar').classList.toggle('hidden',tab!=='table');
   render();
 }
 
-// === SORT ===
+// ========================================
+// SORT
+// ========================================
 function doSort(col){
   document.querySelectorAll('th').forEach(t=>t.classList.remove('sa','sd'));
   if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1}
-  const th=document.querySelector(`th[data-c="${col}"]`);if(th)th.classList.add(sortDir===1?'sa':'sd');render();
+  const th=document.querySelector('th[data-c="'+col+'"]');if(th)th.classList.add(sortDir===1?'sa':'sd');render();
 }
 
-// === UPDATE ===
+// ========================================
+// UPDATE
+// ========================================
 async function updateField(id,field,value){
   const obj={};obj[field]=value;obj.updated_at=new Date().toISOString();
   if(field==='status'&&value==='appelle')obj.call_date=new Date().toISOString();
   await sb.from('prospects').update(obj).eq('id',id);
   const row=DATA.find(d=>d.id===id);
-  if(row){row[field]=value;if(obj.call_date)row.call_date=obj.call_date}
+  if(row){row[field]=value;if(obj.call_date)row.call_date=obj.call_date;row.updated_at=obj.updated_at}
   render();
 }
 
-// === DRAG ===
+// ========================================
+// DRAG & DROP
+// ========================================
 let dragId=null;
 function dragCard(e,id){dragId=id;e.dataTransfer.effectAllowed='move'}
 async function dropCard(e,status){e.preventDefault();if(dragId){await updateField(dragId,'status',status);dragId=null}}
 
-// === PROJECTS CRUD ===
+// ========================================
+// PROJECTS CRUD
+// ========================================
 function openModal(){document.getElementById('modalOverlay').classList.remove('hidden')}
 function closeModal(){document.getElementById('modalOverlay').classList.add('hidden')}
 
@@ -495,8 +1131,10 @@ async function createProject(){
   const name=document.getElementById('projName').value.trim();
   const region=document.getElementById('projRegion').value;
   const vendeur=document.getElementById('projVendeur').value;
+  const status=document.getElementById('projStatus').value;
   if(!name){alert('Nom requis');return}
-  await sb.from('projects').insert([{name,region,vendeur,status:'active'}]);
+  if(!region){alert('Region requise');return}
+  await sb.from('projects').insert([{name,region,vendeur,status}]);
   closeModal();document.getElementById('projName').value='';
   await loadData();switchTab('projects');
 }
@@ -509,33 +1147,40 @@ async function updateProject(id,status){
 async function assignRegion(projId,region,vendeur){
   const unassigned=DATA.filter(d=>d.region===region&&!d.vendeur);
   if(unassigned.length===0){alert('Tous les prospects de '+region+' sont deja assignes!');return}
-  if(!confirm(`Assigner ${unassigned.length} prospects de ${region} a ${vendeur} ?`))return;
+  if(!confirm('Assigner '+unassigned.length+' prospects de '+region+' a '+vendeur+' ?'))return;
   const ids=unassigned.map(d=>d.id);
-  // Batch update in chunks of 500
   for(let i=0;i<ids.length;i+=500){
     const chunk=ids.slice(i,i+500);
     await sb.from('prospects').update({vendeur,updated_at:new Date().toISOString()}).in('id',chunk);
   }
   unassigned.forEach(d=>d.vendeur=vendeur);
-  render();alert(`${unassigned.length} prospects assignes a ${vendeur}!`);
+  render();alert(unassigned.length+' prospects assignes a '+vendeur+'!');
 }
 
-// === FILTERS ===
+// ========================================
+// FILTERS
+// ========================================
 function resetFilters(){['q','fFam','fReg','fSta','fTel','fVen'].forEach(id=>document.getElementById(id).value='');render()}
 ['q'].forEach(id=>document.getElementById(id).addEventListener('input',render));
 ['fFam','fReg','fSta','fTel','fVen'].forEach(id=>document.getElementById(id).addEventListener('change',render));
 
-// === EXPORT ===
+// ========================================
+// EXPORT CSV
+// ========================================
 function exportCSV(){
   const fd=getFiltered();
   let csv='nom,numero,type_tel,famille,categorie,region,adresse,vendeur,statut,notes\n';
-  fd.forEach(d=>{csv+=`"${d.nom||''}","${d.numero||''}","${d.type_tel||''}","${d.famille||''}","${d.categorie||''}","${d.region||''}","${d.adresse||''}","${d.vendeur||''}","${d.status||''}","${(d.notes||'').replace(/"/g,'""')}"\n`});
+  fd.forEach(d=>{csv+='"'+(d.nom||'')+'","'+(d.numero||'')+'","'+(d.type_tel||'')+'","'+(d.famille||'')+'","'+(d.categorie||'')+'","'+(d.region||'')+'","'+(d.adresse||'')+'","'+(d.vendeur||'')+'","'+(d.status||'')+'","'+((d.notes||'').replace(/"/g,'""'))+'"\n'});
   const b=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='vantage_prospects.csv';a.click();
 }
 
-// === REALTIME ===
+// ========================================
+// REALTIME
+// ========================================
 sb.channel('changes').on('postgres_changes',{event:'*',schema:'public',table:'prospects'},p=>{
-  if(p.eventType==='UPDATE'){const i=DATA.findIndex(d=>d.id===p.new.id);if(i>=0)DATA[i]=p.new}render();
+  if(p.eventType==='UPDATE'){const i=DATA.findIndex(d=>d.id===p.new.id);if(i>=0)DATA[i]=p.new}
+  else if(p.eventType==='INSERT'){DATA.push(p.new)}
+  render();
 }).subscribe();
 sb.channel('proj-changes').on('postgres_changes',{event:'*',schema:'public',table:'projects'},async()=>{
   const{data}=await sb.from('projects').select('*').order('id');PROJECTS=data||[];render();
